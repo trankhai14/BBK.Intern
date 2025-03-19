@@ -1,0 +1,59 @@
+﻿@using MyProject.Web.Models.People;
+@using static MyProject.Tasks.Task
+@model CreateTaskViewModel;
+
+@section scripts
+{
+    <environment names="Development">
+        <script src="~/js/views/tasks/create.js"></script>
+    </environment>
+
+    <environment names="Staging,Production">
+        <script src="~/js/views/tasks/create.min.js"></script>
+    </environment>
+}
+
+<h2>
+    @L("NewTask")
+</h2>
+
+<form id="TaskCreationForm">
+  <div class="form-group">
+    <label for="Title">@L("Title")</label>
+    <input type="text" name="Title" class="form-control" placeholder="@L("Title")" required maxlength="@MyProject.Tasks.Task.MaxTitleLength">
+  </div>
+
+  <div class="form-group">
+    <label for="Description">@L("Description")</label>
+    <input type="text" name="Description" class="form-control" placeholder="@L("Description")" maxlength="@MyProject.Tasks.Task.MaxDescriptionLength">
+  </div>
+
+  <div class="form-group">
+    @Html.Label(L("AssignedPerson"))
+    @Html.DropDownList(
+          "AssignedPersonId",
+          Model.People,
+          new
+          {
+            @class = "form-control",
+            id = "AssignedPersonCombobox"
+          })
+  </div>
+
+  <!-- Thêm trường trạng thái -->
+  @* <div class="form-group"> *@
+  @*   <label for="TaskState">@L("Task State")</label> *@
+  @*   @Html.DropDownListFor( *@
+  @*         model => model.TaskState, // Gắn binding với trường TaskState của model *@
+  @*         new SelectList( *@
+  @*         Enum.GetValues(typeof(MyProject.Tasks.TaskState)) *@
+  @*         .Cast<MyProject.Tasks.TaskState>() *@
+  @*         .Select(e => new { Text = e.ToString(), Value = (byte)e }), // Sử dụng byte làm giá trị *@
+  @*         "Value", "Text"), // Gán Value là byte, Text là tên trạng thái *@
+  @*         new { @class = "form-control", id = "TaskStateCombobox" } *@
+  @*         ) *@
+  @* </div> *@
+
+
+  <button type="submit" class="btn btn-default">@L("Save")</button>
+</form>

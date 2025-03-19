@@ -1,0 +1,78 @@
+﻿<style>
+	.search-container {
+		width: 40%;
+		min-width: 250px;
+		justify-content: center;
+	}
+
+	.search-input {
+		width: 100%;
+		transition: all 0.3s ease;
+	}
+
+		.search-input:focus {
+			box-shadow: 0px 0px 8px rgba(255, 255, 255, 0.6);
+		}
+
+	/* Hiệu ứng hover cho menu */
+	.navbar-nav .nav-link {
+		font-weight: 500;
+		padding: 8px 12px;
+		transition: all 0.3s ease-in-out;
+	}
+
+		.navbar-nav .nav-link:hover {
+			color: #ffeb3b !important;
+		}
+
+	/* Nút tìm kiếm */
+	.btn-search {
+		border-radius: 50%;
+		padding: 5px;
+	}
+
+	#searchInput {
+		border-radius: 20px;
+	}
+
+</style>
+<!-- Thanh điều hướng -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+	<div class="container">
+		<!-- Logo -->
+		<a class="navbar-brand fw-bold d-flex align-items-center" href="/Web">
+			<i class="fas fa-store me-2"></i> Shop Điện Tử
+		</a>
+
+		<!-- Toggle button cho mobile -->
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<!-- Nội dung Navbar -->
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<!-- Ô tìm kiếm ở giữa -->
+			<form id="searchForm" class="d-flex mx-auto search-container">
+				<input id="searchInput" name="Keyword" class="form-control me-2 search-input" type="text" placeholder="Tìm kiếm sản phẩm">
+				<button class="btn btn-light btn-search" type="submit">
+					<i class="fas fa-search"></i>
+				</button>
+			</form>
+
+
+			<!-- Giỏ hàng & Đăng nhập bên phải -->
+			<ul class="navbar-nav ms-auto align-items-center">
+				<li class="nav-item">
+					<a class="nav-link" href="#">
+						<i class="fas fa-shopping-cart me-1"></i> Giỏ hàng
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="/Account/Login">
+						<i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>

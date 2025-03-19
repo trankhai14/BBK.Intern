@@ -1,0 +1,67 @@
+﻿@using MyProject.Web.Models.Common.Modals
+@using MyProject.Web.Models.Sliders
+
+@model EditSliderViewModel;
+
+@{
+	Layout = null;
+}
+
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditSlider")))
+
+<form name="SliderEditForm" role="form" class="form-horizontal">
+	<input type="hidden" name="Id" value="@Model.Slider.Id" />
+
+
+	<div class="modal-body">
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="title">@L("Title")</label>
+			<div class="col-md-9">
+				<input id="title" type="text" class="form-control" name="Title" value="@Model.Slider.Title" required maxlength="250">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="description">@L("Description")</label>
+			<div class="col-md-9">
+				<textarea id="description" class="form-control" name="Description" rows="3">@Model.Slider.Description</textarea>
+			</div>
+		</div>
+
+		
+
+		<div class="form-group row ">
+			<label class="col-md-3 col-form-label" for="active">@L("IsActive")</label>
+			<div class="col-md-9">
+				<input id="active" type="checkbox" name="IsActive" value="@Model.Slider.IsActive" @(Model.Slider.IsActive ? "checked" : "") />
+			</div>
+		</div>
+
+
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label">@L("CurrentImage")</label>
+			<div class="col-md-9">
+				<div class="d-flex align-items-center">
+					<img id="sliderImage" src="@Model.Slider.Image" class="img-thumbnail" style="max-width: 150px;" />
+					<button type="button" id="deleteSliderBtn" class="btn btn-danger ml-2"
+									style="@(string.IsNullOrEmpty(Model.Slider.Image) ? "display: none;" : "")">
+						Xóa Ảnh
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="newImage">@L("UploadNewImage")</label>
+			<div class="col-md-9">
+				<input type="file" id="newImage" class="form-control" name="ImageFile" accept="image/*">
+			</div>
+		</div>
+
+	</div>
+
+	@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+</form>
+
+<script src="~/view-resources/Views/Sliders/_EditModal.js" asp-append-version="true"></script>

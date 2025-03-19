@@ -1,0 +1,29 @@
+﻿@using MyProject.Web.Views.Shared.Components.CartMenu
+@model CartMenuViewModel
+
+
+<style>
+  .cart {
+    position: relative;
+    display: inline-block;
+  }
+
+  #cart-count {
+    position: absolute;
+    top: -8px; /* Đưa số lượng lên trên */
+    left: 0px; 
+    background-color: red;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 4px 7px;
+    min-width: 20px;
+    text-align: center;
+  }
+
+</style>
+<a class="cart nav-link" href="" data-id="">
+	<i data-id="" class="fas fa-shopping-cart me-1"></i> Giỏ hàng
+  <span id="cart-count" class="badge badge-danger" style="@(Model.CartItem <= 0 ? "display: none;" : "display: inline-block;")">@Model.CartItem</span>
+</a	>

@@ -1,0 +1,68 @@
+﻿@using MyProject.Web.Models.Home
+@model CategoryProductViewModel
+
+<style>
+  /* Tạo khoảng cách giữa các danh mục */
+  .category-container {
+    background-color: #f8f9fa;
+    border-left: 5px solid #007bff;
+    padding: 15px;
+  }
+
+  /* Tiêu đề danh mục */
+  .category-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+  }
+
+  /* Card sản phẩm */
+  .product-card {
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+  /* Giá tiền */
+  .price {
+    color: #e63946;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  /* Icon danh mục */
+  .category-title i {
+    margin-right: 10px;
+    color: #007bff;
+  }
+
+</style>
+
+
+<div class="category-container mb-5 p-3 rounded">
+  <h3 class="category-title">
+    <i class="fa-youtube-square"></i> @Model.CategoryName
+  </h3>
+
+  <div class="row">
+    @foreach (var product in Model.Products)
+    {
+      <div class="col-md-4 product-item">
+        <div class="card product-card">
+          <img src="@product.Image" class="card-img-top" alt="@product.Name">
+          <div class="card-body">
+            <h5 class="card-title">@product.Name</h5>
+            <p class="card-text">@product.Description</p>
+            <p class="card-text price"><strong>@product.Price.ToString("N0")</strong> đ</p>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

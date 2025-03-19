@@ -1,0 +1,28 @@
+﻿@using MyProject.Web.Views.Shared.Components.CategoryMenu
+@model CategoryMenuViewModel
+
+
+<style>
+  .nav-link {
+    color: #fff;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    padding: 8px 12px;
+    border-radius: 5px;
+  }
+
+    .nav-link:hover {
+      color: #ffeb3b !important; /* Đổi màu chữ khi hover */
+    }
+
+		/* .nav-link.active { */
+		/* 	color: #000 !important; /* Đổi màu chữ khi active */ */
+  /*   } */
+
+</style>
+
+@foreach (var category in Model.Categories.Items)
+{
+  <li class="nav-item me-3">
+    <a class="nav-link text-white" href="/Home/GetProductByCategory?categoryId=@category.Id">@category.CategoryName</a>
+  </li>
+}

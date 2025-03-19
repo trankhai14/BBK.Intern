@@ -1,0 +1,48 @@
+﻿<div class="abp-advanced-search p-3" style="width: 100%;">
+  <form id="TourSearchForm" class="form-horizontal" style="max-width: 100%;">
+    <div style="display: flex; flex-wrap: wrap; gap: 15px; width: 100%;" class="align-items-center">
+      <!-- Ô tìm kiếm từ khóa -->
+      <div style="min-width: 250px;">
+        <label for="Keyword" class="font-weight-bold">@L("TourName")</label>
+        <div class="input-group">
+          <input type="text" id="Keyword" name="Keyword" class="form-control txt-search w-100" placeholder="Nhập từ khóa...">
+        </div>
+      </div>
+
+      <!-- Dropdown phương tiện di chuyển -->
+      <div style="min-width: 200px;">
+        <label for="transportation" class="font-weight-bold">@L("Transportation")</label>
+        <select class="form-control w-100" id="isTransprotation" name="isTransprotation">
+          <option value="">Tất cả</option>
+          <option value="Xe máy">Xe máy</option>
+          <option value="Xe ô tô">Xe ô tô</option>
+          <option value="Xe đạp">Xe đạp</option>
+          <option value="Xe đạp điện">Xe đạp điện</option>
+          <option value="Xe buýt">Xe buýt</option>
+          <option value="Máy bay">Máy bay</option>
+          <option value="Tàu hỏa">Tàu hỏa</option>
+          <option value="Thuyền">Thuyền</option>
+        </select>
+      </div>
+
+      <!-- Dropdown loại tour -->
+      <div style="min-width: 100px;">
+        <label for="isTourTypeId" class="font-weight-bold">@L("TourType")</label>
+        <select class="form-control w-100" id="isTourTypeId" name="isTourTypeId">
+          <option value="">Tất cả</option>
+          <option value="1">Tour du lịch nội địa</option>
+          <option value="2">Tour du lịch liên tỉnh</option>
+          <option value="3">Tour du lịch quốc tế</option>
+        </select>
+      </div>
+
+      <!-- Nút tìm kiếm -->
+      <div style="min-width: 100px; text-align: right;">
+        <label class="d-block invisible">Tìm kiếm</label>
+        <button type="button" class="btn bg-blue btn-search px-4 w-100">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

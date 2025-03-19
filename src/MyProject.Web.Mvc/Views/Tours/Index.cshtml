@@ -1,0 +1,101 @@
+﻿@using MyProject.Web.Models.Tours
+@using MyProject.Web.Startup
+@using MyProject.Products;
+@using MyProject.Web.Models.Products;
+@model TourViewModel
+@{
+	ViewBag.Title = L("Tours");
+	ViewBag.CurrentPageName = PageNames.Tours;
+}
+
+@section scripts
+{
+	<environment names="Development">
+		<script src="~/view-resources/Views/Tours/Index.js" asp-append-version="true"></script>
+	</environment>
+
+	@* <environment names="Staging,Production"> *@
+	@* 	<script src="~/view-resources/Views/Tours/index.min.js" asp-append-version="true"></script> *@
+	@* </environment> *@
+}
+
+
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-6">
+				<h1>@L("Tours")</h1>
+			</div>
+			<div class="col-sm-6">
+				<a href="javascript:;" data-toggle="modal" data-target="#TourCreateModal" class="btn bg-blue float-sm-right">
+					<i class="fa fa-plus-square"></i>
+					@L("Create")
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				@await Html.PartialAsync("~/Views/Tours/Search.cshtml")
+				<div class="card">
+					<div class="card-header">
+						<div class="row">
+							<div class="col-md-6">
+							</div>
+
+							@* <div class="col-md-6">
+								@await html.partialasync("~/views/tours/search.cshtml")
+							</div> *@
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="table-responsive">
+							<table id="ToursTable" class="table table-striped table-bordered">
+								<thead>
+									<tr>
+										<th>@L("TourName")</th>
+										<th>@L("MinGroupSize")</th>
+										<th>@L("MaxGroupSize")</th>
+										<th>@L("TourType")</th>
+										<th>@L("StartDate")</th>
+										<th>@L("EndDate")</th>
+										<th>@L("Transportation")</th>
+										<th>@L("TourPrice")</th>
+										<th>@L("PhoneNumber")</th>
+										<th>@L("Description")</th>
+										<th>@L("Attachment")</th>
+										<th>@L("Actions")</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+@await Html.PartialAsync("~/Views/Tours/_CreateModal.cshtml", Model)
+
+
+
+<div class="modal fade" id="TourEditModal" tabindex="-1" role="dialog" aria-labelledby="TourEditModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+

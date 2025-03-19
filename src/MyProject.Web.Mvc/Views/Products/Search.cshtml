@@ -1,0 +1,44 @@
+﻿<div class="abp-advanced-search p-3">
+  <form id="ProductSearchForm" class="form-horizontal">
+    <div class="row align-items-center">
+      <!-- Ô tìm kiếm từ khóa -->
+      <div class="col-md-4">
+        <label for="Keyword" class="font-weight-bold">Từ khóa</label>
+        <div class="input-group">
+          <input type="text" id="Keyword" name="Keyword" class="form-control txt-search w-100" placeholder="Nhập từ khóa...">
+        </div>
+      </div>
+
+      <!-- Dropdown danh mục -->
+      <div class="col-md-3">
+        <label for="category" class="font-weight-bold">Danh mục</label>
+        <select class="form-control w-100" id="CategoryInput" name="CategoryInput">
+          <option value="">Tất cả</option>
+          @foreach (var category in Model.CategoryLists)
+          {
+            <option value="@category.Id">@category.CategoryName</option>
+          }
+        </select>
+      </div>
+
+      <!-- Dropdown trạng thái -->
+      <div class="col-md-3">
+        <label for="status" class="font-weight-bold">Trạng thái</label>
+        <select class="form-control w-100" id="StateInput" name="StateInput">
+          <option value="">Tất cả</option>
+          <option value="0">@("Còn hàng")</option>
+          <option value="1">@("Hết hàng")</option>
+          <option value="2">@("Ngừng kinh doanh")</option>
+        </select>
+      </div>
+
+      <!-- Nút tìm kiếm -->
+      <div class="col-md-2 text-right">
+        <label class="d-block invisible">Tìm kiếm</label>
+        <button type="button" class="btn bg-blue btn-search px-4 w-100">
+          <i class="fas fa-search"></i> 
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

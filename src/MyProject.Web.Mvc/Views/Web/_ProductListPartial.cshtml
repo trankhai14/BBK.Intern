@@ -1,0 +1,166 @@
+﻿@using MyProject.Web.Models.Web
+@model WebViewModel;
+
+<style>
+	ul.breadcrumb {
+		padding: 10px 16px;
+		list-style: none;
+		background-color: #eee;
+	}
+
+		ul.breadcrumb li {
+			display: inline;
+			font-size: 18px;
+		}
+
+			ul.breadcrumb li + li:before {
+				padding: 8px;
+				color: black;
+				content: "/\00a0";
+			}
+
+			ul.breadcrumb li a {
+				color: #0275d8;
+				text-decoration: none;
+			}
+
+				ul.breadcrumb li a:hover {
+					color: #01447e;
+					text-decoration: underline;
+				}
+
+	.search-container {
+		width: 40%;
+		min-width: 250px;
+		justify-content: center;
+	}
+
+	.search-input {
+		width: 100%;
+		transition: all 0.3s ease;
+	}
+
+		.search-input:focus {
+			box-shadow: 0px 0px 8px rgba(255, 255, 255, 0.6);
+		}
+
+	/* Hiệu ứng hover cho menu */
+	.navbar-nav .nav-link {
+		font-weight: 500;
+		padding: 8px 12px;
+		transition: all 0.3s ease-in-out;
+	}
+
+		.navbar-nav .nav-link:hover {
+			color: #ffeb3b !important;
+		}
+
+	/* Nút tìm kiếm */
+	.btn-search {
+		border-radius: 50%;
+		padding: 5px;
+	}
+
+	#searchInput{
+		border-radius: 20px;
+	}
+
+
+
+</style>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+	<div class="container">
+		<!-- Logo -->
+		<a class="navbar-brand fw-bold d-flex align-items-center" href="/Web">
+			<i class="fas fa-store me-2"></i> Shop Điện Tử
+		</a>
+
+		<!-- Toggle button cho mobile -->
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<!-- Nội dung Navbar -->
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<!-- Ô tìm kiếm ở giữa -->
+			<form id="searchForm" class="d-flex mx-auto search-container">
+				<input id="searchInput" name="Keyword" value="@Model.Keyword" class="form-control me-2 search-input" type="text" placeholder="Tìm kiếm sản phẩm">
+				<button class="btn btn-light btn-search" type="submit">
+					<i class="fas fa-search"></i>
+				</button>
+			</form>
+
+		
+			<!-- Giỏ hàng & Đăng nhập bên phải -->
+			<ul class="navbar-nav ms-auto align-items-center">
+				<li class="nav-item">
+					<a class="nav-link" href="#">
+						<i class="fas fa-shopping-cart me-1"></i> Giỏ hàng
+					</a>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" href="#">
+						<i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+
+
+<ul class="breadcrumb">
+	<li><a href="/Web">Trang chủ</a></li>
+	<li>Điện thoại</li>
+</ul>
+
+@if (Model.Products == null || !Model.Products.Any())
+{
+	<p class="text-muted text-center">Không tìm thấy sản phẩm nào.</p>
+}
+else
+{
+	<div class="container mt-4">
+		<h4 class="text-center text-primary">✨ Kết quả tìm kiếm ✨</h4>
+		<div class="row mt-4">
+			@foreach (var product in Model.Products)
+			{
+				<div class="col">
+					<div class="card p-2 d-flex flex-column align-items-center text-center shadow-sm"
+							 style="width: 180px; height: 300px; border-radius: 10px; overflow: hidden;">
+
+						<!-- Ảnh sản phẩm -->
+						<img src="@product.Image" class="card-img-top"
+								 alt="@product.Name"
+								 style="width: 100%; height: 140px; object-fit: contain; border-radius: 8px;">
+
+						<!-- Nội dung -->
+						<div class="card-body d-flex flex-column w-100 p-2">
+							<h6 class="card-title flex-grow-1 text-truncate" style="max-width: 100%;">
+								@product.Name
+							</h6>
+							<p style="white-space: nowrap; overflow: hidden;text-overflow: ellipsis;display: block; max-width: 100%;"
+								 class="text-danger fw-bold mb-2">Giá : @String.Format("{0:N0} đ", product.Price)</p>
+
+							<!-- Nút xem chi tiết -->
+							<a href="#" class="btn btn-sm btn-primary mt-auto btn-view-detail"
+								 data-name="@product.Name"
+								 data-price="@product.Price"
+								 data-description="@product.Description"
+								 data-state="@product.State"
+								 data-image="@product.Image">
+								Chi tiết
+							</a>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+	</div>
+
+}
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/view-resources/Views/Web/index.js" asp-append-version="true"></script>

@@ -1,0 +1,12 @@
+﻿@using MyProject.Web.Models.Web;
+@model WebViewModel;
+@* @await Html.PartialAsync("Web/HeaderWeb")
+ *@
+
+<div class="container mt-4">
+  <h2 class="text-primary">@Model.ProductList.Name</h2>
+  @* <img src="@Model.Image" alt="@Model.Name" style="width: 300px; height: 300px; object-fit: cover;">
+  <p>@Model.Description</p>
+  <p class="text-danger">Giá: @String.Format("{0:N0} ₫", Model.Price)</p> *@
+  <a href="/Web" class="btn btn-secondary">Quay lại</a>
+</div>

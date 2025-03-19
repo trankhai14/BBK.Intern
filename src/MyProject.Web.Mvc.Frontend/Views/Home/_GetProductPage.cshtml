@@ -1,0 +1,53 @@
+﻿
+
+@foreach (var product in Model.Products)
+{
+	<div class="swiper-slide me-1" style="width: 220px; margin-right: 10px">
+		<div class="card mb-3">
+			<div class="card-body">
+				<!-- Hình ảnh sản phẩm -->
+				<div class="product-image text-center">
+					<img class="product-image btn-view-detail" style="width: 160px; height: 160px;"
+							 src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)"
+							 alt="@product.Name"
+					data-id="@product.Id">
+				</div>
+
+				<!-- Tên sản phẩm -->
+				<div class="product-name">
+					<h6 class="card-title">@product.Name</h6>
+				</div>
+
+				<!-- Giá sản phẩm -->
+				<p class="card-text product_price text-danger fw-bold text-center">
+					@String.Format("{0:N0} đ", product.Price)
+				</p>
+
+				<!-- Giảm giá SMember -->
+				<div class="block-smem-price text-center">
+					Smember giảm thêm đến <span class="text-danger">10%</span>
+				</div>
+
+				<!-- Khu vực đánh giá và yêu thích -->
+				<div class="bottom-div d-flex justify-content-between align-items-center mt-2">
+					<!-- Đánh giá -->
+					<div class="product-rating">
+						<i class="fas fa-star text-warning"></i>
+						<i class="fas fa-star text-warning"></i>
+						<i class="fas fa-star text-warning"></i>
+						<i class="fas fa-star text-warning"></i>
+						<i class="fas fa-star text-warning"></i>
+					</div>
+
+					<!-- Nút yêu thích -->
+					<div>
+						<a href="#" class="favorite-btn text-decoration-none">
+							Yêu thích
+						</a>
+						<i class="far fa-heart text-danger"></i>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}

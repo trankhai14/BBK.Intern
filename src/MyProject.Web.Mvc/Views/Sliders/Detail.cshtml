@@ -1,0 +1,96 @@
+﻿@using MyProject.Web.Models.Sliders
+@model EditSliderViewModel;
+
+
+<style>
+	.modal-body {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 0; /* giảm padding nếu cần */
+	}
+
+	#modalImage {
+		max-width: 100%;
+		max-height: 90vh; /* Giới hạn chiều cao tối đa là 90% của viewport */
+		object-fit: contain; /* Đảm bảo ảnh được thu nhỏ cân đối */
+	}
+</style>
+
+
+<div class="card shadow-lg p-4">
+	<h3 class="text-primary mb-3">@L("SliderDetails")</h3>
+
+	<div class="row mb-3">
+		<label class="col-md-3 fw-bold">@L("Title"):</label>
+		<div class="col-md-9">
+			<p id="title" class="form-control-plaintext">@Model.Slider.Title</p>
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<label class="col-md-3 fw-bold">@L("Description"):</label>
+		<div class="col-md-9">
+			<p id="description" class="form-control-plaintext">@Model.Slider.Description</p>
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<label class="col-md-3 fw-bold">@L("CreateTime"):</label>
+		<div class="col-md-9">
+			<p id="createtime" class="form-control-plaintext">@Model.Slider.CreationTime.ToString("dd/MM/yyyy, HH'giờ' mm' phút'")</p>
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<label class="col-md-3 fw-bold">@L("IsActive"):</label>
+		<div class="col-md-9">
+			<input type="checkbox" name="IsActive" value="@Model.Slider.IsActive" @(Model.Slider.IsActive ? "checked" : "") disabled />
+				Active
+		</div>
+	</div>
+
+	<div class="row mb-3 align-items-center">
+		<label class="col-md-3 fw-bold">@L("SliderImage"):</label>
+		<div class="col-md-9 d-flex align-items-center">
+			<img id="sliderImage" src="@Model.Slider.Image" alt="Ảnh banner" class="img-thumbnail"
+					 style="max-width: 200px; height: auto; object-fit: cover; margin-right: 15px; cursor: pointer;">
+		</div>
+	</div>
+
+	<div class="text-end">
+		<button id="back-button" class="btn btn-secondary">
+			<i class="bi bi-arrow-left"></i> @L("Back")
+		</button>
+	</div>
+</div>
+
+<!-- Modal phóng to ảnh -->
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+		<div class="modal-content">
+			<div class="modal-body">
+				<img src="" id="modalImage" class="img-fluid" alt="Enlarged Image" style="width: 100%; max-width: none;">
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<script>
+	document.getElementById("back-button").addEventListener("click", function() {
+		window.history.back();
+	});
+</script>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function(){
+		document.getElementById("sliderImage").addEventListener("click", function(){
+			var imgSrc = this.getAttribute("src");
+			document.getElementById("modalImage").setAttribute("src", imgSrc);
+			// Giả sử bạn đã có cách hiển thị modal bằng JavaScript thuần hoặc sử dụng thư viện khác
+			$('#imageModal').modal('show'); // Nếu vẫn dùng Bootstrap modal, vẫn cần jQuery cho đoạn này
+		});
+	});
+</script>

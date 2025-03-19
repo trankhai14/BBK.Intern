@@ -1,0 +1,74 @@
+﻿@using MyProject.Web.Models.Products
+@model ProductViewModel;
+
+<link href="/css/homeweb.css" rel="stylesheet" />
+
+
+
+<div class="container-product mt-3">
+	<div class="row">
+		<div class="col-md-12">
+			<!-- Breadcrumb -->
+			<nav aria-label="breadcrumb">
+				<ol class="breadcrumb bg-light p-2 pr-0 rounded">
+					<li class="breadcrumb-item"><a href="/Home">Trang chủ</a></li>
+					@if (Model.CategoryId.HasValue)
+					{
+						<li class="breadcrumb-item active" aria-current="page">
+							@* <a href="/Home/PageAllProduct?categoryId=@Model.CategoryId"></a> *@
+							@Model.CategoryName
+							</li>
+					}else{
+					<li class="breadcrumb-item active" aria-current="page">Tất cả sản phẩm</li>
+					}
+				</ol>
+			</nav>
+		</div>
+	</div>
+	</div>
+
+
+<style>
+	.container-product {
+		width: 100%;
+		padding: 10px 185px;
+		 margin-left: 10px;
+	}
+
+	.container-items {
+		display: flex;
+		flex-wrap: wrap;
+	}
+</style>
+
+
+<div class="container-product">
+	<div class="mb-5">
+		<h4 class="mb-3">Sắp xếp theo</h4>
+		<div class="d-flex" style="gap: 30px">
+			<div>
+				<a class="related-tag btn-sort" href="#" value="price_desc"><i class="fas fa-sort-amount-down ml-1"></i>Giá cao - thấp </a>
+			</div>
+			<div>
+				<a class="related-tag btn-sort" href="#" value="price_asc"><i class="fas fa-sort-amount-up"></i>Giá thấp - cao</a>
+			</div>
+		</div>
+	</div>
+	<div class="container-items" id="productPage">
+		@await Html.PartialAsync("_GetProductPage", Model)
+	</div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@section scripts
+{
+	<script src="~/view-resources/Views/Home/Page.js"></script>
+	<script src="~/view-resources/Views/Home/Index.js"></script>
+}
+<!-- Nút "Xem thêm" -->
+<div class="text-center mt-3">
+	<button type="button" id="loadMoreBtn" data-id="@Model.CategoryId" class="btn btn-primary">Xem thêm</button>
+</div>
+

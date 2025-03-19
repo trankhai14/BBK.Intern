@@ -1,0 +1,83 @@
+﻿@using static MyProject.Products.Product
+
+@{
+	var stateClass = Model.Product.State switch
+	{
+		ProductState.Available => "bg-success",      // Còn hàng - Màu xanh lá
+		ProductState.OutOfStock => "bg-warning",     // Hết hàng - Màu vàng
+		ProductState.Discontinued => "bg-danger",    // Ngừng kinh doanh - Màu đỏ
+		_ => "bg-secondary"                          // Trạng thái không xác định - Màu xám
+	};
+}
+
+<div class="card shadow-lg p-4">
+	<h3 class="text-primary mb-3">@L("ProductDetails")</h3>
+
+	<div class="row mb-3">
+		<label class="col-md-3 fw-bold">@L("ProductName"):</label>
+		<div class="col-md-9">
+			<p id="detail-name" class="form-control-plaintext">@Model.Product.Name</p>
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<label class="col-md-3 fw-bold">@L("Description"):</label>
+		<div class="col-md-9">
+			<p id="detail-description" class="form-control-plaintext">@Model.Product.Description</p>
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<label class="col-md-3 fw-bold">@L("Price"):</label>
+		<div class="col-md-9">
+			<p id="detail-price" class="form-control-plaintext text-success fw-bold"> @Model.Product.Price.ToString("#,##0") ₫</p>
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<label class="col-md-3 fw-bold">@L("CreateTime"):</label>
+		<div class="col-md-9">
+			<p id="detail-createtime" class="form-control-plaintext">@Model.Product.CreationTime.ToString("dd/MM/yyyy, HH'giờ' mm' phút'")</p>
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<label class="col-md-3 fw-bold">@L("State"):</label>
+		<div class="col-md-9">
+			<span id="detail-state" class="badge @stateClass">
+				@switch (Model.Product.State)
+				{
+					case ProductState.Available:
+						@("Còn hàng")
+						break;
+					case ProductState.OutOfStock:
+						@("Hết hàng")
+						break;
+					case ProductState.Discontinued:
+						@("Ngừng kinh doanh")
+						break;
+				}
+			</span>
+		</div>
+	</div>
+
+	<div class="row mb-3 align-items-center">
+		<label class="col-md-3 fw-bold">@L("ProductImage"):</label>
+		<div class="col-md-9 d-flex align-items-center">
+			<img src="@Model.Product.Image" alt="Ảnh sản phẩm" class="img-thumbnail"
+					 style="max-width: 200px; height: auto; object-fit: cover; margin-right: 15px;">
+		</div>
+	</div>
+
+	<div class="text-end">
+		<button id="back-button" class="btn btn-secondary">
+			<i class="bi bi-arrow-left"></i> @L("Back")
+		</button>
+	</div>
+</div>
+
+<script>
+	document.getElementById("back-button").addEventListener("click", function() {
+		window.history.back();
+	});
+</script>

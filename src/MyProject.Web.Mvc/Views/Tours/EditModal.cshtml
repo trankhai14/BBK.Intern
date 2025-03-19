@@ -1,0 +1,153 @@
+﻿@using MyProject.Web.Models.Common.Modals
+@using MyProject.Products.Dtos;
+@using MyProject.Web.Models.Tours
+@model EditTourModel;
+
+@{
+	Layout = null;
+}
+
+@{
+	string tourTypeName = "";
+	switch (Model.Tour.TourTypeId)
+	{
+		case 1:
+			tourTypeName = L("Tour du lịch nội địa");
+			break;
+		case 2:
+			tourTypeName = L("Tour du lịch liên tỉnh");
+			break;
+		case 3:
+			tourTypeName = L("Tour du lịch quốc tế");
+			break;
+		default:
+			tourTypeName = L("Chọn loại tour");
+			break;
+	}
+}
+
+
+
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditTours")))
+
+<form name="TourEditForm" role="form" class="form-horizontal">
+	<input type="hidden" name="Id" value="@Model.Tour.Id" />
+
+
+	<div class="modal-body">
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="tourName">@L("TourName")</label>
+			<div class="col-md-9">
+				<input id="tourName" type="text" class="form-control" name="TourName" value="@Model.Tour.TourName" required maxlength="250">
+			</div>
+		</div>
+
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="description">@L("Description")</label>
+			<div class="col-md-9">
+				<textarea id="description" class="form-control" name="Description" rows="3" maxlength="300">@Model.Tour.Description</textarea>
+			</div>
+		</div>
+
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="tourPrice">@L("TourPrice")</label>
+			<div class="col-md-9">
+				<input id="tourPrice" type="number" class="form-control" name="TourPrice" value="@Model.Tour.TourPrice" required min="1">
+			</div>
+		</div>
+
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="startDate">@L("StartDate")</label>
+			<div class="col-md-9">
+				<input id="startDate" type="datetime" class="form-control" name="StartDate" value="@Model.Tour.StartDate" required>
+			</div>
+		</div>
+
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="endDate">@L("EndDate")</label>
+			<div class="col-md-9">
+				<input id="endDate" type="datetime" class="form-control" name="EndDate" value="@Model.Tour.EndDate" required>
+			</div>
+		</div>
+		<div>
+			<div class="form-group row required">
+				<label class="col-md-3 col-form-label" for="minGroupSize">@L("MinGroupSize")</label>
+				<div class="col-md-9">
+					<input id="minGroupSize" type="number" class="form-control" name="MinGroupSize" value="@Model.Tour.MinGroupSize" required min="1">
+				</div>
+			</div>
+			<div class="form-group row required">
+				<label class="col-md-3 col-form-label" for="maxGroupSize">@L("MaxGroupSize")</label>
+				<div class="col-md-9">
+					<input id="maxGroupSize" type="number" class="form-control" name="MaxGroupSize" value="@Model.Tour.MaxGroupSize" required min="1">
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="TourType">@L("TourType")</label>
+			<div class="col-md-9">
+				<select id="TourType" class="form-control" name="TourTypeId" required>
+					<option value="@Model.Tour.TourTypeId" selected>@tourTypeName</option>
+					<option value="1" style="@(Model.Tour.TourTypeId == 1 ? "display: none;" : "")">Tour du lịch nội địa</option>
+					<option value="2" style="@(Model.Tour.TourTypeId == 2 ? "display: none;" : "")">Tour du lịch liên tỉnh</option>
+					<option value="3" style="@(Model.Tour.TourTypeId == 3 ? "display: none;" : "")">Tour du lịch quốc tế</option>
+				</select>
+			</div>
+		</div>
+
+
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="transportation">@L("Transportation")</label>
+			<div class="col-md-9">
+				<select id="transportation" class="form-control" name="Transportation" required>
+					@foreach (var option in new List<string> { "Xe máy", "Xe ô tô", "Xe đạp", "Xe đạp điện", "Xe buýt", "Máy bay", "Tàu hỏa", "Thuyền" })
+					{
+						<option value="@option" selected="@(Model?.Tour?.Transportation == option ? "selected" : null)">
+							@option
+						</option>
+					}
+				</select>
+			</div>
+		</div>
+
+
+
+
+
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="phoneNumber">@L("PhoneNumber")</label>
+			<div class="col-md-9">
+				<input id="phoneNumber" type="text" class="form-control" name="PhoneNumber" value="@Model.Tour.PhoneNumber">
+			</div>
+		</div>
+
+
+
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label">@L("CurrentImage")</label>
+			<div class="col-md-9">
+				<div class="d-flex align-items-center">
+					<img id="tourImage" src="@Model.Tour.Attachment" class="img-thumbnail" style="max-width: 150px;" />
+					<button type="button" id="deleteImageBtn" class="btn btn-danger ml-2"
+									style="@(string.IsNullOrEmpty(Model.Tour.Attachment) ? "display: none;" : " ")">
+						Xóa Ảnh
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="newImage">@L("UploadNewImage")</label>
+			<div class="col-md-9">
+				<input type="file" id="newImage" class="form-control" name="AttachmentFile" accept="image/*">
+			</div>
+		</div>
+
+	</div>
+
+	@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+</form>
+
+<script src="~/view-resources/Views/Tours/EditModal.js" asp-append-version="true"></script>

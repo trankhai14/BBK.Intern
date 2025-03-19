@@ -1,0 +1,133 @@
+﻿@using MyProject.Web.Models.Common.Modals
+@using MyProject.Web.Models.Products
+@using MyProject.Web.Models.Tours
+@model TourViewModel
+
+@{
+	Layout = null;
+}
+
+<div class="modal fade" id="TourCreateModal" tabindex="-1" role="dialog" aria-labelledby="TourCreateModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewTour")))
+
+			<form name="tourCreateForm" role="form" class="form-horizontal">
+				<div class="modal-body">
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("TourName")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="TourName" required maxlength="256" placeholder="Nhập tên ...">
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("Description")</label>
+						<div class="col-md-9">
+							<textarea class="form-control" name="Description" required maxlength="500" rows="3" placeholder="Nhập mô tả ..."></textarea>
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("StartDate")</label>
+						<div class="col-md-9">
+							<input id="StartDate" type="date" class="form-control" name="StartDate" required>
+						</div>
+					</div>
+
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("EndDate")</label>
+						<div class="col-md-9">
+							<input type="date" class="form-control" name="EndDate" required>
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("TourPrice")</label>
+						<div class="col-md-9">
+							<input type="number" class="form-control" name="TourPrice" required min="0" max="1000000000000" step="0.1" placeholder="Nhập giá ...">
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("Transportation")</label>
+						<div class="col-md-9">
+							<select class="form-control" name="Transportation" id="Transportation" required>
+								<option value="" selected disabled>-- Chọn phương tiện --</option>
+								<option value="Xe máy">Xe máy</option>
+								<option value="Xe ô tô">Xe ô tô</option>
+								<option value="Xe đạp">Xe đạp</option>
+								<option value="Xe đạp điện">Xe đạp điện</option>
+								<option value="Xe buýt">Xe buýt</option>
+								<option value="Máy bay">Máy bay</option>
+								<option value="Tàu hỏa">Tàu hỏa</option>
+								<option value="Thuyền">Thuyền</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("MinGroupSize")</label>
+						<div class="col-md-9">
+							<input id="MinGroupSize" type="number" class="form-control" name="MinGroupSize" required min="1" max="1000000000000" step="1" placeholder="Nhập số lượng người tối thiểu...">
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("MaxGroupSize")</label>
+						<div class="col-md-9">
+							<input id="MaxGroupSize" type="number" class="form-control" name="MaxGroupSize" required min="1" max="1000000000000" step="1" placeholder="Nhập số lượng người tối đa...">
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("PhoneNumber")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="PhoneNumber" required 
+										 title="Số điện thoại phải bắt đầu bằng 0 và có 10-11 chữ số"
+										 placeholder="Nhập số điện thoại...">
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("TourType")</label>
+						<div class="col-md-9">
+							<select class="form-control" name="TourTypeId" id="TourType" required>
+								<option value="" selected disabled>-- Chọn kiểu tour --</option>
+								<option value="1">Tour du lịch nội địa</option>
+								<option value="2">Tour du lịch liên tỉnh</option>
+								<option value="3">Tour du lịch quốc tế</option>
+							</select>
+						</div>
+					</div>
+
+					
+
+					<div class="row mb-3 form-group">
+						<label class="col-md-3 col-form-label fw-bold">@L("TourImage")</label>
+						<div class="col-md-9">
+							<div class="d-flex align-items-center">
+								<div class="border rounded shadow-sm p-2 text-center"
+										 style="width: 200px; height: 100px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+									<img id="previewImage" src=""
+											 class="img-fluid rounded"
+											 style="max-width: 100%; height: auto; object-fit: cover;">
+								</div>
+								<div class="ms-3 m-5">
+									<input type="file" id="imageUpload" class="d-none" name="AttachmentFile" accept="image/*">
+									<label for="imageUpload" class="btn btn-outline-primary">
+										<i class="fas fa-upload"></i> Chọn ảnh
+									</label>
+									<div id="imageError" class="text-danger mt-2"></div> <!-- Thông báo lỗi -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+			</form>
+		</div>
+	</div>
+</div>

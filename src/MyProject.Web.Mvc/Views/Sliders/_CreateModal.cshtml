@@ -1,0 +1,69 @@
+﻿@using MyProject.Web.Models.Common.Modals
+@using MyProject.Web.Models.Sliders
+@using MyProject.Web.Startup;
+@model SliderViewModel;
+@{
+	Layout = null;
+}
+
+<div class="modal fade" id="SliderCreateModal" tabindex="-1" role="dialog" aria-labelledby="SliderCreateModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewSlider")))
+
+			<form name="SliderCreateForm" role="form" class="form-horizontal">
+				<div class="modal-body">
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("Title")</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="Title" required maxlength="256" placeholder="Nhập tên sản phẩm...">
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 required">
+						<label class="col-md-3 col-form-label fw-bold">@L("Description")</label>
+						<div class="col-md-9">
+							<textarea class="form-control" name="Description" required maxlength="500" rows="3" placeholder="Nhập mô tả sản phẩm..."></textarea>
+						</div>
+					</div>
+
+					<div class="form-group row mb-3 ">
+						<label class="col-md-3 col-form-label fw-bold">@L("IsActive")</label>
+						<div class="col-md-9 d-flex align-items-center">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" id="Active" name="IsActive" checked>
+								<label class="form-check-label" for="Active">
+									Hoạt động
+								</label>
+							</div>
+						</div>
+					</div>
+
+
+					<div class="row mb-3 form-group required">
+						<label class="col-md-3 col-form-label fw-bold">@L("SliderImage")</label>
+						<div class="col-md-9">
+							<div class="d-flex align-items-center">
+								<div class="border rounded shadow-sm p-2 text-center"
+										 style="width: 200px; height: 100px; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+									<img id="previewImage" src="/img/sliders/default_product.png"
+											 class="img-fluid rounded"
+											 style="max-width: 100%; height: auto; object-fit: cover;">
+								</div>
+								<div class="ms-3 m-5">
+									<input type="file" id="imageUpload" class="d-none" name="ImageFile" accept="image/*">
+									<label for="imageUpload" class="btn btn-outline-primary">
+										<i class="fas fa-upload"></i> Chọn ảnh
+									</label>
+									<div id="imageError" class="text-danger mt-2"></div> <!-- Thông báo lỗi -->
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+			</form>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,78 @@
+﻿@using MyProject.Web.Models.Common.Modals
+@using MyProject.Web.Models.Products;
+@using MyProject.Products.Dtos;
+@using static MyProject.Products.Product
+@model EditProductViewModel;
+
+@{
+	Layout = null;
+}
+
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditProduct")))
+
+<form name="ProductEditForm" role="form" class="form-horizontal">
+	<input type="hidden" name="Id" value="@Model.Product.Id" />
+	<input type="hidden" name="CategoryId" value="@Model.Product.CategoryId" />
+
+
+	<div class="modal-body">
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="name">@L("ProductName")</label>
+			<div class="col-md-9">
+				<input id="name" type="text" class="form-control" name="Name" value="@Model.Product.Name" required maxlength="250">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="description">@L("Description")</label>
+			<div class="col-md-9">
+				<textarea id="description" class="form-control" name="Description" rows="3">@Model.Product.Description</textarea>
+			</div>
+		</div>
+
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="price">@L("Price")</label>
+			<div class="col-md-9">
+				<input id="price" type="number" class="form-control" name="Price" value="@Model.Product.Price" required>
+			</div>
+		</div>
+
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="state">@L("State")</label>
+			<div class="col-md-9">
+				<select id="state" class="form-control" name="State">
+					<option value="Available" selected="@(Model.Product.State == ProductState.Available)">@("Còn hàng")</option>
+					<option value="OutOfStock" selected="@(Model.Product.State == ProductState.OutOfStock)">@("Hết hàng")</option>
+					<option value="Discontinued" selected="@(Model.Product.State == ProductState.Discontinued)">@("Ngừng kinh doanh")</option>
+				</select>
+			</div>
+		</div>
+
+
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label">@L("CurrentImage")</label>
+			<div class="col-md-9">
+				<div class="d-flex align-items-center">
+					<img id="productImage" src="@Model.Product.Image" class="img-thumbnail" style="max-width: 150px;" />
+					<button type="button" id="deleteImageBtn" class="btn btn-danger ml-2"
+									style="@(string.IsNullOrEmpty(Model.Product.Image) ? "display: none;" : "")">
+						Xóa Ảnh
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="newImage">@L("UploadNewImage")</label>
+			<div class="col-md-9">
+				<input type="file" id="newImage" class="form-control" name="ImageFile" accept="image/*">
+			</div>
+		</div>
+
+	</div>
+
+	@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+</form>
+
+<script src="~/view-resources/Views/Products/_EditModal.js" asp-append-version="true"></script>

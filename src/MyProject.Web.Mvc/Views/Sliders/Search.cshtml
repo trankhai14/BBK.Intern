@@ -1,0 +1,31 @@
+﻿<div class="abp-advanced-search p-3">
+  <form id="SliderSearchForm" class="form-horizontal">
+    <div class="row align-items-center">
+      <!-- Ô tìm kiếm từ khóa -->
+      <div class="col-md-5">
+        <label for="Keyword" class="font-weight-bold">Từ khóa</label>
+        <div class="input-group">
+          <input type="text" id="Keyword" name="Keyword" class="form-control txt-search w-100" placeholder="Nhập từ khóa...">
+        </div>
+      </div>
+
+      <!-- Dropdown trạng thái -->
+      <div class="col-md-4">
+        <label for="status" class="font-weight-bold">Trạng thái</label>
+        <select class="form-control w-100" id="IsActive" name="IsActive">
+          <option value="">Tất cả</option>
+          <option value="0">@("Đang hoạt động")</option>
+          <option value="1">@("Không hoạt động")</option>
+        </select>
+      </div>
+
+      <!-- Nút tìm kiếm -->
+      <div class="col-md-2 text-right">
+        <label class="d-block invisible">Tìm kiếm</label>
+        <button type="button" class="btn bg-blue btn-search px-4 w-100">
+          <i class="fas fa-search"></i> 
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

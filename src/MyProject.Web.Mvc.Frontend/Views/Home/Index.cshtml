@@ -1,0 +1,200 @@
+﻿@using MyProject.Web.Models.Home
+@using MyProject.Web.Startup
+@{
+	ViewBag.Title = L("HomePage");
+	ViewBag.CurrentPageName = PageNames.Home;
+}
+@using MyProject.Web.Models.Products
+@using MyProject.Web.Views.Shared.Components.Body
+@model HomePageViewModel
+
+@section scripts
+{
+	<environment names="Development">
+		<script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
+	</environment>
+
+	<environment names="Staging,Production">
+		<script src="~/view-resources/Views/Home/Index.min.js" asp-append-version="true"></script>
+	</environment>
+}
+
+<link href="/css/homeweb.css" rel="stylesheet" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+@* @await Html.PartialAsync("HeaderWeb") *@
+
+
+<!-- Nội dung trang -->
+<div class="container mt-4" style="max-width: 1200px !important">
+	<!--Carousel-->
+	@if (Model.ProductData.SliderList != null && Model.ProductData.SliderList.Any())
+	{
+		<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+			<!-- Indicators (Dấu chấm điều hướng) -->
+			<ol class="carousel-indicators">
+				@{
+					int index = 0;
+				}
+				@foreach (var slider in Model.ProductData.SliderList)
+				{
+					<li data-target="#carouselExampleIndicators" data-slide-to="@index" class="@(index == 0 ? "active" : "")"></li>
+					index++;
+				}
+			</ol>
+
+			<!-- Danh sách ảnh slider -->
+			<div class="carousel-inner">
+				@{
+					index = 0;
+				}
+				@foreach (var slider in Model.ProductData.SliderList)
+				{
+					<div class="carousel-item @(index == 0 ? "active" : "")">
+						<img class="d-block w-100" src="@slider.Image" alt="@slider.Title">
+						<div class="carousel-caption d-none d-md-block">
+							<h5>@slider.Title</h5>
+							<p>@slider.Description</p>
+						</div>
+					</div>
+					index++;
+				}
+			</div>
+
+			<!-- Nút điều hướng -->
+			<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="sr-only">Previous</span>
+			</a>
+			<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="sr-only">Next</span>
+			</a>
+		</div>
+	}
+	else
+	{
+		<p>Không có slider nào đang hoạt động.</p>
+	}
+
+
+	<div class="product-list-title">
+		<h2 class="mt-2" style="font-weight: 700;
+    color: #1d2939;
+    line-height: 32px;">
+			Sản phẩm mới
+		</h2>
+		<div>
+			<a class="related-tag btn-all-product" href="#">Xem tất cả</a>
+		</div>
+	</div>
+
+	<div id="product-slider" class="product-slider-container position-relative">
+		<!-- Danh sách sản phẩm -->
+		<div class="product-list d-flex flex-nowrap overflow-hidden">
+			@foreach (var product in Model.ProductData.Products)
+			{
+				<div class="product-card" style="width: 224px; margin-right: 10px;">
+					<div class="card">
+						<div class="card-body" style="height: 95%; text-align: center;">
+							<img src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)"
+									 class="product-image btn-view-detail" alt="@product.Name" style="width: 160px; height: 160px;" data-id="@product.Id">
+							<div class="product-name">
+								<h3 class="product-name">@product.Name</h3>
+							</div>
+							<div class="box-info-price">
+								<p style="font-size: 16px; color: #d70018;" class="product-price">@String.Format("{0:N0} đ", product.Price)</p>
+								<p style="font-size: 14px; color: #707070;" class="product-price">@String.Format("{0:N0} đ", 10000000)</p>
+							</div>
+							<div class="product-rating">
+								<i class="fas fa-star text-warning"></i>
+								<i class="fas fa-star text-warning"></i>
+								<i class="fas fa-star text-warning"></i>
+								<i class="fas fa-star text-warning"></i>
+								<i class="fas fa-star text-warning"></i>
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+
+		<!-- Nút điều hướng -->
+		<!-- Nút điều hướng -->
+		<button id="prevBtn" class="slider-btn prev-btn">
+			<i class="fas fa-chevron-left"></i>
+		</button>
+		<button id="nextBtn" class="slider-btn next-btn">
+			<i class="fas fa-chevron-right"></i>
+		</button>
+	</div>
+
+	@foreach (var category in Model.CategoryProducts)
+	{
+		<div class="category-section">
+			<div class="d-flex justify-content-between align-items-center">
+				<h3 class="text-primary mt-3">@category.CategoryName</h3>
+				<div>
+					<a class="related-tag btn-all-product-byId" data-id="@category.CategoryId" href="#">Xem tất cả</a>
+				</div>
+			</div>
+
+			@if (category.Products.Any())
+			{
+				<div class="row product-info-container ml-2">
+					@foreach (var product in category.Products)
+					{
+						<div class="swiper-slide me-1" style="width: 224.8px; margin-right: 10px">
+							<div class="card mb-3">
+								<div class="card-body">
+									<div class="product-image">
+										<img class="product-image" style="width: 160px; height: 160px;" src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)" alt="@product.Name">
+									</div>
+									<div class="product-name" style="width: 100%">
+										<h3 class="card-title ">@product.Name</h3>
+									</div>
+									<p class="card-text product_price">@String.Format("{0:N0} đ", product.Price)</p>
+
+									@* <a href="@Url.Action("Detail", "Product", new { id = product.Id })" class="btn btn-info">Xem chi tiết</a> *@
+									<div class="block-smem-price">
+										Smember giảm thêm đến <span class="text-danger">10%</span>
+									</div>
+
+									<div class="bottom-div">
+										<div class="product-rating">
+											<i class="fas fa-star text-warning"></i>
+											<i class="fas fa-star text-warning"></i>
+											<i class="fas fa-star text-warning"></i>
+											<i class="fas fa-star text-warning"></i>
+											<i class="fas fa-star text-warning"></i>
+										</div>
+
+										<div class="">
+											<a href="#" class="favorite-btn">
+												Yêu thích
+											</a>
+											<i class="far fa-heart"></i>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					}
+				</div>
+			}
+			else
+			{
+				<p class="text-muted">Không có sản phẩm nào trong danh mục này.</p>
+			}
+		</div>
+	}
+
+</div>
+
+
+
+
+
+
+
