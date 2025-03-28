@@ -1,0 +1,66 @@
+﻿@using MyProject.Web.Models.Orders
+@model OrderViewSuccess
+
+@{
+  ViewData["Title"] = "Đặt hàng thành công";
+}
+<!-- Thêm Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="~/css/order.css" rel="stylesheet" />
+
+<div class="order-success mt-4">
+  <div class="heading-notify text-center">
+    <i class="fa-solid fa-circle-check"></i>
+    <p style="margin-top: 16px;" class="text-success"> ĐẶT HÀNG THÀNH CÔNG</p>
+  </div>
+
+  <div class="card p-3 shadow-sm">
+    <div class="d-flex justify-content-between">
+      <h5 class="fw-bold">ĐƠN HÀNG: #@Model.Order.Id</h5>
+      <div style="gap: 10px;" class="d-flex">
+        <a href="/Home/UserProfile" class="text-primary">Quản lý đơn hàng</a>
+        <a href="#" class="text-danger">Hủy</a>
+      </div>
+    </div>
+    <ul class="order-details">
+      <li><strong>Người nhận hàng:</strong> @Model.Order.NameUser</li>
+      @* <li><strong>Giao đến:</strong> @Model.Order.Address</li> *@
+      @* <li><strong>Phí giao hàng:</strong> @Model.Order.ShippingFee.ToString("N0")đ</li> *@
+      <li class="text-danger fw-bold"><strong>Tổng tiền:</strong> @Model.Order.TotalAmount.ToString("N0")đ</li>
+    </ul>
+  </div>
+
+  <div class="card p-3">
+    <p><strong>Hình thức thanh toán:</strong> @Model.Order.PaymentMethod</p>
+    <p class="fw-bold">Chọn lại hình thức thanh toán khác:</p>
+    <div>
+      <input type="radio" name="payment" id="bankTransfer">
+      <label for="bankTransfer">Chuyển khoản ngân hàng</label>
+    </div>
+    <div>
+      <input type="radio" name="payment" id="atmTransfer">
+      <label for="atmTransfer">Qua thẻ ATM (có Internet Banking)</label>
+    </div>
+    <p class="text-primary">5 hình thức thanh toán khác</p>
+    <button class="btn btn-primary w-100">Xác nhận</button>
+  </div>
+
+  <div class="mt-3">
+    <h5>THỜI GIAN NHẬN HÀNG</h5>
+    <div class="border p-3">
+      <p><strong>Giao trước 19h00 Hôm nay (@DateTime.Now.ToString("dd/MM"))</strong></p>
+
+      @foreach (var item in Model.ProductList)
+      {
+        <div class="d-flex">
+          <img src="@item." alt="Sản phẩm" class="img-thumbnail me-3" style="width: 80px; height: 80px;">
+          <div class="pl-3">
+            <p>@item.Name</p>
+            <p>Màu: TRẮNG | Số lượng: </p>
+          </div>
+        </div>
+      }
+    </div>
+    <button class="btn btn-outline-primary w-100 mt-3">Mua thêm sản phẩm khác</button>
+  </div>
+</div>

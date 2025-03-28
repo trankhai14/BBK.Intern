@@ -7,7 +7,7 @@ using Abp.Application.Services.Dto;
 
 namespace MyProject.Products.Dtos
 {
-	public class PagedProductResultRequestDto : PagedResultRequestDto
+	public class PagedOrderResultRequestDto : PagedResultRequestDto
 	{
 		
 	}

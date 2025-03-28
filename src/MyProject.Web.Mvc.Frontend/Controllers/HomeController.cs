@@ -19,6 +19,10 @@ using MyProject.Sliders;
 using MyProject.Carts;
 using MyProject.Web.Models.Home;
 using Abp.Collections.Extensions;
+using MyProject.Web.Models.Orders;
+using MyProject.OrderDetails;
+using MyProject.Orders;
+using static MyProject.Orders.OrderAppService;
 
 namespace MyProject.Web.Controllers
 {
@@ -30,13 +34,17 @@ namespace MyProject.Web.Controllers
 		private readonly IWebAppService _webAppService;
 		private readonly ISliderAppService _sliderAppService;
 		private readonly ICartAppService _cartAppService;
+		private readonly IOrderAppService _orderAppService;
+		private readonly IOrderDetailAppService _orderDetailAppService;
 		public HomeController
 			(
 			IProductAppService productAppService,
 			IWebAppService webAppService,
 			ICategoryAppService categoryAppService,
 			ISliderAppService sliderAppService,
-			ICartAppService cartAppService
+			ICartAppService cartAppService,
+			IOrderAppService orderAppService,
+			IOrderDetailAppService orderDetailAppService
 			)
 		{
 			_productAppService = productAppService;
@@ -44,6 +52,8 @@ namespace MyProject.Web.Controllers
 			_categoryAppService = categoryAppService;
 			_sliderAppService = sliderAppService;
 			_cartAppService = cartAppService;
+			_orderAppService = orderAppService;
+			_orderDetailAppService = orderDetailAppService;
 		}
 
 		//public async Task<IActionResult> Index(int page = 1, int pageSize = 8)
@@ -153,7 +163,7 @@ namespace MyProject.Web.Controllers
 
 		public async Task<IActionResult> SearchProductsWeb(GetAllProductWeb input)
 		{
-			WebViewModel webViewModel = new WebViewModel();
+			//ProductViewModel webViewModel = new ProductViewModel();
 			var result = await _productAppService.Search(new GetAllProductsInput
 			{
 				Keyword = input.Keyword
@@ -163,39 +173,42 @@ namespace MyProject.Web.Controllers
 
 			if (result != null)
 			{
-				webViewModel.Products = result.Items.ToList();
-				webViewModel.Keyword = input.Keyword;
-				webViewModel.count = count;
+				var model = new ProductViewModel(result.Items)
+				{
+					count = count
+				};
+				return View("_ProducResultSearch", model);
 			}
-			return View("_ProductListPartial", webViewModel);
+			return View("_ProducResultSearch", new ProductViewModel(new List<ProductListDto>()));
 		}
 
-		public async Task<IActionResult> GetProductByCategory(int page = 1, int pageSize = 10, int? categoryId = null)
-		{
-			var productsResult = await _productAppService.Search(new GetAllProductsInput
-			{
-				MaxResultCount = pageSize,
-				SkipCount = (page - 1) * pageSize,
-				CategoryId = categoryId,
-				//CategoryName = categoryName
-			});
+		//public async Task<IActionResult> GetProductByCategory(int page = 1, int pageSize = 10, int? categoryId = null)
+		//{
+		//	var productsResult = await _productAppService.Search(new GetAllProductsInput
+		//	{
+		//		MaxResultCount = pageSize,
+		//		SkipCount = (page - 1) * pageSize,
+		//		CategoryId = categoryId,
+		//		//CategoryName = categoryName
+		//	});
 
-			var category = await _categoryAppService.DetailCategory(new EntityDto<int>(categoryId.Value));
+		//	var category = await _categoryAppService.DetailCategory(new EntityDto<int>(categoryId.Value));
 
-			var model = new ProductViewModel(productsResult.Items)
-			{
-				CurrentPage = page,
-				TotalPages = (int)Math.Ceiling((double)productsResult.TotalCount / pageSize),
-				CategoryId = categoryId,
-				CategoryName = category.CategoryName
-			};
+		//	var model = new ProductViewModel(productsResult.Items)
+		//	{
+		//		CurrentPage = page,
+		//		TotalPages = (int)Math.Ceiling((double)productsResult.TotalCount / pageSize),
+		//		CategoryId = categoryId,
+		//		CategoryName = category.CategoryName
+		//	};
 
-			return View("_ProductGetByCategory", model);
-		}
+		//	return View("_ProductGetByCategory", model);
+		//}
 
 		public async Task<IActionResult> GetDetailProduct(EntityDto<int> productId)
 		{
 			var product = await _productAppService.GetAsync(productId);
+			var category = await _categoryAppService.GetCategoryById(product.CategoryId);
 
 			var model = new DetailProductModel()
 			{
@@ -205,26 +218,10 @@ namespace MyProject.Web.Controllers
 				Price = product.Price,
 				Image = product.Image,
 			};
+
+			model.CategoryName = category.CategoryName;
 			return View("_DetailProductWeb", model);
 		}
-
-
-		//public async Task<IActionResult> PageAllProduct(int page, int pageSize = 10)
-		//{
-		//	var allProducts = await _productAppService.GetAllProducts();
-		//	var products = allProducts
-		//			.Skip((page - 1) * pageSize)
-		//			.Take(pageSize)
-		//			.ToList();
-
-		//	if (products.Any())
-		//	{
-		//		var model = new ProductViewModel(products);
-		//		return PartialView("_GetProductPage", model);
-		//	}
-
-		//	return Content("");
-		//}
 
 		public async Task<IActionResult> PageAllProduct(int? categoryId)
 		{
@@ -232,7 +229,8 @@ namespace MyProject.Web.Controllers
 			string NameBreakCrum = "Tất cả sản phẩm";
 
 			//lấy name của category
-			if (categoryId != null) {
+			if (categoryId != null)
+			{
 				var category = await _categoryAppService.GetCategoryById(categoryId);
 				if (category != null)
 				{
@@ -251,7 +249,7 @@ namespace MyProject.Web.Controllers
 			return View("_AllProducts", model); // Trả về View
 		}
 
-		public async Task<IActionResult> LoadMoreProducts(int? categoryId, string sortOrder , int page, int pageSize = 10)
+		public async Task<IActionResult> LoadMoreProducts(int? categoryId, string? sortOrder, int page, int pageSize = 10)
 		{
 			var allProducts = await _productAppService.GetAllProducts();
 
@@ -284,9 +282,69 @@ namespace MyProject.Web.Controllers
 				return PartialView("_GetProductPage", new ProductViewModel(products)); // Trả về PartialView
 			}
 
-			return null; // Trả về rỗng nếu không còn sản phẩm
+			return NoContent();  // Trả về rỗng nếu không còn sản phẩm
 		}
 
 
+		public IActionResult UserProfile()
+		{
+			return View("ProfileUser");
+		}
+
+		public async Task<IActionResult> FilterStatus(int? orderStatus = 5)
+		{
+
+			var orderOutputs = await _orderAppService.GetStatusOrder(orderStatus);
+			var orderIds = orderOutputs.Select(o => o.OrderId).ToList(); // Lấy danh sách ID
+			var orderList = await _orderDetailAppService.GetOrderByIdAndStatus(orderIds);
+			var orderStatusDict = orderOutputs.ToDictionary(o => o.OrderId, o => o.OrderStatus);
+
+			// Gán OrderStatus cho từng đơn hàng trong orderList
+			foreach (var order in orderList)
+			{
+				if (orderStatusDict.TryGetValue(order.OrderId, out var status))
+				{
+					order.OrderStatus = status;
+				}
+			}
+
+			// Lấy danh sách ID sản phẩm cần lấy thông tin
+			var productIds = orderList.Select(o => o.ProductId).Distinct().ToList();
+			var productList = await _productAppService.GetProductByIds(productIds);
+			var model = new FilterStatusOrderViewModel
+			{
+				ListOrder = orderList,
+				OrderStatus = orderStatus,
+				Products = productList
+			};
+			return PartialView("FilterOrder", model);
+		}
+
+		public async Task<IActionResult> LoadPartialView(string nameView)
+		{
+			if (nameView == "_UserInfos")
+			{
+				return PartialView("_UserInfos");
+			}
+				return PartialView("_OrderList");
+		}
+
+		public async Task<IActionResult> GetInforDetailOrder(int orderId)
+		{
+			var order = await _orderAppService.GetOrderById(orderId);
+			var orderDetail = await _orderDetailAppService.GetOrderListById(orderId);
+
+			var productIds = orderDetail.Select(od => od.ProductId).ToList();
+			var products = await _productAppService.GetProductByIds(productIds);
+
+			var model = new OrderViewSuccess
+			{
+				Order = order,
+				OrderListDetail = orderDetail,
+				ProductList = products
+			};
+
+			return PartialView("GetInforDetailOrder", model);
+		}
 	}
 }

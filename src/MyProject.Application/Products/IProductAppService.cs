@@ -20,6 +20,7 @@ namespace MyProject.Products
 
 		Task Delete(EntityDto<int> input);
 		Task<ProductDetailDto> Detail(EntityDto<int> input);
+		Task<List<ProductListDto>> GetProductByIds(List<int> productIds);
 		Task<List<CategoryListDto>> GetAllCategory();
 		Task<ProductListDto> Update(UpdateProductDto input);
 

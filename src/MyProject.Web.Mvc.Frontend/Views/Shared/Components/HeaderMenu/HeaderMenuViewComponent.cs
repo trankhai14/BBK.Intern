@@ -33,7 +33,6 @@ namespace MyProject.Web.Views.Shared.Components.HeaderMenu
 			{
 				LoginInformations = await _sessionAppService.GetCurrentLoginInformations(),
 				IsMultiTenancyEnabled = _multiTenancyConfig.IsEnabled,
-				//Categories = await _categoryFontendAppService.GetCategory(new GetAllCategoriesInput();
 			};
 
 			return View(model);

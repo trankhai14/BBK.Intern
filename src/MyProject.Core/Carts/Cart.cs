@@ -15,9 +15,9 @@ namespace MyProject.Carts
 	public class Cart : Entity<int>
 	{
 
-		public long UserId { get; set; }
-		[ForeignKey("UserId")]
-		public User User { get; set; }
+		//public long UserId { get; set; }
+		//[ForeignKey("UserId")]
+		//public User User { get; set; }
 		//public int ProductId { get; set; }
 		//[ForeignKey("ProductId")]
 		//public Product Product { get; set; }

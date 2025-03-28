@@ -28,6 +28,9 @@ namespace MyProject.Web.Models.Products
 		public int CurrentPage { get; set; }
 		public int TotalPages { get; set; }
 
+		public List<ProductListDto> ResultSearch { get; set; }
+		public int count { get; set; }
+
 		public string GetProductLabel(ProductListDto product)
 		{
 			switch (product.State)

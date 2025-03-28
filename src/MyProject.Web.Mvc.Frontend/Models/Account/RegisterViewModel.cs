@@ -32,6 +32,8 @@ namespace MyProject.Web.Models.Account
         public bool IsExternalLogin { get; set; }
 
         public string ExternalLoginAuthSchema { get; set; }
+        
+        public int RolesId { get; set; }
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {

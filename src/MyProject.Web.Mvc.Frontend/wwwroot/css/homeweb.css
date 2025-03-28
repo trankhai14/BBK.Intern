@@ -86,6 +86,12 @@ h6:hover {
 	height: 160px;
 	object-fit: contain;
 	border-radius: 8px;
+	text-align: center; /* Căn giữa theo chiều dọc */
+	transition: transform 0.3s ease-in-out; /* Tạo hiệu ứng mượt */
+}
+
+.product-image:hover {
+	transform: scale(1.1); /* Phóng to ảnh 10% khi hover */
 }
 
 .product-list-title
@@ -141,10 +147,6 @@ h6:hover {
 	height: 95%;
 	margin: auto;
 	min-height: 250px;
-}
-
-.product-image {
-	text-align: center; /* Căn giữa theo chiều dọc */
 }
 
 .product-name h3 {

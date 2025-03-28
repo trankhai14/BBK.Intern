@@ -1,0 +1,85 @@
+﻿@using MyProject.Web.Startup
+
+@{
+	ViewBag.Title = L("Orders");
+	ViewBag.CurrentPageName = PageNames.Orders;
+}
+
+@section scripts
+{
+	<environment names="Development">
+		<script src="~/view-resources/Views/Orders/Index.js" asp-append-version="true"></script>
+	</environment>
+
+@* 	<environment names="Staging,Production">
+		<script src="~/view-resources/Views/Orders/Index.min.js" asp-append-version="true"></script>
+	</environment> *@
+}
+
+
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-6">
+				<h1>@L("Orders")</h1>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<div class="row">
+							<div class="col-md-6">
+							</div>
+
+							<div class="col-md-6">
+								@* @await Html.PartialAsync("~/Views/Products/Search.cshtml") *@
+							</div>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="table-responsive">
+							<table id="OrdersTable" class="table table-striped table-bordered">
+								<thead>
+									<tr>
+										<th style="width: 90px">@L("NameUser")</th>
+										<th style="width: 200px">@L("TotalAmount")</th>
+										<th style="width: 120px">@L("DiscountAmount")</th>
+										<th style="width: 170px">@L("PaymentMethod")</th>
+										<th style="width: 120px">@L("CreationTime")</th>
+										<th>@L("OrderStatus")</th>
+										<th style="width: 230px">@L("Actions")</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+@* @await Html.PartialAsync("~/Views/Products/_CreateModal.cshtml", Model) *@
+@* @await Html.PartialAsync("~/Views/Products/_FilterModal.cshtml", Model) *@
+
+
+<div class="modal fade" id="OrderEditModal" tabindex="-1" role="dialog" aria-labelledby="OrderEditModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+

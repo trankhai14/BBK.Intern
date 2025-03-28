@@ -17,7 +17,6 @@ namespace MyProject.Carts
 		Task DeleteCart(int productId);
 
 		Task UpdateCart(int productId, int quantity);
-
-		//Task<int> CountCart();
+		Task ClearCart(long userId);
 	}
 }

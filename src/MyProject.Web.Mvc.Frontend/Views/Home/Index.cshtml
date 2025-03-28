@@ -149,7 +149,7 @@
 							<div class="card mb-3">
 								<div class="card-body">
 									<div class="product-image">
-										<img class="product-image" style="width: 160px; height: 160px;" src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)" alt="@product.Name">
+										<img data-id="@product.Id" class="product-image btn-view-detail" style="width: 160px; height: 160px;" src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)" alt="@product.Name">
 									</div>
 									<div class="product-name" style="width: 100%">
 										<h3 class="card-title ">@product.Name</h3>

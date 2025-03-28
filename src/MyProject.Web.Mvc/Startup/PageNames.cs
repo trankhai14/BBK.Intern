@@ -11,6 +11,7 @@
 		public const string Categories = "Categories";
 		public const string Sliders = "Sliders";
 		public const string Tours = "Tours";
+		public const string Orders = "Orders";
 
 	}
 }

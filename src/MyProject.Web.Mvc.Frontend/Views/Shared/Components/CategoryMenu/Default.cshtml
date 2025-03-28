@@ -15,7 +15,7 @@
     }
 
 		/* .nav-link.active { */
-		/* 	color: #000 !important; /* Đổi màu chữ khi active */ */
+		/* 	color: #000 !important; /* Đổi màu chữ khi active */ 
   /*   } */
 
 </style>
@@ -23,6 +23,6 @@
 @foreach (var category in Model.Categories.Items)
 {
   <li class="nav-item me-3">
-    <a class="nav-link text-white" href="/Home/GetProductByCategory?categoryId=@category.Id">@category.CategoryName</a>
+    <a class="nav-link text-white" href="/Home/PageAllProduct?categoryId=@category.Id">@category.CategoryName</a>
   </li>
 }

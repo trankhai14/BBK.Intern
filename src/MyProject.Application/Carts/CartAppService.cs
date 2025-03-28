@@ -71,7 +71,6 @@ namespace MyProject.Carts
 					{
 						cartItem.Quantity -= quantity;
 					}
-					//cartItem.Quantity = cartItem.Quantity + quantity
 				}
 				else
 				{
@@ -98,6 +97,21 @@ namespace MyProject.Carts
 			}
 		}
 
+		public async Task ClearProduct(int productId)
+		{
+			if (AbpSession.UserId != null)
+			{
+				var cartItem = await _cartItemRepository.GetAllListAsync(c => c.UserId == AbpSession.UserId && c.ProductId == productId);
+				if (cartItem != null)
+				{
+					foreach (var item in cartItem)
+					{
+						await _cartItemRepository.DeleteAsync(item);
+					}
+				}
+			}
+		}
+
 		public async Task UpdateCart(int productId, int quantity)
 		{
 			if (AbpSession.UserId != null)
@@ -111,25 +125,15 @@ namespace MyProject.Carts
 			}
 		}
 
-		//public async Task<int> CountCart()
-		//{
-		//	if (AbpSession.UserId != null)
-		//	{
-		//		var cart = await _cartItemRepository.GetAllListAsync(c => c.UserId == AbpSession.UserId);
-		//		if (cart != null)
-		//		{
-		//			return cart.Count;
-		//		}
-		//		else
-		//		{
-		//			return 0;
-		//		}
-		//	}
-		//	else
-		//	{
-		//		return 0;
-		//	}
-		//}
+		public async Task ClearCart(long userId)
+		{
+			var userCartItems = await _cartItemRepository.GetAllListAsync(c => c.UserId == userId);
+
+			foreach (var cartItem in userCartItems)
+			{
+				await _cartItemRepository.DeleteAsync(cartItem);
+			}
+		}
 	}
 }
 

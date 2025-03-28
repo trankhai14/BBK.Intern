@@ -182,6 +182,13 @@ namespace MyProject.Web.Startup
 										url: "Tours",
 										icon: "fa fa-th-large"
 										)
+								).AddItem(
+										new MenuItemDefinition(
+										"OrderList",
+										L("OrderList"),
+										url: "Orders",
+										icon: "fa fa-th-large"
+										)
 								);
 
 		}

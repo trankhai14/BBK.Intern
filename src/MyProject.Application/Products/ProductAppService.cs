@@ -222,6 +222,21 @@ namespace MyProject.Products
 			};
 		}
 
+		public async Task<List<ProductListDto>> GetProductByIds(List<int> productIds)
+		{
+			return await _productRepository.GetAll()
+				.Where(p => productIds.Contains(p.Id))
+				.Select(p => new ProductListDto
+				{
+					Id = p.Id,
+					Name = p.Name,
+					Description = p.Description,
+					Price = p.Price,
+					Image = p.Image
+				})
+				.ToListAsync();
+		}
+
 		public async Task<PagedResultDto<ProductListDto>> Search(GetAllProductsInput input)
 		{
 			var productQuery = _productRepository.GetAll();

@@ -16,7 +16,6 @@ namespace MyProject.Web.Views.Shared.Components.CartMenu
 
 		public async Task<IViewComponentResult> InvokeAsync()
 		{
-			//var userId = int.Parse(HttpContext.Session.GetString("CurrentUser"));
 			var model = new CartMenuViewModel
 			{
 				CartItem = await _cartFrontendAppService.CountCart()

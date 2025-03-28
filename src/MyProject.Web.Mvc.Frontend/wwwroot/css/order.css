@@ -1,0 +1,32 @@
+﻿
+.order-success{
+	width: 850px;
+	margin: 20px auto;
+}
+
+.heading-notify {
+	background-color: #d4edda; /* Màu xanh nhạt */
+	color: #155724; /* Màu chữ xanh đậm */
+	border-radius: 8px;
+	padding: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-weight: bold;
+	box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+	font-size: 24px;
+}
+.heading-notify i {
+	font-size: 20px;
+	margin-right: 4px;
+	color: #28a745; /* Màu xanh lá */
+}
+
+.order-details {
+	padding-left: 20px;
+}
+
+.order-details li::marker {
+	font-size: 10px; /* Điều chỉnh kích thước */
+	color: #808080; /* Màu nhẹ hơn */
+}

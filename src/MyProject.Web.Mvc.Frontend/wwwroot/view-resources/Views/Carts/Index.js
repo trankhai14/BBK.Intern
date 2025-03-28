@@ -1,4 +1,6 @@
-﻿(function ($) {
+﻿//const { each } = require("jquery");
+
+(function ($) {
 	var _cartService = abp.services.app.cart;
 	$('.btn-reduce').on('click', function (e) {
 		e.preventDefault(); // Ngăn hành vi mặc định
@@ -51,7 +53,6 @@
 		}
 	});
 
-
 	$('.btn-increase').on('click', function () { //Tang so luong san pham
 		var productId = $(this).data('id'); // Lấy ID sản phẩm
 		var cartItem = $(this).closest('.cart-item'); // Tìm phần tử cha chứa sản phẩm
@@ -61,12 +62,6 @@
 		var unitPrice = parseInt(priceElement.attr('data-unit-price')) || 0; // Lấy giá gốc
 		var currentQuantity = parseInt(quantityInput.val()) || 0; // Lấy số lượng hiện tại
 
-
-
-		//if (unitPrice === 0) {
-		//	console.error("Lỗi: Không lấy được giá sản phẩm!");
-		//	return;
-		//}
 
 		// Thêm vào giỏ hàng
 		if (quantityInput > 10) {
@@ -103,13 +98,12 @@
 			total += price;
 		});
 
-
 		$("#totalPrice").text(total.toLocaleString('vi-VN') + " đ");
 	}
 
-	function updateProductPrice() {
+	//function updateProductPrice() {
 
-	}
+	//}
 
 	// Gọi khi trang load xong
 	$(document).ready(function () {
@@ -136,29 +130,24 @@
 	});
 
 	// xóa sản phẩm trong giỏ hàng
-	$('.btn-delete').on('click', function (e) {
-		var productId = $(this).data('id');
-		var quantityInput = $(this).closest('.cart-item').find('.quantity-input'); // Tìm input số lượng
-		var currentQuantity = parseInt(quantityInput.val());
+	$(document).ready(function () {
+		$(".btn-delete").on("click", function (e) {
+			var productId = $(this).data("id");
 
-		if (currentQuantity == 1) {
-			$('#confirmDeleteModal').modal('show'); // Hiển thị modal xác nhận xóa
-			$('#confirmDeleteBtn').off('click').on('click', function () {
-				_cartService.deleteCart(productId).done(function () {
-					abp.notify.success("Xóa sản phẩm thành công");
+			// Hiển thị modal xác nhận xóa
+			$("#confirmDeleteModal").modal("show");
+
+			// Khi người dùng nhấn xác nhận xóa
+			$("#confirmDeleteBtn").off("click").on("click", function () {
+				_cartService.clearProduct(productId).done(function () {
+					abp.notify.success("Xóa sản phẩm thành công!");
 					location.reload();
 				});
 			});
-		} else {
-			bool = false
-			_cartService.addToCart(
-				productId, 1, bool
-			).done(function () {
-				abp.notify.success("Xóa sản phẩm thành công");
-				location.reload();
-			});
-		}
+		});
 	});
+
+
 
 	// cập nhật số lượng sản phẩm trong giỏ hàng qua input
 	$('.quantity-input').on('change', function (e) {
@@ -170,6 +159,58 @@
 		).done(function () {
 			location.reload();
 			updateTotalPrice();
+		});
+	});
+	//đặt hàng
+	$(document).ready(function () {
+		$("#btnCheckout").on("click", function (e) {
+			e.preventDefault();
+			var userId = this.getAttribute("data-userId");
+			var nameUser = this.getAttribute("data-nameUser");
+
+			var orderItems = [];
+
+			$(".cart-item").each(function () {
+				var item = {
+					ProductId: $(this).find(".btn-delete").data("id"),
+					Quantity: $(this).find(".quantity-input").val(),
+					UnitPrice: $(this).find(".product-price").data("unit-price"),
+					DiscountPrice: 0 // Nếu có giảm giá thì thay đổi giá trị này
+				};
+				orderItems.push(item);
+			});
+
+			var orderData = {
+				UserId: userId,
+				NameUser: nameUser,
+				TotalAmount: orderItems.reduce((sum, item) => sum + item.UnitPrice * item.Quantity, 0),
+				DiscountAmount: 0, // Nếu có giảm giá tổng thể thì tính toán
+				PaymentMethod: 0,
+				Items: orderItems
+			};
+
+			console.log(orderData)
+
+			$.ajax({
+				url: "/Orders/CreateOrder",
+				type: "POST",
+				contentType: "application/json",
+				data: JSON.stringify(orderData),
+				success: function (response) {
+					console.log("Response từ server:", response);
+					if (response.success && response.result && response.result.orderId) {
+						var orderId = response.result.orderId;
+						console.log("Order ID:", orderId);
+						window.location.href = "/Orders/Success?orderId=" + orderId;
+					} else {
+						alert("Đặt hàng thành công nhưng không lấy được mã đơn hàng.");
+					}
+				},
+				error: function (error) {
+					console.error("Lỗi khi đặt hàng:", error);
+					alert("Đặt hàng thất bại, vui lòng thử lại.");
+				}
+			});
 		});
 	});
 

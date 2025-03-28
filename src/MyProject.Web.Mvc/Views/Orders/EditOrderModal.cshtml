@@ -1,0 +1,86 @@
+﻿@using MyProject.Web.Models.Common.Modals
+@using MyProject.Web.Models.Orders
+@* @using MyProject.Orders.Dtos *@
+@model OrderViewModel;
+
+@{
+	Layout = null;
+}
+
+
+@* @section scripts *@
+@* { *@
+@* 	<environment names="Development"> *@
+@* 		<script src="~/view-resources/Views/Orders/OrderEdit.js" asp-append-version="true"></script> *@
+@* 	</environment> *@
+
+@* } *@
+
+
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditOrder")))
+
+<form name="OrderEditForm" role="form" class="form-horizontal">
+	<input type="hidden" name="OrderId" value="@Model.Order.Id" />
+
+		<div class="form-group row">
+			<label class="col-md-4 col-form-label">@L("CustomerName"):</label>
+			<div class="col-md-8">
+				<p class="form-control-plaintext">@Model.Order.NameUser</p>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-4 col-form-label">@L("TotalAmount"):</label>
+			<div class="col-md-8">
+				<p class="form-control-plaintext text-red">@Model.Order.TotalAmount.ToString("#,##0") ₫</p>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-4 col-form-label">@L("DiscountAmount"):</label>
+			<div class="col-md-8">
+				<p class="form-control-plaintext">@Model.Order.DiscountAmount.ToString("#,##0") ₫</p>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-4 col-form-label">@L("OrderStatus"):</label>
+			<div class="col-md-8">
+				<select class="form-control" id="orderStatus" name="OrderStatus">
+					<option value="0" selected="@(Model.Order.OrderStatus == 0 ? "selected" : null)">Chờ xử lý</option>
+					<option value="1" selected="@(Model.Order.OrderStatus == 1 ? "selected" : null)">Đã xác nhận</option>
+					<option value="2" selected="@(Model.Order.OrderStatus == 2 ? "selected" : null)">Đang giao hàng</option>
+					<option value="3" selected="@(Model.Order.OrderStatus == 3 ? "selected" : null)">Đã hủy</option>
+					<option value="4" selected="@(Model.Order.OrderStatus == 4 ? "selected" : null)">Thành công</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-4 col-form-label">@L("PaymentMethod"):</label>
+			<div class="col-md-8">
+				<p class="form-control-plaintext">
+					@Html.Raw(GetPaymentMethodWithIcon(Model.Order.PaymentMethod))
+				</p>
+			</div>
+		</div>
+		<hr />
+	</div>
+</form>
+
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+<script src="~/view-resources/Views/Orders/OrderEdit.js" asp-append-version="true"></script>
+
+@functions {
+	private string GetPaymentMethodWithIcon(int paymentMethod)
+	{
+		return paymentMethod switch
+		{
+			0 => "<i class='fas fa-university text-primary'></i> Bank Transfer",
+			1 => "<i class='fas fa-credit-card text-success'></i> Credit Card",
+			2 => "<i class='fab fa-paypal text-info'></i> PayPal",
+			3 => "<i class='fas fa-money-bill-wave text-warning'></i> Cash on Delivery",
+			_ => "<span class='text-danger'>Unknown</span>"
+		};
+	}
+}
