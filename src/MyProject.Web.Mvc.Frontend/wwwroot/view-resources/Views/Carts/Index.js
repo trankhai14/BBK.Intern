@@ -130,19 +130,18 @@
 	});
 
 	// xóa sản phẩm trong giỏ hàng
-	$(document).ready(function () {
-		$(".btn-delete").on("click", function (e) {
-			var productId = $(this).data("id");
 
-			// Hiển thị modal xác nhận xóa
-			$("#confirmDeleteModal").modal("show");
+	$(".btn-delete").on("click", function (e) {
+		var productId = $(this).data("id");
 
-			// Khi người dùng nhấn xác nhận xóa
-			$("#confirmDeleteBtn").off("click").on("click", function () {
-				_cartService.clearProduct(productId).done(function () {
-					abp.notify.success("Xóa sản phẩm thành công!");
-					location.reload();
-				});
+		// Hiển thị modal xác nhận xóa
+		$("#confirmDeleteModal").modal("show");
+
+		// Khi người dùng nhấn xác nhận xóa
+		$("#confirmDeleteBtn").off("click").on("click", function () {
+			_cartService.clearProduct(productId).done(function () {
+				abp.notify.success("Xóa sản phẩm thành công!");
+				location.reload();
 			});
 		});
 	});
@@ -162,55 +161,54 @@
 		});
 	});
 	//đặt hàng
-	$(document).ready(function () {
-		$("#btnCheckout").on("click", function (e) {
-			e.preventDefault();
-			var userId = this.getAttribute("data-userId");
-			var nameUser = this.getAttribute("data-nameUser");
+	$("#btnCheckout").on("click", function (e) {
+		e.preventDefault();
 
-			var orderItems = [];
+		const userId = $(this).data("userid");
+		const nameUser = $(this).data("nameuser");
 
-			$(".cart-item").each(function () {
-				var item = {
-					ProductId: $(this).find(".btn-delete").data("id"),
-					Quantity: $(this).find(".quantity-input").val(),
-					UnitPrice: $(this).find(".product-price").data("unit-price"),
-					DiscountPrice: 0 // Nếu có giảm giá thì thay đổi giá trị này
-				};
-				orderItems.push(item);
-			});
+		let orderItems = [];
 
-			var orderData = {
-				UserId: userId,
-				NameUser: nameUser,
-				TotalAmount: orderItems.reduce((sum, item) => sum + item.UnitPrice * item.Quantity, 0),
-				DiscountAmount: 0, // Nếu có giảm giá tổng thể thì tính toán
-				PaymentMethod: 0,
-				Items: orderItems
+		$(".cart-item").each(function () {
+			const item = {
+				ProductId: $(this).find(".btn-delete").data("id"),
+				Quantity: $(this).find(".quantity-input").val(),
+				UnitPrice: parseFloat($(this).find(".product-price").data("unit-price")),
+				DiscountPrice: 0 // Nếu có giảm giá thì thay đổi giá trị này
 			};
+			orderItems.push(item);
+		});
 
-			console.log(orderData)
+		const orderData = {
+			UserId: userId,
+			NameUser: nameUser,
+			TotalAmount: orderItems.reduce((sum, item) => sum + item.UnitPrice * item.Quantity, 0),
+			DiscountAmount: 0, // Nếu có giảm giá tổng thể thì tính toán
+			PaymentMethod: 0,
+			Items: orderItems
+		};
 
-			$.ajax({
-				url: "/Orders/CreateOrder",
-				type: "POST",
-				contentType: "application/json",
-				data: JSON.stringify(orderData),
-				success: function (response) {
-					console.log("Response từ server:", response);
-					if (response.success && response.result && response.result.orderId) {
-						var orderId = response.result.orderId;
-						console.log("Order ID:", orderId);
-						window.location.href = "/Orders/Success?orderId=" + orderId;
-					} else {
-						alert("Đặt hàng thành công nhưng không lấy được mã đơn hàng.");
-					}
-				},
-				error: function (error) {
-					console.error("Lỗi khi đặt hàng:", error);
-					alert("Đặt hàng thất bại, vui lòng thử lại.");
+		console.log(orderData);
+
+		$.ajax({
+			url: "/Orders/CreateOrder",
+			type: "POST",
+			contentType: "application/json",
+			data: JSON.stringify(orderData),
+			success: function (response) {
+				console.log("Response từ server:", response);
+				if (response.success && response.result && response.result.orderId) {
+					const orderId = response.result.orderId;
+					console.log("Order ID:", orderId);
+					window.location.href = "/Orders/Success?orderId=" + orderId;
+				} else {
+					alert("Đặt hàng thành công nhưng không lấy được mã đơn hàng.");
 				}
-			});
+			},
+			error: function (error) {
+				console.error("Lỗi khi đặt hàng:", error);
+				alert("Đặt hàng thất bại, vui lòng thử lại.");
+			}
 		});
 	});
 

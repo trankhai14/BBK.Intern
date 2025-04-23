@@ -33,6 +33,5 @@ namespace MyProject.Carts
 		[ForeignKey("UserId")]
 		public User User { get; set; }
 		public int Quantity { get; set; }
-
 	}
 }

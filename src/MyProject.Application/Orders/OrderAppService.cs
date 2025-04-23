@@ -28,10 +28,22 @@ namespace MyProject.Orders
 		{
 
 			var orders = _orderAppService.GetAll();
-			//if (input.orderId.HasValue)
-			//{
-			//	orders = orders.Where(x => x.Id == input.orderId.Value);
-			//}
+
+			if(!string.IsNullOrEmpty(input.NameUser))
+			{
+				orders = orders.Where(o => o.NameUser.Contains(input.NameUser));
+			}
+
+			if (input.OrderStatus != null)
+			{
+				orders = orders.Where(o => o.OrderStatus == input.OrderStatus);
+			}
+
+			if (input.PaymentMethod != null)
+			{
+				orders = orders.Where(o => o.PaymentMethod == input.PaymentMethod);
+			}
+
 			var counts = await orders.CountAsync();
 
 			var orderDtos = orders.PageBy(input).Select(o => new OrderListDto

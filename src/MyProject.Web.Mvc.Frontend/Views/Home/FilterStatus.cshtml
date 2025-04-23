@@ -1,0 +1,108 @@
+﻿@{
+	var orders = Model?.ListOrder as List<MyProject.OrderDetails.Dto.OrderDetailDto> ?? new List<MyProject.OrderDetails.Dto.OrderDetailDto>();
+	var productsList = Model?.Products as List<MyProject.Product.Dtos.ProductListDto> ?? new List<MyProject.Product.Dtos.ProductListDto>();
+}
+
+
+<div style="overflow-y: auto">
+	@if (orders.Any())
+
+	{
+		@foreach (var orderGroup in orders.GroupBy(o => o.OrderId))
+		{
+			<div class="border p-3 rounded bg-white mb-3">
+				<div class="d-flex justify-content-between border-bottom mb-3">
+					<p style="margin-bottom: 5px; font-size:14px"><strong>Đơn hàng: </strong>#@orderGroup.Key</p> <!-- OrderId -->
+					<p style="margin-bottom: 5px; font-size:14px" class="text-bold
+							@switch (orderGroup.FirstOrDefault()?.OrderStatus)
+							{
+									case 0:
+											@("text-warning")
+						 // Chờ xử lý (vàng)
+											break;
+									case 1:
+											@("text-primary")
+						 // Đã xác nhận (xanh dương)
+											break;
+									case 2:
+											@("text-info")
+								// Đang giao hàng (xanh nhạt)
+											break;
+									case 3:
+											@("text-danger")
+							// Đã hủy (đỏ)
+											break;
+									case 4:
+											@("text-success")
+						 // Hoàn thành (xanh lá)
+											break;
+									default:
+											@("text-secondary")
+					 // Không xác định (xám)
+											break;
+							}">
+						@switch (orderGroup.FirstOrDefault()?.OrderStatus)
+						{
+							case 0:
+								@:Chờ xử lý
+								break;
+							case 1:
+								@:Đã xác nhận
+								break;
+							case 2:
+								@:Đang giao hàng
+								break;
+							case 3:
+								@:Đã hủy
+								break;
+							case 4:
+								@:Hoàn thành
+								break;
+							default:
+								@:Không xác định
+								break;
+						}
+					</p>
+
+
+
+				</div>
+
+				@foreach (var item in orderGroup)
+				{
+					var product = productsList?.FirstOrDefault(p => p.Id == item.ProductId);
+
+					<div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+						<div class="d-flex align-items-start">
+							<img src="@(string.IsNullOrEmpty(product.Image) ? "/img/banner.png" : product.Image)" width="60" class="me-3">
+							<p class="ml-4">Sản phẩm ID: @item.ProductId</p>
+							<p>Tên sản phẩm: @(product?.Name ?? "Không tìm thấy")</p>
+						</div>
+			
+						<p style="font-size: 18px"><span style="font-size: 14px !important">Tổng tiền: </span>@((item.UnitPrice * item.Quantity - item.DiscountPrice).ToString("#,##0"))₫</p>
+					</div>
+				}
+				<div class="d-flex justify-content-end">
+					<button style="font-size: 14px" class="btn btn-outline-danger btn-detail-order" data-orderId="@orderGroup.Key">Xem chi tiết</button>
+				</div>
+			</div>
+
+		}
+
+	}
+	else
+	{
+		// <p class="text-danger">Không có đơn hàng nào.</p>
+		<div class="text-center border p-3 rounded bg-white">
+			<i style="font-size: 60px; color: #94c4fc; " class="fas fa-shopping-bag pb-2"></i>
+			<h5 style="font-size: 18px" class="text-bold">Rất tiếc, không tìm thấy đơn hàng nào phù hợp</h5>
+			<span style="color: #9daacd; font-size: 14px">Vẫn còn rất nhiều sản phẩm đang chờ</span>
+			<div class="pt-4" style="font-size: 14px; color: #233f88;">
+				<i style="color: #233f88;" class="fas fa-chevron-left"></i>
+				<a style="color: #233f88;" href="/">Về trang chủ</a>
+			</div>
+		</div>
+	}
+</div>
+
+

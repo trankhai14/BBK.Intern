@@ -317,7 +317,7 @@ namespace MyProject.Web.Controllers
 				OrderStatus = orderStatus,
 				Products = productList
 			};
-			return PartialView("FilterOrder", model);
+			return PartialView("FilterStatus", model);
 		}
 
 		public async Task<IActionResult> LoadPartialView(string nameView)

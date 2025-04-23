@@ -11,5 +11,8 @@ namespace MyProject.Orders.Dto
 	public class GetAllOrdersInput : PagedAndSortedResultRequestDto
 	{
 		public long? orderId { get; set; }
+		public string? NameUser { get; set; }
+		public int? OrderStatus { get; set; }
+		public int? PaymentMethod { get; set; }
 	}
 }

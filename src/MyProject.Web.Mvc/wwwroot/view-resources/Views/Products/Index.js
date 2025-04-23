@@ -96,79 +96,79 @@
 			}
 		]
 	});
-
-	$.validator.addMethod("validTourName", function (value, element) {
+	$.validator.addMethod("validName", function (value, element) {
 		return this.optional(element) || /^(?!\d+$)(?!\s+$)[A-Za-zÀ-ỹ0-9\s]+$/.test(value);
-	}, "Tên tour không hợp lệ. Vui lòng nhập ít nhất một chữ cái và không chỉ chứa số hoặc dấu cách.");
+	}, "Tên sản phẩm không hợp lệ. Vui lòng nhập ít nhất một chữ cái và không chỉ chứa số hoặc dấu cách.");
 
 
-	$.validator.addMethod("validTourPrice", function (value, element) {
+	$.validator.addMethod("validPrice", function (value, element) {
 		return this.optional(element) || /^\d+(\.\d{1,2})?$/.test(value);
 	}, "Giá phải là số hợp lệ và có tối đa 2 chữ số thập phân.");
 
-	// ✅ Thêm phương thức kiểm tra file ảnh
-	$.validator.addMethod("validAttachment", function (value, element) {
-		if (element.files.length === 0) {
-			return false; // Không có file nào được chọn
-		}
-		let file = element.files[0];
-		let validExtensions = ["image/jpeg", "image/png", "image/gif", "image/jpg"];
-		return validExtensions.includes(file.type); // Kiểm tra định dạng file
-	}, "Vui lòng chọn một file ảnh hợp lệ (JPG, JPEG, PNG, GIF).");
 
-	$.validator.addMethod("validPhoneNumber", function (value, element) {
-		return this.optional(element) || /^\d{10,11}$/.test(value);
+	$.validator.addMethod("validPrice", function (value, element) {
+		return this.optional(element) || /^\d+(\.\d{1,2})?$/.test(value);
 	});
+
+
+
 
 	_$form.validate({
 		rules: {
-			TourName: {
+			Name: {
 				required: true,
-				validTourName: true
+				validName: true
 			},
 			Description: {
 				required: true
 			},
-			TourPrice: {
+			Price: {
 				required: true,
-				validTourPrice: true
+				validPrice: true,
+				min: 1000
 			},
-			Attachment: {
-				required: true,
-				validAttachment: true
-			},
-			Transportation: {
+			State: {
 				required: true
 			},
-			PhoneNumber: {
+			Image: {
 				required: true,
-				validPhoneNumber: true
+				validImage: true
+			},
+			CategoryId: {
+				required: true
 			}
 		},
 		messages: {
-			TourName: {
-				required: "Vui lòng nhập tên tour",
-				validTourName: "Tên tour không hợp lệ. Không được chỉ chứa số hoặc dấu cách."
+			Name: {
+				required: "Vui lòng nhập tên sản phẩm.",
+				validName: "Tên sản phẩm không hợp lệ. Không được chỉ chứa số hoặc dấu cách."
 			},
 			Description: {
-				required: "Vui lòng nhập mô tả."
+				required: "Vui lòng nhập mô tả sản phẩm."
 			},
-			TourPrice: {
-				required: "Vui lòng nhập giá .",
-				validTourPrice: "Giá không hợp lệ",
+			State: {
+				required: "Vui lòng chọn trạng thái sản phẩm."
+			},
+			Price: {
+				required: "Vui lòng nhập giá sản phẩm.",
+				validPrice: "Giá không hợp lệ",
 				number: "Giá phải là số.",
-				min: "Giá không thể nhỏ hơn 0.",
-				max: "Giá không thể lớn hơn 100 tỷ."
+				min: "Giá phải lớn hơn 1000."
 			},
-			Attachment: {
+			Image: {
 				required: "Vui lòng chọn ảnh"
 			},
-			Transportation: {
-				required: "Vui lòng chọn phương tiện"
+			CategoryId: {
+				required: "Vui lòng chọn danh mục sản phẩm."
 			},
-			PhoneNumber: {
-				required: "Vui lòng nhập số điện thoại",
-				validPhoneNumber: "Số điện thoại không hợp lệ"
+			errorPlacement: function (error, element) {
+				error.insertAfter(element); // Hiển thị lỗi ngay bên dưới ô input
+			},
+			highlight: function (element) {
+				$(element).addClass("is-invalid"); // Thêm viền đỏ khi có lỗi
+			},
+			unhighlight: function (element) {
+				$(element).removeClass("is-invalid"); // Xóa viền đỏ khi nhập đúng
 			}
 		}
 	});

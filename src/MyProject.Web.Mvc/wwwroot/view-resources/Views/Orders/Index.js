@@ -12,7 +12,7 @@
 		listAction: {
 			ajaxFunction: _orderService.getAllOrder,
 			inputFilter: function () {
-				//return $('#ProductSearchForm').serializeFormToObject(true);
+				return $('#OrderSearchForm').serializeFormToObject(true);
 			}
 		},
 		buttons: [
@@ -174,12 +174,12 @@
 
 
 	$('.btn-search').on('click', (e) => {
-		_$productTable.ajax.reload();
+		_$orderTable.ajax.reload();
 	});
 
 	$('.txt-search').on('keypress', (e) => {
 		if (e.which == 13) {
-			_$productTable.ajax.reload();
+			_$orderTable.ajax.reload();
 			return false;
 		}
 	});

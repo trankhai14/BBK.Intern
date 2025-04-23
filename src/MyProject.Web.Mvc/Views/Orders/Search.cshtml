@@ -1,0 +1,45 @@
+﻿<div class="abp-advanced-search p-3" style="width: 100%;">
+  <form id="OrderSearchForm" class="form-horizontal" style="max-width: 100%;">
+    <div style="display: flex; flex-wrap: wrap; gap: 15px; width: 100%;" class="align-items-center">
+      <!-- Ô tìm kiếm từ khóa -->
+      <div style="min-width: 250px;">
+        <label for="Keyword" class="font-weight-bold">@L("NameUser")</label>
+        <div class="input-group">
+          <input type="text" id="NameUser" name="NameUser" class="form-control txt-search w-100" placeholder="Nhập tên người dùng...">
+        </div>
+      </div>
+
+      <!-- Dropdown phương tiện di chuyển -->
+      <div style="min-width: 200px;">
+        <label for="PaymentMethod" class="font-weight-bold">@L("PaymentMethod")</label>
+        <select class="form-control w-100" id="PaymentMethod" name="PaymentMethod">
+          <option value="">Tất cả</option>
+          <option value="0">@L("BankTranfer")</option>
+          <option value="1">@L("test")</option>
+          @* <option value="2">Xe đạp</option> *@
+        </select>
+      </div>
+
+      <!-- Dropdown loại tour -->
+      <div style="min-width: 100px;">
+        <label for="OrderStatus" class="font-weight-bold">@L("OrderStatus")</label>
+        <select class="form-control w-100" id="OrderStatus" name="OrderStatus">
+          <option value="">Tất cả</option>
+          <option value="0">@L("Pending")</option>
+          <option value="1">@L("Confirmed")</option>
+          <option value="2">@L("Shipping")</option>
+          <option value="3">@L("Canceled")</option>
+          <option value="4">@L("Success")</option>
+        </select>
+      </div>
+
+      <!-- Nút tìm kiếm -->
+      <div style="min-width: 100px; text-align: right;">
+        <label class="d-block invisible">Tìm kiếm</label>
+        <button type="button" class="btn bg-blue btn-search px-4 w-100">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
