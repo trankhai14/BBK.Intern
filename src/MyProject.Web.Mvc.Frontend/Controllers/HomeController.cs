@@ -23,6 +23,9 @@ using MyProject.Web.Models.Orders;
 using MyProject.OrderDetails;
 using MyProject.Orders;
 using static MyProject.Orders.OrderAppService;
+using MyProject.Users;
+using Microsoft.AspNetCore.Identity;
+using MyProject.Authorization.Users;
 
 namespace MyProject.Web.Controllers
 {
@@ -36,6 +39,9 @@ namespace MyProject.Web.Controllers
 		private readonly ICartAppService _cartAppService;
 		private readonly IOrderAppService _orderAppService;
 		private readonly IOrderDetailAppService _orderDetailAppService;
+		private readonly IUserAppService _userAppService;
+
+		
 		public HomeController
 			(
 			IProductAppService productAppService,
@@ -44,7 +50,8 @@ namespace MyProject.Web.Controllers
 			ISliderAppService sliderAppService,
 			ICartAppService cartAppService,
 			IOrderAppService orderAppService,
-			IOrderDetailAppService orderDetailAppService
+			IOrderDetailAppService orderDetailAppService,
+			IUserAppService userAppService
 			)
 		{
 			_productAppService = productAppService;
@@ -54,55 +61,9 @@ namespace MyProject.Web.Controllers
 			_cartAppService = cartAppService;
 			_orderAppService = orderAppService;
 			_orderDetailAppService = orderDetailAppService;
+			_userAppService = userAppService;
 		}
 
-		//public async Task<IActionResult> Index(int page = 1, int pageSize = 8)
-		//{
-		//	var productsResult = await _productAppService.GetAll(new GetAllProductsInput
-		//	{
-		//		MaxResultCount = pageSize,
-		//		SkipCount = (page - 1) * pageSize,
-		//	});
-		//	//var countCart = await _cartAppService.CountCart();
-		//	var sliders = await _sliderAppService.GetSliderByActive();
-
-
-
-		//	var model = new ProductViewModel(productsResult.Items)
-		//	{
-		//		CurrentPage = page,
-		//		TotalPages = (int)Math.Ceiling((double)productsResult.TotalCount / pageSize),
-		//	};
-
-		//	model.SliderList = sliders;
-		//	//model.countItemCart = countCart;
-
-
-		//	List<CategoryProductViewModel> categoryProductViewModels = new List<CategoryProductViewModel>();
-		//	#region Get all category
-		//	var categories = await _categoryAppService.GetAllCategory();
-		//	if (categories != null)
-		//	{
-		//		foreach (var item in categories)
-		//		{
-		//			var productsOfCategory = await _productAppService.GetAll(new GetAllProductsInput
-		//			{
-		//				CategoryId = item.Id
-		//			});
-		//			categoryProductViewModels.Add(new CategoryProductViewModel
-		//			{
-		//				CategoryId = item.Id,
-		//				CategoryName = item.CategoryName,
-		//				Products = productsOfCategory.Items.ToList()
-		//			});
-		//		}
-		//	}
-
-
-		//	#endregion
-
-		//	return View(model);
-		//}
 		public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
 		{
 			// Lấy danh sách sản phẩm theo phân trang
@@ -182,28 +143,7 @@ namespace MyProject.Web.Controllers
 			return View("_ProducResultSearch", new ProductViewModel(new List<ProductListDto>()));
 		}
 
-		//public async Task<IActionResult> GetProductByCategory(int page = 1, int pageSize = 10, int? categoryId = null)
-		//{
-		//	var productsResult = await _productAppService.Search(new GetAllProductsInput
-		//	{
-		//		MaxResultCount = pageSize,
-		//		SkipCount = (page - 1) * pageSize,
-		//		CategoryId = categoryId,
-		//		//CategoryName = categoryName
-		//	});
-
-		//	var category = await _categoryAppService.DetailCategory(new EntityDto<int>(categoryId.Value));
-
-		//	var model = new ProductViewModel(productsResult.Items)
-		//	{
-		//		CurrentPage = page,
-		//		TotalPages = (int)Math.Ceiling((double)productsResult.TotalCount / pageSize),
-		//		CategoryId = categoryId,
-		//		CategoryName = category.CategoryName
-		//	};
-
-		//	return View("_ProductGetByCategory", model);
-		//}
+	
 
 		public async Task<IActionResult> GetDetailProduct(EntityDto<int> productId)
 		{
@@ -324,7 +264,13 @@ namespace MyProject.Web.Controllers
 		{
 			if (nameView == "_UserInfos")
 			{
-				return PartialView("_UserInfos");
+				var userId = AbpSession.UserId ?? 0; // 0 là giá trị mặc định
+				var user = await _userAppService.GetUserById(userId);
+				var model = new ProfileUser
+				{
+					User = user,
+				};
+				return PartialView("_UserInfos", model);
 			}
 				return PartialView("_OrderList");
 		}

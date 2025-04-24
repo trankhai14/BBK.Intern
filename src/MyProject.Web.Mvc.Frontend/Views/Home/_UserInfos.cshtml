@@ -1,3 +1,20 @@
-﻿<div class="card p-3">
-  <h4>Thông tin user</h4>
+﻿@using MyProject.Web.Models.Home
+@model ProfileUser
+
+<div class="card p-3">
+	<h4>Thông tin User</h4>
+	<div class="row">
+		<div class="col-md-6">
+			@* <p><strong>ID:</strong> @Model.User.Id</p> *@
+			<p><strong>Họ và tên:</strong> @Model.User.FullName</p>
+
+			<p><strong>Email:</strong> @Model.User.EmailAddress</p>
+			<p>
+				<strong>Trạng thái:</strong>
+				<span class="badge @(Model.User.IsActive ? "bg-success" : "bg-danger")">
+					@(Model.User.IsActive ? "Hoạt động" : "Không hoạt động")
+				</span>
+			</p>
+		</div>
+	</div>
 </div>

@@ -251,6 +251,25 @@ namespace MyProject.Users
 			var user = _userManager.GetUserById(userId);
 			return user.UserName;
 		}
+
+		public async Task<UserDto> GetUserById(long userId)
+		{
+			var user = await _userManager.GetUserByIdAsync(userId);
+			if (user == null)
+			{
+				throw new EntityNotFoundException(typeof(User), userId);
+			}
+			return new UserDto
+			{
+				Id = userId,
+				UserName = user.UserName,
+				Name = user.Name,
+				Surname = user.Surname,
+				EmailAddress = user.EmailAddress,
+				IsActive = user.IsActive,
+				FullName = user.FullName
+			};
+		}
 	}
 }
 

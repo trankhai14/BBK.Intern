@@ -15,6 +15,7 @@ namespace MyProject.Users
 
 		Task<bool> ChangePassword(ChangePasswordDto input);
 		Task<string> GetNameUser(long userId);
+		Task<UserDto> GetUserById(long userId);
 
 		}
 }

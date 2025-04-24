@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using MyProject.Users.Dto;
 using MyProject.Web.Models.Products;
 
 namespace MyProject.Web.Models.Home
@@ -8,5 +9,10 @@ namespace MyProject.Web.Models.Home
 		public ProductViewModel ProductData { get; set; }
 		public List<CategoryProductViewModel> CategoryProducts { get; set; }
 
+	}
+
+	public class ProfileUser
+	{
+	  public UserDto User { get; set; }
 	}
 }

@@ -26,13 +26,13 @@
 
 
 	// Kiểm tra nếu đã load thì không trigger lại
-	if (!$("#mainContent").data("loaded")) {
-		var $orderListTab = $(".load-content[data-view='orderlist']");
-		if ($orderListTab.length) {
-			$orderListTab.trigger("click");
-		}
-		$("#mainContent").data("loaded", true);
-	}
+	//if (!$("#mainContent").data("loaded")) {
+	//	var $orderListTab = $(".load-content[data-view='orderlist']");
+	//	if ($orderListTab.length) {
+	//		$orderListTab.trigger("click");
+	//	}
+	//	$("#mainContent").data("loaded", true);
+	//}
 
 	// Lọc đơn hàng - Ngăn chặn việc gán nhiều lần
 	$(document).off("click", ".btn-status").on("click", ".btn-status", function (e) {
@@ -88,7 +88,7 @@
 			cache: false, // Đảm bảo không dùng cache
 			success: function (response) {
 				$("#mainContent").html(response); // Cập nhật nội dung mới
-				console.log(response);
+		
 				$this.prop("disabled", false); // Cho phép click lại sau khi hoàn thành
 				// Nếu view là _OrderList => Gọi tiếp FilterStatus để lấy danh sách đơn hàng
 				if (viewName === "_OrderList") {
