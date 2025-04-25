@@ -254,3 +254,5 @@ paket-files/
 src/MyProject.Web.Mvc/secrets.json
 src/MyProject.Web.Host/secrets.json
 src/MyProject.Migrator/secrets.json
+/src/MyProject.Web.Mvc/App_Data/Logs
+src/MyProject.Web.Mvc.Frontend/appsettings.json
