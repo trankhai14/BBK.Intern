@@ -8,6 +8,7 @@ using Abp.Linq.Extensions;
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
 using MyProject.Inventories.Dto;
+using MyProject.InventoryTransactions;
 
 namespace MyProject.Inventories
 {
@@ -128,46 +129,46 @@ namespace MyProject.Inventories
 				.Include(x => x.Product)
 				.Include(x => x.User);
 
-			// Lọc theo ProductId
-			if (input.ProductId.HasValue)
-			{
-				query = query.Where(x => x.ProductId == input.ProductId.Value);
-			}
+			//// Lọc theo ProductId
+			//if (input.ProductId.HasValue)
+			//{
+			//	query = query.Where(x => x.ProductId == input.ProductId.Value);
+			//}
 
-			// Lọc theo loại giao dịch
-			if (input.Type.HasValue)
-			{
-				query = query.Where(x => x.Type == input.Type.Value);
-			}
+			//// Lọc theo loại giao dịch
+			//if (input.Type.HasValue)
+			//{
+			//	query = query.Where(x => x.Type == input.Type.Value);
+			//}
 
-			// Lọc theo khoảng thời gian
-			if (input.FromDate.HasValue)
-			{
-				query = query.Where(x => x.TransactionDate >= input.FromDate.Value);
-			}
+			//// Lọc theo khoảng thời gian
+			//if (input.FromDate.HasValue)
+			//{
+			//	query = query.Where(x => x.TransactionDate >= input.FromDate.Value);
+			//}
 
-			if (input.ToDate.HasValue)
-			{
-				query = query.Where(x => x.TransactionDate <= input.ToDate.Value);
-			}
+			//if (input.ToDate.HasValue)
+			//{
+			//	query = query.Where(x => x.TransactionDate <= input.ToDate.Value);
+			//}
 
-			// Tìm kiếm theo keyword
-			if (!string.IsNullOrWhiteSpace(input.Keyword))
-			{
-				var keyword = input.Keyword.ToLower();
-				query = query.Where(x =>
-					x.Product.Name.ToLower().Contains(keyword) ||
-					(x.Reason != null && x.Reason.ToLower().Contains(keyword)) ||
-					(x.Notes != null && x.Notes.ToLower().Contains(keyword))
-				);
-			}
+			//// Tìm kiếm theo keyword
+			//if (!string.IsNullOrWhiteSpace(input.Keyword))
+			//{
+			//	var keyword = input.Keyword.ToLower();
+			//	query = query.Where(x =>
+			//		x.Product.Name.ToLower().Contains(keyword) ||
+			//		(x.Reason != null && x.Reason.ToLower().Contains(keyword)) ||
+			//		(x.Notes != null && x.Notes.ToLower().Contains(keyword))
+			//	);
+			//}
 
 			var totalCount = await query.CountAsync();
 
 			var items = await query
 				.OrderByDescending(x => x.TransactionDate)
 				.ThenByDescending(x => x.CreationTime)
-				.PageBy(input)
+				//.PageBy(input)
 				.ToListAsync();
 
 			var dtos = items.Select(MapToDto).ToList();

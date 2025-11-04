@@ -1,33 +1,25 @@
-﻿@model IEnumerable<MyProject.Web.Models.Products.ProductViewModel>
-@section scripts
-{
-  <environment names="Development">
-    <script src="~/view-resources/Views/Inventories/addProduct.js" asp-append-version="true"></script>
-  </environment>
-
-@*   <environment names="Staging,Production">
-    <script src="~/view-resources/Views/Inventories/Index.min.js" asp-append-version="true"></script>
-  </environment> *@
-}
-
-
-  <div class="modal-header">
-    <h5 class="modal-title">@L("SelectProduct")</h5>
-    <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+﻿<div class="modal-header">
+  <h5 class="modal-title">@L("SelectProduct")</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+  <div class="table-responsive">
+    <table id="ProductSelectTable" class="table table-striped table-bordered">
+      <thead>
+        <tr>
+          <th>@L("Name")</th>
+          <th>@L("Price")</th>
+          <th>@L("Actions")</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Dữ liệu sẽ được load bằng DataTable -->
+      </tbody>
+    </table>
   </div>
-  <div class="modal-body">
-    <div class="table-responsive">
-      <table id="ProductSelectTable" class="table table-striped table-bordered">
-        <thead>
-          <tr>
-            <th>@L("Name")</th>
-            <th>@L("Price")</th>
-            <th>@L("Actions")</th>
-          </tr>
-        </thead>
-        <tbody>
-            
-        </tbody>
-      </table>
-    </div>
-  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+</div>

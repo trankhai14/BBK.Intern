@@ -1,0 +1,58 @@
+@using MyProject.Web.Models.Inventories
+@using MyProject.Inventories
+@model InventoryViewModel
+
+<div class="abp-advanced-search p-3">
+  <form id="InventorySearchForm" class="form-horizontal">
+    <div class="row align-items-center">
+      <!-- Ô tìm kiếm từ khóa -->
+      <div class="col-md-3">
+        <label for="Keyword" class="font-weight-bold">Từ khóa</label>
+        <div class="input-group">
+          <input type="text" id="Keyword" name="Keyword" class="form-control txt-search w-100" placeholder="Tên sản phẩm, đơn vị...">
+        </div>
+      </div>
+
+      <!-- Dropdown trạng thái -->
+      <div class="col-md-2">
+        <label for="Status" class="font-weight-bold">Trạng thái</label>
+        <select class="form-control w-100" id="Status" name="Status">
+          <option value="">Tất cả</option>
+          <option value="1">Đang hoạt động</option>
+          <option value="2">Tạm ngưng</option>
+          <option value="3">Ngừng kinh doanh</option>
+        </select>
+      </div>
+
+      <!-- Checkbox sắp hết hàng -->
+      <div class="col-md-2">
+        <label class="font-weight-bold d-block">&nbsp;</label>
+        <div class="form-check mt-2">
+          <input class="form-check-input" type="checkbox" id="IsLowStock" name="IsLowStock" value="true">
+          <label class="form-check-label" for="IsLowStock">
+            Sắp hết hàng
+          </label>
+        </div>
+      </div>
+
+      <!-- Checkbox cần đặt lại -->
+      <div class="col-md-2">
+        <label class="font-weight-bold d-block">&nbsp;</label>
+        <div class="form-check mt-2">
+          <input class="form-check-input" type="checkbox" id="NeedReorder" name="NeedReorder" value="true">
+          <label class="form-check-label" for="NeedReorder">
+            Cần đặt lại
+          </label>
+        </div>
+      </div>
+
+      <!-- Nút tìm kiếm -->
+      <div class="col-md-3 text-right">
+        <label class="d-block invisible">Tìm kiếm</label>
+        <button type="button" class="btn bg-blue btn-search px-4 w-100">
+          <i class="fas fa-search"></i> Tìm kiếm
+        </button>
+      </div>
+    </div>
+  </form>
+</div>

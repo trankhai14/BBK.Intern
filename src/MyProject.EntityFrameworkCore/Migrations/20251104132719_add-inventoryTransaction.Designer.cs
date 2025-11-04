@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyProject.EntityFrameworkCore;
 
@@ -11,9 +12,11 @@ using MyProject.EntityFrameworkCore;
 namespace MyProject.Migrations
 {
     [DbContext(typeof(MyProjectDbContext))]
-    partial class MyProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251104132719_add-inventoryTransaction")]
+    partial class addinventoryTransaction
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1677,13 +1680,6 @@ namespace MyProject.Migrations
                     b.Property<DateTime>("LastUpdated")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("MinQuantity")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Notes")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
@@ -1695,13 +1691,6 @@ namespace MyProject.Migrations
 
                     b.Property<int>("ReservedQuantity")
                         .HasColumnType("int");
-
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint");
-
-                    b.Property<string>("Unit")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 

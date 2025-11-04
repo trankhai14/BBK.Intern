@@ -1,0 +1,82 @@
+@using MyProject.Web.Models.Common.Modals
+@using MyProject.Web.Models.Inventories;
+@using MyProject.Inventories.Dto;
+@using MyProject.Inventories;
+@model EditInventoryViewModel;
+
+@{
+	Layout = null;
+}
+
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditInventory")))
+
+<form name="InventoryEditForm" role="form" class="form-horizontal">
+	<input type="hidden" name="Id" value="@Model.Inventory.Id" />
+
+	<div class="modal-body">
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label">Sản phẩm</label>
+			<div class="col-md-9">
+				<input type="text" class="form-control" value="@Model.Inventory.ProductName" readonly style="background-color: #f5f5f5;">
+				<input type="hidden" name="ProductId" value="@Model.Inventory.ProductId" />
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="quantity">@L("Quantity")</label>
+			<div class="col-md-9">
+				<input id="quantity" type="number" class="form-control" name="Quantity" value="@Model.Inventory.Quantity" min="0">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="reservedQuantity">@L("ReservedQuantity")</label>
+			<div class="col-md-9">
+				<input id="reservedQuantity" type="number" class="form-control" name="ReservedQuantity" value="@Model.Inventory.ReservedQuantity" min="0">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="reorderLevel">Ngưỡng đặt lại</label>
+			<div class="col-md-9">
+				<input id="reorderLevel" type="number" class="form-control" name="ReorderLevel" value="@Model.Inventory.ReorderLevel" min="0">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="minQuantity">Số lượng tối thiểu</label>
+			<div class="col-md-9">
+				<input id="minQuantity" type="number" class="form-control" name="MinQuantity" value="@Model.Inventory.MinQuantity" min="0">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="unit">@L("Unit")</label>
+			<div class="col-md-9">
+				<input id="unit" type="text" class="form-control" name="Unit" value="@Model.Inventory.Unit" maxlength="50">
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="status">@L("Status")</label>
+			<div class="col-md-9">
+				<select id="status" class="form-control" name="Status">
+					<option value="1" selected="@(Model.Inventory.Status == InventoryStatus.Active)">Đang hoạt động</option>
+					<option value="2" selected="@(Model.Inventory.Status == InventoryStatus.Inactive)">Tạm ngưng</option>
+					<option value="3" selected="@(Model.Inventory.Status == InventoryStatus.Discontinued)">Ngừng kinh doanh</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="notes">Ghi chú</label>
+			<div class="col-md-9">
+				<textarea id="notes" class="form-control" name="Notes" rows="3" maxlength="500">@Model.Inventory.Notes</textarea>
+			</div>
+		</div>
+	</div>
+
+	@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+</form>
+
+<script src="~/view-resources/Views/Inventories/_EditModal.js" asp-append-version="true"></script>

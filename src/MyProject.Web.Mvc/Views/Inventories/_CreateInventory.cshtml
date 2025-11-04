@@ -1,5 +1,6 @@
 ﻿@using MyProject.Web.Models.Common.Modals
 @using MyProject.Web.Models.Inventories
+@using MyProject.Inventories
 @model InventoryViewModel
 
 @{
@@ -18,9 +19,19 @@
           <div class="form-group row mb-3 required">
             <label class="col-md-3 col-form-label fw-bold">@L("Product")</label>
             <div class="col-md-9 d-flex">
-              <input type="text" id="ProductId" name="ProductId" />
-              @* <input type="text" id="ProductName" class="form-control me-2" placeholder="-- Chọn sản phẩm --" readonly required /> *@
-              @* <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ProductSelectModal">
+              <input 
+                type="text" 
+                id="ProductName" 
+                name="ProductName" 
+                class="form-control me-2" 
+                placeholder="-- Chọn sản phẩm --" 
+                readonly 
+                required 
+                style="background: #fff; cursor:pointer;"
+                onclick="$('#ProductSelectModal').modal('show');"
+              />
+              <input type="hidden" id="ProductId" name="ProductId" required />
+              @* <button type="button" class="btn btn-primary ms-2" onclick="$('#ProductSelectModal').modal('show');">
                 <i class="fa fa-search"></i>
               </button> *@
             </div>
@@ -30,7 +41,7 @@
           <div class="form-group row mb-3 required">
             <label class="col-md-3 col-form-label fw-bold">@L("Quantity")</label>
             <div class="col-md-9">
-              <input type="number" class="form-control" name="Quantity" required min="0" placeholder="Nhập số lượng tồn...">
+              <input type="number" class="form-control" name="Quantity" required min="0" value="0" placeholder="Nhập số lượng tồn...">
             </div>
           </div>
 
@@ -42,11 +53,47 @@
             </div>
           </div>
 
-          <!-- Số lượng khả dụng -->
+          <!-- Ngưỡng đặt lại -->
           <div class="form-group row mb-3">
-            <label class="col-md-3 col-form-label fw-bold">@L("AvailableQuantity")</label>
+            <label class="col-md-3 col-form-label fw-bold">Ngưỡng đặt lại</label>
             <div class="col-md-9">
-              <input type="number" class="form-control" name="AvailableQuantity" min="0" value="0" placeholder="Số lượng khả dụng (auto hoặc nhập)">
+              <input type="number" class="form-control" name="ReorderLevel" min="0" value="0" placeholder="Ngưỡng cảnh báo cần đặt lại">
+            </div>
+          </div>
+
+          <!-- Số lượng tối thiểu -->
+          <div class="form-group row mb-3">
+            <label class="col-md-3 col-form-label fw-bold">Số lượng tối thiểu</label>
+            <div class="col-md-9">
+              <input type="number" class="form-control" name="MinQuantity" min="0" value="0" placeholder="Ngưỡng sắp hết hàng">
+            </div>
+          </div>
+
+          <!-- Đơn vị tính -->
+          <div class="form-group row mb-3">
+            <label class="col-md-3 col-form-label fw-bold">@L("Unit")</label>
+            <div class="col-md-9">
+              <input type="text" class="form-control" name="Unit" maxlength="50" value="cái" placeholder="Đơn vị tính (cái, hộp, thùng...)">
+            </div>
+          </div>
+
+          <!-- Trạng thái -->
+          <div class="form-group row mb-3 required">
+            <label class="col-md-3 col-form-label fw-bold">@L("Status")</label>
+            <div class="col-md-9">
+              <select class="form-control" name="Status" id="Status" required>
+                <option value="1" selected>Đang hoạt động</option>
+                <option value="2">Tạm ngưng</option>
+                <option value="3">Ngừng kinh doanh</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Ghi chú -->
+          <div class="form-group row mb-3">
+            <label class="col-md-3 col-form-label fw-bold">Ghi chú</label>
+            <div class="col-md-9">
+              <textarea class="form-control" name="Notes" maxlength="500" rows="3" placeholder="Nhập ghi chú (nếu có)"></textarea>
             </div>
           </div>
         </div>
@@ -57,7 +104,7 @@
   </div>
 </div>
 
-
+<!-- Modal chọn sản phẩm -->
 <div class="modal fade" id="ProductSelectModal" tabindex="-1" role="dialog" aria-labelledby="ProductSelectModalLabel" data-backdrop="static">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">

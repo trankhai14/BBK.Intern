@@ -1,5 +1,7 @@
 using System;
+using Abp.Application.Services.Dto;
 using MyProject.Inventories;
+using MyProject.InventoryTransactions;
 
 namespace MyProject.Inventories.Dto
 {

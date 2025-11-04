@@ -1,0 +1,224 @@
+@using MyProject.Web.Models.Inventories
+@using MyProject.Inventories
+@model EditInventoryViewModel
+
+@{
+  ViewBag.Title = "Chi tiết kho hàng";
+}
+
+<section class="content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+        <h1>Chi tiết kho hàng</h1>
+      </div>
+      <div class="col-sm-6">
+        <a href="/Inventories" class="btn bg-secondary float-sm-right">
+          <i class="fa fa-arrow-left"></i> Quay lại
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Thông tin kho hàng</h3>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="font-weight-bold">Sản phẩm:</label>
+                  <p class="form-control-plaintext">@Model.Inventory.ProductName</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="font-weight-bold">Mã sản phẩm:</label>
+                  <p class="form-control-plaintext">@Model.Inventory.ProductId</p>
+                </div>
+              </div>
+            </div>
+
+            <hr />
+
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="font-weight-bold">Số lượng tồn kho:</label>
+                  <p class="form-control-plaintext">
+                    <span class="badge bg-primary" style="font-size: 1.2em;">@Model.Inventory.Quantity.ToString("N0")</span>
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="font-weight-bold">Số lượng đã giữ:</label>
+                  <p class="form-control-plaintext">
+                    <span class="badge bg-warning" style="font-size: 1.2em;">@Model.Inventory.ReservedQuantity.ToString("N0")</span>
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="font-weight-bold">Số lượng khả dụng:</label>
+                  <p class="form-control-plaintext">
+                    <span class="badge bg-success" style="font-size: 1.2em;">@Model.Inventory.AvailableQuantity.ToString("N0")</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <hr />
+
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="font-weight-bold">Đơn vị tính:</label>
+                  <p class="form-control-plaintext">@Model.Inventory.Unit</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="font-weight-bold">Trạng thái:</label>
+                  <p class="form-control-plaintext">
+                    @{
+                      var statusClass = "bg-secondary";
+                      if (Model.Inventory.Status == InventoryStatus.Active) statusClass = "bg-success";
+                      else if (Model.Inventory.Status == InventoryStatus.Inactive) statusClass = "bg-warning";
+                      else if (Model.Inventory.Status == InventoryStatus.Discontinued) statusClass = "bg-danger";
+                    }
+                    <span class="badge @statusClass">@Model.Inventory.StatusName</span>
+                  </p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="font-weight-bold">Số lượng tối thiểu:</label>
+                  <p class="form-control-plaintext">@Model.Inventory.MinQuantity.ToString("N0")</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="font-weight-bold">Ngưỡng đặt lại:</label>
+                  <p class="form-control-plaintext">@Model.Inventory.ReorderLevel.ToString("N0")</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="form-group">
+                  <label class="font-weight-bold">Cảnh báo:</label>
+                  <p class="form-control-plaintext">
+                    @if (Model.Inventory.IsLowStock)
+                    {
+                      <span class="badge bg-warning">Sắp hết hàng</span>
+                    }
+                    @if (Model.Inventory.NeedReorder)
+                    {
+                      <span class="badge bg-danger">Cần đặt lại</span>
+                    }
+                    @if (!Model.Inventory.IsLowStock && !Model.Inventory.NeedReorder)
+                    {
+                      <span class="text-muted">Bình thường</span>
+                    }
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Inventory.Notes))
+            {
+              <hr />
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="font-weight-bold">Ghi chú:</label>
+                    <p class="form-control-plaintext">@Model.Inventory.Notes</p>
+                  </div>
+                </div>
+              </div>
+            }
+
+            <hr />
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="font-weight-bold">Ngày tạo:</label>
+                  <p class="form-control-plaintext">@Model.Inventory.CreateTime.ToString("dd/MM/yyyy HH:mm:ss")</p>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label class="font-weight-bold">Cập nhật lần cuối:</label>
+                  <p class="form-control-plaintext">@Model.Inventory.LastUpdateTime.ToString("dd/MM/yyyy HH:mm:ss")</p>
+                </div>
+              </div>
+            </div>
+
+            @if (Model.Inventory.ProductPrice > 0)
+            {
+              <hr />
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label class="font-weight-bold">Giá sản phẩm:</label>
+                    <p class="form-control-plaintext">
+                      <span class="text-danger font-weight-bold" style="font-size: 1.2em;">
+                        @Model.Inventory.ProductPrice.ToString("N0") đ
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Model.Inventory.ProductDescription))
+            {
+              <hr />
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label class="font-weight-bold">Mô tả sản phẩm:</label>
+                    <p class="form-control-plaintext">@Model.Inventory.ProductDescription</p>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+          <div class="card-footer">
+            <a href="/Inventories" class="btn btn-secondary">
+              <i class="fa fa-arrow-left"></i> Quay lại
+            </a>
+            <a href="javascript:;" class="btn btn-primary" onclick="editInventory(@Model.Inventory.Id)">
+              <i class="fa fa-edit"></i> Chỉnh sửa
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  function editInventory(id) {
+    window.location.href = '/Inventories/EditModal?inventoryId=' + id;
+    // Hoặc mở modal edit
+    // abp.ajax({
+    //   url: abp.appPath + 'Inventories/EditModal?inventoryId=' + id,
+    //   type: 'POST',
+    //   dataType: 'html',
+    //   success: function (content) {
+    //     $('#InventoryEditModal div.modal-content').html(content);
+    //     $('#InventoryEditModal').modal('show');
+    //   }
+    // });
+  }
+</script>

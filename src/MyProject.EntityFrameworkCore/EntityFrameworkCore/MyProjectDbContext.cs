@@ -13,6 +13,7 @@ using MyProject.Sliders;
 using MyProject.Tours;
 using MyProject.Orders;
 using MyProject.Inventories;
+using MyProject.InventoryTransactions;
 
 
 namespace MyProject.EntityFrameworkCore

@@ -1,4 +1,5 @@
-﻿@model MyProject.Inventories.Dto.InventoryListDto
+﻿@using MyProject.Web.Models.Inventories
+@model InventoryViewModel
 @{
   ViewBag.Title = L("Inventories");
 }
@@ -7,19 +8,26 @@
 {
   <environment names="Development">
     <script src="~/view-resources/Views/Inventories/Index.js" asp-append-version="true"></script>
+    <script src="~/view-resources/Views/Inventories/addProduct.js" asp-append-version="true"></script>
   </environment>
 
   <environment names="Staging,Production">
     <script src="~/view-resources/Views/Inventories/Index.min.js" asp-append-version="true"></script>
+    <script src="~/view-resources/Views/Inventories/addProduct.min.js" asp-append-version="true"></script>
   </environment>
 }
-
 
 <section class="content-header">
   <div class="container-fluid">
     <div class="row">
       <div class="col-sm-6">
         <h1>@L("Inventories")</h1>
+      </div>
+      <div class="col-sm-6">
+        <a href="javascript:;" data-toggle="modal" data-target="#InventoryCreateModal" class="btn bg-blue float-sm-right">
+          <i class="fa fa-plus-square"></i>
+          @L("Create")
+        </a>
       </div>
     </div>
   </div>
@@ -29,16 +37,13 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-12">
-        @* @await Html.PartialAsync("~/Views/Inventories/Search.cshtml") *@
         <div class="card">
           <div class="card-header">
             <div class="row">
               <div class="col-md-6">
-                <!-- Chỗ thêm nút Add Inventory -->
-                <a href="javascript:;" data-toggle="modal" data-target="#InventoryCreateModal" class="btn bg-blue float-sm-right">
-                  <i class="fa fa-plus-square"></i>
-                  @L("Create")
-                </a>
+              </div>
+              <div class="col-md-6">
+                @await Html.PartialAsync("~/Views/Inventories/Search.cshtml", Model)
               </div>
             </div>
           </div>
@@ -48,10 +53,16 @@
                 <thead>
                   <tr>
                     <th>@L("ProductName")</th>
-                    <th style="width:120px">@L("Quantity")</th>
+                    <th style="width:100px">@L("Quantity")</th>
                     <th style="width:120px">@L("ReservedQuantity")</th>
+                    <th style="width:120px">@L("AvailableQuantity")</th>
+                    <th style="width:100px">@L("Unit")</th>
+                    <th style="width:100px">@L("Status")</th>
+                    <th style="width:100px">@L("MinQuantity")</th>
+                    <th style="width:120px">@L("ReorderLevel")</th>
+                    <th style="width:80px">Cảnh báo</th>
                     <th style="width:180px">@L("LastUpdated")</th>
-                    <th style="width:200px">@L("Actions")</th>
+                    <th style="width:250px">@L("Actions")</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -67,7 +78,6 @@
 </section>
 
 @await Html.PartialAsync("~/Views/Inventories/_CreateInventory.cshtml", Model)
-
 
 <!-- Modal Edit Inventory -->
 <div class="modal fade" id="InventoryEditModal" tabindex="-1" role="dialog" aria-labelledby="InventoryEditModalLabel" data-backdrop="static">
