@@ -136,14 +136,15 @@ namespace MyProject.Web.Startup
                         )
                     )
                 )
+                //.AddItem(
+                //    new MenuItemDefinition(
+                //    "TaskList",
+                //    L("TaskList"),
+                //    url: "Tasks",
+                //    icon: "fa fa-tasks"
+                //    )
+                //)
                 .AddItem(
-                    new MenuItemDefinition(
-                    "TaskList",
-                    L("TaskList"),
-                    url: "Tasks",
-                    icon: "fa fa-tasks"
-                    )
-                ).AddItem(
                     new MenuItemDefinition(
                     "ProductList",
                     L("ProductList"),
@@ -151,15 +152,16 @@ namespace MyProject.Web.Startup
                     icon: "fa fa-box",
 										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Products)
                     )
-                ).AddItem(
-										new MenuItemDefinition(
-										"Web",
-										L("Web"),
-										url: "Web",
-										icon: "fa fa-box",
-										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Categories)
-                    )
-								)
+                )
+        //        .AddItem(
+								//		new MenuItemDefinition(
+								//		"Web",
+								//		L("Web"),
+								//		url: "Web",
+								//		icon: "fa fa-box",
+								//		permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Categories)
+        //            )
+								//)
                 .AddItem(
 										new MenuItemDefinition(
 										"CategoryList",
@@ -175,18 +177,27 @@ namespace MyProject.Web.Startup
 										url: "Sliders",
 										icon: "fa fa-th-large"
 										)
-								).AddItem(
-										new MenuItemDefinition(
-										"TourList",
-										L("TourList"),
-										url: "Tours",
-										icon: "fa fa-th-large"
-										)
-								).AddItem(
+								)
+        //        .AddItem(
+								//		new MenuItemDefinition(
+								//		"TourList",
+								//		L("TourList"),
+								//		url: "Tours",
+								//		icon: "fa fa-th-large"
+								//		)
+								//)
+                .AddItem(
 										new MenuItemDefinition(
 										"OrderList",
 										L("OrderList"),
 										url: "Orders",
+										icon: "fa fa-th-large"
+										)
+								).AddItem(
+										new MenuItemDefinition(
+										"Inventories",
+										L("Inventories"),
+										url: "Inventories",
 										icon: "fa fa-th-large"
 										)
 								);

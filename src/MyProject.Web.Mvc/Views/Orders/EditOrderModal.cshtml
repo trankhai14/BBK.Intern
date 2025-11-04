@@ -19,11 +19,11 @@
 
 @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditOrder")))
 
-<form name="OrderEditForm" role="form" class="form-horizontal">
+<form name="OrderEditForm" role="form" class="form-horizontal p-4">
 	<input type="hidden" name="OrderId" value="@Model.Order.Id" />
 
 		<div class="form-group row">
-			<label class="col-md-4 col-form-label">@L("CustomerName"):</label>
+		<label class="col-md-4 col-form-label">@L("NameUser"):</label>
 			<div class="col-md-8">
 				<p class="form-control-plaintext">@Model.Order.NameUser</p>
 			</div>

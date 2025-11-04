@@ -29,7 +29,7 @@ namespace MyProject.Sliders
 		}
 		public async Task<PagedResultDto<SliderListDto>> GetAllSlider(GetAllSlidersInput input)
 		{
-			var query = _sliderRepository.GetAll();
+			var query =  _sliderRepository.GetAll();
 
 			if(!string.IsNullOrWhiteSpace(input.Keyword))
 			{
@@ -37,8 +37,10 @@ namespace MyProject.Sliders
 				query = query.Where(x => x.Title.ToLower().Contains(keywordLower));
 			}
 
-			//query = query.Where(x => !input.IsActive.HasValue || x.IsActive == input.IsActive.Value);
-
+			if(input.IsActive != null)
+			{
+			query = query.Where(x => x.IsActive == input.IsActive.Value);
+			}
 
 			var sliderCount = await query.CountAsync();
 

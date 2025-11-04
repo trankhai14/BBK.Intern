@@ -14,7 +14,7 @@ namespace MyProject.Product.Dtos
 
 		public string Description { get; set; }
 
-		public decimal Price;
+		public decimal Price { get; set; }
 		public DateTime CreationTime { get; set; }
 
 		public ProductState State { get; set; }

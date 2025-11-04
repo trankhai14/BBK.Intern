@@ -60,6 +60,12 @@
       formData.append('ImagePath', imageFile);
     }
 
+    // Ghi dữ liệu FormData ra console
+    console.log("Dữ liệu trong FormData:");
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
+
     abp.ui.setBusy(_$modal);
     $.ajax({
       url: abp.appPath + 'Products/EditAndUploadDeleteImage', // Đường dẫn đến phương thức trong controller

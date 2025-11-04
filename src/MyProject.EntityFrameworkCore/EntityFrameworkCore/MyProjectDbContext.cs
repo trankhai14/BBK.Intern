@@ -12,6 +12,7 @@ using MyProject.Carts;
 using MyProject.Sliders;
 using MyProject.Tours;
 using MyProject.Orders;
+using MyProject.Inventories;
 
 
 namespace MyProject.EntityFrameworkCore
@@ -33,6 +34,8 @@ namespace MyProject.EntityFrameworkCore
 		public DbSet<CartItem> CartItems { get; set; }
 		public DbSet<Order> Orders { get; set; }
 		public DbSet<OrderDetail> OrderDetail { get; set; }
+		public DbSet<Inventory> Inventories { get; set; }
+		public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
 
 		public MyProjectDbContext(DbContextOptions<MyProjectDbContext> options)
 						: base(options)

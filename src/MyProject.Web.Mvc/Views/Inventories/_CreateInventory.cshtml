@@ -1,0 +1,68 @@
+﻿@using MyProject.Web.Models.Common.Modals
+@using MyProject.Web.Models.Inventories
+@model InventoryViewModel
+
+@{
+  Layout = null;
+}
+
+<div class="modal fade" id="InventoryCreateModal" tabindex="-1" role="dialog" aria-labelledby="InventoryCreateModalLabel" data-backdrop="static">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateNewInventory")))
+
+      <form name="inventoryCreateForm" role="form" class="form-horizontal">
+        <div class="modal-body">
+
+          <!-- Chọn sản phẩm -->
+          <div class="form-group row mb-3 required">
+            <label class="col-md-3 col-form-label fw-bold">@L("Product")</label>
+            <div class="col-md-9 d-flex">
+              <input type="text" id="ProductId" name="ProductId" />
+              @* <input type="text" id="ProductName" class="form-control me-2" placeholder="-- Chọn sản phẩm --" readonly required /> *@
+              @* <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ProductSelectModal">
+                <i class="fa fa-search"></i>
+              </button> *@
+            </div>
+          </div>
+
+          <!-- Số lượng tồn kho -->
+          <div class="form-group row mb-3 required">
+            <label class="col-md-3 col-form-label fw-bold">@L("Quantity")</label>
+            <div class="col-md-9">
+              <input type="number" class="form-control" name="Quantity" required min="0" placeholder="Nhập số lượng tồn...">
+            </div>
+          </div>
+
+          <!-- Số lượng đã đặt -->
+          <div class="form-group row mb-3">
+            <label class="col-md-3 col-form-label fw-bold">@L("ReservedQuantity")</label>
+            <div class="col-md-9">
+              <input type="number" class="form-control" name="ReservedQuantity" min="0" value="0" placeholder="Số lượng đã đặt (nếu có)">
+            </div>
+          </div>
+
+          <!-- Số lượng khả dụng -->
+          <div class="form-group row mb-3">
+            <label class="col-md-3 col-form-label fw-bold">@L("AvailableQuantity")</label>
+            <div class="col-md-9">
+              <input type="number" class="form-control" name="AvailableQuantity" min="0" value="0" placeholder="Số lượng khả dụng (auto hoặc nhập)">
+            </div>
+          </div>
+        </div>
+
+        @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="ProductSelectModal" tabindex="-1" role="dialog" aria-labelledby="ProductSelectModalLabel" data-backdrop="static">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      @await Html.PartialAsync("~/Views/Inventories/_ProductSelectModal.cshtml")
+    </div>
+  </div>
+</div>
+

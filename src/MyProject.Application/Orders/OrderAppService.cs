@@ -46,7 +46,7 @@ namespace MyProject.Orders
 
 			var counts = await orders.CountAsync();
 
-			var orderDtos = orders.PageBy(input).Select(o => new OrderListDto
+			var orderDtos = orders.OrderByDescending(o => o.CreationTime).PageBy(input).Select(o => new OrderListDto
 			{
 				Id = o.Id,
 				UserId = o.UserId,

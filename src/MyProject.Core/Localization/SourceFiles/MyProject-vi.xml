@@ -103,5 +103,26 @@
 		<text name="EditProduct">Chỉnh sửa sản phẩm</text>
 		<text name="CategoryList" value="Danh sách danh mục" />
 		<text name="ProductList" value="Danh sách sản phẩm" />
+		<text name="SelectCategory" value="Chọn danh mục" />
+		<text name="OrderList" value="Danh sách đơn hàng" />
+		<text name="Orders" value="Đơn hàng" />
+		<text name="NameUser" value="Tên người dùng" />
+		<text name="TotalAmount" value="Tổng số tiền" />
+		<text name="DiscountAmount" value="Số tiền giảm giá" />
+		<text name="PaymentMethod" value="Phương thức thanh toán" />
+		<text name="OrderStatus" value="Trạng thái đơn hàng" />
+		<text name="EditOrder" value="Chỉnh sửa đơn hàng" />
+		<text name="Sliders" value="Trình chiếu" />
+		<text name="CreateNewSlider" value="Tạo trình chiếu mới" />
+		<text name="SliderImage" value="Hình ảnh trình chiếu" />
+		<text name="EditSlider" value="Chỉnh sửa trình chiếu" />
+		<text name="SliderDetails" value="Chi tiết trình chiếu" />
+		<text name="Pending" value="Đang chờ xử lý" />
+		<text name="Confirmed" value="Đã xác nhận" />
+		<text name="Shipping" value="Đang vận chuyển" />
+		<text name="Canceled" value="Đã hủy" />
+		<text name="Success" value="Thành công" />
+
+
 	</texts>
 </localizationDictionary>

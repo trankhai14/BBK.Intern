@@ -1,31 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using Abp.Application.Services;
 using Abp.Application.Services.Dto;
 using Abp.Domain.Repositories;
-using MyProject.Product;
-using MyProject.Product.Dtos;
-using MyProject.Products;
-using MyProject.Products.Dtos;
-using MyProject.TaskAppService.Dto;
-using Microsoft.EntityFrameworkCore;
 using Abp.Linq.Extensions;
+using Microsoft.EntityFrameworkCore;
 using MyProject.Categories;
 using MyProject.Categories.Dto;
-using Microsoft.AspNetCore.Http;
-using Abp.UI;
-using System.IO;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Hosting;
-using Abp.Authorization;
-using MyProject.Authorization;
+using MyProject.Product.Dtos;
+using MyProject.Products.Dtos;
 using static MyProject.Products.Product;
-using MyProject.EntityFrameworkCore;
-using System.Linq.Dynamic.Core;
-using Abp.Application.Services;
 
 
 namespace MyProject.Products
@@ -72,7 +59,7 @@ namespace MyProject.Products
 			var products = _productRepository.GetAll();
 
 			var Count = await products.CountAsync();
-			
+
 			input.Sorting = "CreationTime DESC"; // Sắp xếp theo thời gian tạo mới nhất dùng sorting của PagedAndSortedResultRequestDto
 
 			var productDtos = products.PageBy(input).Select(p => new ProductListDto
@@ -194,7 +181,7 @@ namespace MyProject.Products
 				Description = product.Description,
 				Price = product.Price,
 				State = product.State,
-				CreationTime = product.CreationTime, 
+				CreationTime = product.CreationTime,
 				Image = product.Image,
 				CategoryId = product.CategoryId
 			};
@@ -285,6 +272,6 @@ namespace MyProject.Products
 
 		// join (left join , ...)
 
-	
+
 	}
 }

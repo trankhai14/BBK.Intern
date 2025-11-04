@@ -6,8 +6,6 @@
 	line-height: 1.5;
 }
 
-
-
 h6:hover {
 	color: cornflowerblue;
 	cursor: pointer
@@ -77,9 +75,19 @@ h6:hover {
 	display: none;
 }
 
-	.product-card.active {
-		display: block;
-	}
+/*.product-card.active {
+	display: block;
+}*/
+
+.product-category-list {
+	transition: transform 0.4s ease, opacity 0.4s ease; /* chậm hơn */
+}
+
+.product-category-list:hover {
+	transform: translateY(-5px) scale(1.02); /* nhô lên 5px và phóng to nhẹ */
+	opacity: 1;
+	cursor: pointer; /* Thêm con trỏ tay khi hover */
+}
 
 .product-image {
 	width: 100%;
@@ -87,12 +95,12 @@ h6:hover {
 	object-fit: contain;
 	border-radius: 8px;
 	text-align: center; /* Căn giữa theo chiều dọc */
-	transition: transform 0.3s ease-in-out; /* Tạo hiệu ứng mượt */
+	/*transition: transform 0.2s ease-in-out;*/ /* Tạo hiệu ứng mượt */
 }
 
-.product-image:hover {
-	transform: scale(1.1); /* Phóng to ảnh 10% khi hover */
-}
+/*.product-image:hover {
+	transform: scale(1.05);*/ /* Phóng to ảnh 10% khi hover */
+/*}*/
 
 .product-list-title
 {

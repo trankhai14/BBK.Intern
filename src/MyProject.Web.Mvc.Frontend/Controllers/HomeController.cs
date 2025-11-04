@@ -18,15 +18,10 @@ using MyProject.Categories;
 using MyProject.Sliders;
 using MyProject.Carts;
 using MyProject.Web.Models.Home;
-using Abp.Collections.Extensions;
 using MyProject.Web.Models.Orders;
 using MyProject.OrderDetails;
 using MyProject.Orders;
-using static MyProject.Orders.OrderAppService;
 using MyProject.Users;
-using Microsoft.AspNetCore.Identity;
-using MyProject.Authorization.Users;
-
 namespace MyProject.Web.Controllers
 {
 	//[AbpMvcAuthorize]

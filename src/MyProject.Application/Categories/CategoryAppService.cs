@@ -185,7 +185,7 @@ namespace MyProject.Categories
 			if (!string.IsNullOrEmpty(input.CategoryName))
 			{
 				string nameLower = input.CategoryName.ToLower();
-				categoryQuery = categoryQuery.Where(x => x.CategoryName.ToLower().Contains(nameLower));
+				categoryQuery = categoryQuery.Where(x => x.CategoryName.ToLower().Contains(nameLower) || x.CategoryDescription.ToLower().Contains(nameLower));
 			}
 
 			var Count = await _categoryRepository.CountAsync();

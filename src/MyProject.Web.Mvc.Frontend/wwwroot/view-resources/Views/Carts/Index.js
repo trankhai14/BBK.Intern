@@ -19,6 +19,11 @@
 		var unitPrice = parseFloat(unitPriceText.replace(/,/g, "")) || 0;
 		var currentQuantity = parseInt(quantityInput.val()) || 0;
 
+		console.log("quantityInput", quantityInput);
+		console.log("priceElement", priceElement);
+		console.log("unitPrice", unitPrice);
+		console.log("currentQuantity", currentQuantity);
+
 		// Nếu số lượng lớn hơn 1, giảm số lượng ngay
 		if (currentQuantity > 1) {
 			bool = false;
@@ -29,6 +34,7 @@
 			quantityInput.val(newQuantity);
 			var newPrice = unitPrice * newQuantity;
 			priceElement.text(newPrice.toLocaleString('vi-VN') + " đ");
+			console.log("priceElement", priceElement);
 			updateTotalPrice();
 		} else {
 			// Nếu số lượng là 1, hiển thị modal xác nhận xóa
@@ -53,6 +59,7 @@
 		}
 	});
 
+	debugger
 	$('.btn-increase').on('click', function () { //Tang so luong san pham
 		var productId = $(this).data('id'); // Lấy ID sản phẩm
 		var cartItem = $(this).closest('.cart-item'); // Tìm phần tử cha chứa sản phẩm
@@ -61,7 +68,6 @@
 
 		var unitPrice = parseInt(priceElement.attr('data-unit-price')) || 0; // Lấy giá gốc
 		var currentQuantity = parseInt(quantityInput.val()) || 0; // Lấy số lượng hiện tại
-
 
 		// Thêm vào giỏ hàng
 		if (quantityInput > 10) {

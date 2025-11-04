@@ -53,10 +53,10 @@
 				{
 					<div class="carousel-item @(index == 0 ? "active" : "")">
 						<img class="d-block w-100" src="@slider.Image" alt="@slider.Title">
-						<div class="carousel-caption d-none d-md-block">
+						@* <div class="carousel-caption d-none d-md-block">
 							<h5>@slider.Title</h5>
 							<p>@slider.Description</p>
-						</div>
+						</div> *@
 					</div>
 					index++;
 				}
@@ -95,7 +95,9 @@
 		<div class="product-list d-flex flex-nowrap overflow-hidden">
 			@foreach (var product in Model.ProductData.Products)
 			{
-				<div class="product-card" style="width: 224px; margin-right: 10px;">
+				<div id="product-list-new" 
+				class="product-card" 
+				style="width: 224px; margin-right: 10px;">
 					<div class="card">
 						<div class="card-body" style="height: 95%; text-align: center;">
 							<img src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)"
@@ -145,8 +147,8 @@
 				<div class="row product-info-container ml-2">
 					@foreach (var product in category.Products)
 					{
-						<div class="swiper-slide me-1" style="width: 224.8px; margin-right: 10px">
-							<div class="card mb-3">
+						<div class="swiper-slide me-1" style="width: 220px; margin-right: 10px">
+							<div class="card mb-3 product-category-list">
 								<div class="card-body">
 									<div class="product-image">
 										<img data-id="@product.Id" class="product-image btn-view-detail" style="width: 160px; height: 160px;" src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)" alt="@product.Name">

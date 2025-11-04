@@ -12,7 +12,7 @@
 
 <form name="ProductEditForm" role="form" class="form-horizontal">
 	<input type="hidden" name="Id" value="@Model.Product.Id" />
-	<input type="hidden" name="CategoryId" value="@Model.Product.CategoryId" />
+
 
 
 	<div class="modal-body">
@@ -33,9 +33,26 @@
 		<div class="form-group row required">
 			<label class="col-md-3 col-form-label" for="price">@L("Price")</label>
 			<div class="col-md-9">
-				<input id="price" type="number" class="form-control" name="Price" value="@Model.Product.Price" required>
+				<input id="price" type="text" class="form-control" name="Price" value="@Model.Product.Price.ToString("0")" required>
 			</div>
 		</div>
+
+		<div class="form-group row required">
+			<label class="col-md-3 col-form-label" for="categoryId">@L("Categories")</label>
+			<div class="col-md-9">
+				<select id="categoryId" class="form-control" name="CategoryId" required>
+					<option value="">@L("SelectCategory")</option>
+					@foreach (var category in Model.Categories)
+					{
+						<option value="@category.Id"
+										selected="@(category.Id == Model.Product.CategoryId)">
+							@category.CategoryName
+						</option>
+					}
+				</select>
+			</div>
+		</div>
+
 
 		<div class="form-group row required">
 			<label class="col-md-3 col-form-label" for="state">@L("State")</label>

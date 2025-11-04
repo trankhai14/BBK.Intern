@@ -52,10 +52,12 @@ namespace MyProject.Web.Controllers
 		public async Task<ActionResult> EditModal(int productId)
 		{
 			var product = await _productAppService.GetAsync(new EntityDto<int>(productId));
+			var categories = await _categoryAppService.GetAllCategory();
 
 			var model = new EditProductViewModel
 			{
-				Product = product
+				Product = product,
+				Categories = categories,
 			};
 			return PartialView("_EditModal", model);
 		}
