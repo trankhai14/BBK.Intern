@@ -1,0 +1,71 @@
+@using MyProject.Web.Models.Common.Modals
+@using MyProject.CustomerProfiles.Dto
+@model UpdateCustomerProfileDto
+@{
+    Layout = null;
+}
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditCustomerProfile")))
+<form name="CustomerProfileEditForm" role="form" class="form-horizontal">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <div class="modal-body">
+        <div class="form-group row required">
+            <label class="col-md-3 col-form-label" for="FullName">@L("FullName")</label>
+            <div class="col-md-9">
+                <input id="FullName" type="text" class="form-control" name="FullName" value="@Model.FullName" required maxlength="256">
+            </div>
+        </div>
+
+        <div class="form-group row required">
+            <label class="col-md-3 col-form-label" for="PhoneNumber">@L("PhoneNumber")</label>
+            <div class="col-md-9">
+                <input id="PhoneNumber" type="text" class="form-control" name="PhoneNumber" value="@Model.PhoneNumber" required maxlength="20">
+            </div>
+        </div>
+
+        <div class="form-group row required">
+            <label class="col-md-3 col-form-label" for="Address">@L("Address")</label>
+            <div class="col-md-9">
+                <textarea id="Address" class="form-control" name="Address" rows="2" required maxlength="500">@Model.Address</textarea>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="Ward">@L("Ward")</label>
+            <div class="col-md-9">
+                <input id="Ward" type="text" class="form-control" name="Ward" value="@Model.Ward" maxlength="100">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="District">@L("District")</label>
+            <div class="col-md-9">
+                <input id="District" type="text" class="form-control" name="District" value="@Model.District" maxlength="100">
+            </div>
+        </div>
+
+        <div class="form-group row required">
+            <label class="col-md-3 col-form-label" for="City">@L("City")</label>
+            <div class="col-md-9">
+                <input id="City" type="text" class="form-control" name="City" value="@Model.City" required maxlength="100">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="Avatar">@L("Avatar")</label>
+            <div class="col-md-9">
+                <input id="Avatar" type="text" class="form-control" name="Avatar" value="@Model.Avatar" maxlength="500">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="IsDefault">@L("IsDefault")</label>
+            <div class="col-md-9">
+                <input id="IsDefault" type="checkbox" name="IsDefault" value="true" @(Model.IsDefault ? "checked" : "") />
+            </div>
+        </div>
+    </div>
+    @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+</form>
+
+<script src="~/view-resources/Views/CustomerProfiles/_EditModal.js" asp-append-version="true"></script>
+

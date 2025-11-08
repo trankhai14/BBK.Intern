@@ -8,7 +8,6 @@ using Abp.Linq.Extensions;
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
 using MyProject.Inventories.Dto;
-//using MyProject.Products;
 using MyProject.InventoryTransactions;
 
 

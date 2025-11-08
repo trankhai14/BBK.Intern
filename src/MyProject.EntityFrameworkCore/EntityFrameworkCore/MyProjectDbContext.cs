@@ -15,6 +15,7 @@ using MyProject.Orders;
 using MyProject.Inventories;
 using MyProject.InventoryTransactions;
 using MyProject.CustomerProfiles;
+using MyProject.FlashSales;
 
 
 namespace MyProject.EntityFrameworkCore
@@ -39,6 +40,8 @@ namespace MyProject.EntityFrameworkCore
 		public DbSet<Inventory> Inventories { get; set; }
 		public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
 		public DbSet<CustomerProfile> CustomerProfiles { get; set; }
+		public DbSet<FlashSale> FlashSales { get; set; }
+		public DbSet<FlashSaleProduct> FlashSaleProducts { get; set; }
 
 		public MyProjectDbContext(DbContextOptions<MyProjectDbContext> options)
 						: base(options)

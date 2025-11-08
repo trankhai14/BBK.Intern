@@ -200,6 +200,22 @@ namespace MyProject.Web.Startup
 										url: "Inventories",
 										icon: "fa fa-th-large"
 										)
+								).AddItem(
+										new MenuItemDefinition(
+										PageNames.CustomerProfiles,
+										L("CustomerProfiles"),
+										url: "CustomerProfiles",
+										icon: "fa fa-user-circle",
+										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Users)
+										)
+								).AddItem(
+										new MenuItemDefinition(
+										PageNames.FlashSales,
+										L("FlashSales"),
+										url: "FlashSales",
+										icon: "fa fa-bolt",
+										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Products)
+										)
 								);
 
 		}

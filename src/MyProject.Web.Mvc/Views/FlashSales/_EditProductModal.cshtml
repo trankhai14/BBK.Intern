@@ -1,0 +1,39 @@
+@using MyProject.Web.Models.Common.Modals
+@using MyProject.FlashSales.Dto
+@model AddProductToFlashSaleDto
+@{
+    Layout = null;
+    var flashSaleProductId = ViewBag.FlashSaleProductId as int?;
+}
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditProductInFlashSale")))
+<form name="EditProductForm" role="form" class="form-horizontal">
+    <input type="hidden" name="FlashSaleProductId" value="@flashSaleProductId" />
+    <div class="modal-body">
+        <div class="form-group row required">
+            <label class="col-md-3 col-form-label" for="FlashSalePrice">@L("FlashSalePrice")</label>
+            <div class="col-md-9">
+                <input id="FlashSalePrice" type="number" step="0.01" class="form-control" name="FlashSalePrice" value="@Model.FlashSalePrice" required min="0.01">
+            </div>
+        </div>
+
+        <div class="form-group row required">
+            <label class="col-md-3 col-form-label" for="FlashSaleQuantity">@L("FlashSaleQuantity")</label>
+            <div class="col-md-9">
+                <input id="FlashSaleQuantity" type="number" class="form-control" name="FlashSaleQuantity" value="@Model.FlashSaleQuantity" required min="1">
+                <small class="form-text text-muted" id="AvailableQuantityText"></small>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="MaxQuantityPerUser">@L("MaxQuantityPerUser")</label>
+            <div class="col-md-9">
+                <input id="MaxQuantityPerUser" type="number" class="form-control" name="MaxQuantityPerUser" value="@(Model.MaxQuantityPerUser?.ToString() ?? "")" min="1">
+                <small class="form-text text-muted">Để trống nếu không giới hạn</small>
+            </div>
+        </div>
+    </div>
+    @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+</form>
+
+<script src="~/view-resources/Views/FlashSales/_EditProductModal.js" asp-append-version="true"></script>
+

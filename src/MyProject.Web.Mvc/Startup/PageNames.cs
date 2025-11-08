@@ -12,6 +12,8 @@
 		public const string Sliders = "Sliders";
 		public const string Tours = "Tours";
 		public const string Orders = "Orders";
+		public const string CustomerProfiles = "CustomerProfiles";
+		public const string FlashSales = "FlashSales";
 
 	}
 }

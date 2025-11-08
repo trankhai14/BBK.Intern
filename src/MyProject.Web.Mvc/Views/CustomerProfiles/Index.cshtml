@@ -1,0 +1,74 @@
+@using MyProject.Web.Startup
+@using Abp.Application.Services.Dto
+@using MyProject.CustomerProfiles.Dto
+@model PagedResultDto<CustomerProfileDto>
+@{
+	ViewBag.Title = L("CustomerProfiles");
+	ViewBag.CurrentPageName = PageNames.CustomerProfiles;
+}
+@section scripts
+{
+	<environment names="Development">
+		<script src="~/view-resources/Views/CustomerProfiles/Index.js" asp-append-version="true"></script>
+	</environment>
+
+	<environment names="Staging,Production">
+		<script src="~/view-resources/Views/CustomerProfiles/Index.min.js" asp-append-version="true"></script>
+	</environment>
+}
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-6">
+				<h1>@L("CustomerProfiles")</h1>
+			</div>
+		</div>
+	</div>
+</section>
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<div class="row">
+							<div class="col-md-6">
+								<!--Use for bulk actions-->
+							</div>
+							<div class="col-md-6">
+								@await Html.PartialAsync("~/Views/CustomerProfiles/Search.cshtml")
+							</div>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="table-responsive">
+							<table id="CustomerProfilesTable" class="table table-striped table-bordered">
+								<thead>
+									<tr>
+										<th></th>
+										<th>@L("FullName")</th>
+										<th>@L("PhoneNumber")</th>
+										<th>@L("Address")</th>
+										<th>@L("City")</th>
+										<th>@L("IsDefault")</th>
+										<th style="width: 150px">@L("Actions")</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- Edit Modal -->
+<div class="modal fade" id="CustomerProfileEditModal" tabindex="-1" role="dialog" aria-labelledby="CustomerProfileEditModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+		</div>
+	</div>
+</div>
+

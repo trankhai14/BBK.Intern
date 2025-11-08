@@ -1,0 +1,57 @@
+@using MyProject.Web.Models.Common.Modals
+@using MyProject.FlashSales.Dto
+@model UpdateFlashSaleDto
+@{
+    Layout = null;
+}
+@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("EditFlashSale")))
+<form name="FlashSaleEditForm" role="form" class="form-horizontal">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <div class="modal-body">
+        <div class="form-group row required">
+            <label class="col-md-3 col-form-label" for="Name">@L("Name")</label>
+            <div class="col-md-9">
+                <input id="Name" type="text" class="form-control" name="Name" value="@Model.Name" required maxlength="256">
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="Description">@L("Description")</label>
+            <div class="col-md-9">
+                <textarea id="Description" class="form-control" name="Description" rows="3" maxlength="2000">@Model.Description</textarea>
+            </div>
+        </div>
+
+        <div class="form-group row required">
+            <label class="col-md-3 col-form-label" for="StartTime">@L("StartTime")</label>
+            <div class="col-md-9">
+                <input id="StartTime" type="datetime-local" class="form-control" name="StartTime" value="@Model.StartTime.ToString("yyyy-MM-ddTHH:mm")" required>
+            </div>
+        </div>
+
+        <div class="form-group row required">
+            <label class="col-md-3 col-form-label" for="EndTime">@L("EndTime")</label>
+            <div class="col-md-9">
+                <input id="EndTime" type="datetime-local" class="form-control" name="EndTime" value="@Model.EndTime.ToString("yyyy-MM-ddTHH:mm")" required>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="IsActive">@L("IsActive")</label>
+            <div class="col-md-9">
+                <input id="IsActive" type="checkbox" name="IsActive" value="true" @(Model.IsActive ? "checked" : "") />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-3 col-form-label" for="IsHidden">@L("IsHidden")</label>
+            <div class="col-md-9">
+                <input id="IsHidden" type="checkbox" name="IsHidden" value="true" @(Model.IsHidden ? "checked" : "") />
+            </div>
+        </div>
+    </div>
+    @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+</form>
+
+<script src="~/view-resources/Views/FlashSales/_EditModal.js" asp-append-version="true"></script>
+
