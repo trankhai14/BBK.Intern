@@ -255,3 +255,4 @@ Other Services → InventoryAppService
                        (không tạo Transaction)
                        VD: Tăng ReservedQuantity khi đặt hàng
 ```
+

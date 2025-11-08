@@ -13,6 +13,7 @@ namespace MyProject.Products
 	{
 		public const int MaxNameLength = 256;
 		public const int MaxDescriptionLength = 64 * 1024; // 64KB
+        public const int MaxBrandLength = 128;
 
 		[Required]
 		[StringLength(MaxNameLength)]
@@ -28,6 +29,16 @@ namespace MyProject.Products
 		public decimal Price { get; set; }
 
 		public string Image { get; set; }
+
+		// Thương hiệu/Nhà sản xuất
+		[StringLength(MaxBrandLength)]
+		public string Brand { get; set; }
+
+		// Thông tin khối lượng/kích thước (phục vụ vận chuyển)
+		public int? WeightInGrams { get; set; }
+		public decimal? WidthCm { get; set; }
+		public decimal? HeightCm { get; set; }
+		public decimal? LengthCm { get; set; }
 
 		public int CategoryId { get; set; }
 		[ForeignKey("CategoryId")]

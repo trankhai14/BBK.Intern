@@ -24,6 +24,11 @@ namespace MyProject.Products.Dtos
 		public DateTime CreationTime { get; set; }
 		public int CategoryId { get; set; }
 		public string Image { get; set; }
+		public string Brand { get; set; }
+		public int? WeightInGrams { get; set; }
+		public decimal? WidthCm { get; set; }
+		public decimal? HeightCm { get; set; }
+		public decimal? LengthCm { get; set; }
 		public IFormFile ImageFile { get; set; }
 
 	}

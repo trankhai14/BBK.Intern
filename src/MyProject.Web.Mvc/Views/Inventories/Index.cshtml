@@ -23,7 +23,7 @@
       <div class="col-sm-6">
         <h1>@L("Inventories")</h1>
       </div>
-      <div class="col-sm-6">
+      <div class="col-sm-12">
         <a href="javascript:;" data-toggle="modal" data-target="#InventoryCreateModal" class="btn bg-blue float-sm-right">
           <i class="fa fa-plus-square"></i>
           @L("Create")
@@ -42,7 +42,7 @@
             <div class="row">
               <div class="col-md-6">
               </div>
-              <div class="col-md-6">
+              <div class="col-12">
                 @await Html.PartialAsync("~/Views/Inventories/Search.cshtml", Model)
               </div>
             </div>

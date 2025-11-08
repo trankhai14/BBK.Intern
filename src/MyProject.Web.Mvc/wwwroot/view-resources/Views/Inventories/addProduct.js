@@ -57,6 +57,8 @@
         // Điền thông tin vào form tạo inventory
         $('#ProductId').val(productId);
         $('#ProductName').val(productName);
+        // Thông báo tới form để chuyển chế độ (tạo/nhập kho)
+        $('#ProductId').trigger('change');
 
         // Đóng modal
         $('#ProductSelectModal').modal('hide');

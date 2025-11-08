@@ -1,70 +1,73 @@
 ﻿@using MyProject.Web.Models.Home
 @model CategoryProductViewModel
 
-<style>
-  /* Tạo khoảng cách giữa các danh mục */
-  .category-container {
-    background-color: #f8f9fa;
-    border-left: 5px solid #007bff;
-    padding: 15px;
-  }
+<link href="/css/homeweb.css" rel="stylesheet" asp-append-version="true" />
 
-  /* Tiêu đề danh mục */
-  .category-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 15px;
-  }
+<div class="category-section mb-5">
+	<div class="d-flex justify-content-between align-items-center">
+		<h3 class="text-primary mt-3">@Model.CategoryName</h3>
+		<div>
+			<a class="related-tag btn-all-product-byId" data-id="@Model.CategoryId" href="#">Xem tất cả</a>
+		</div>
+	</div>
 
-  /* Card sản phẩm */
-  .product-card {
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-  }
-
-    .product-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-  /* Giá tiền */
-  .price {
-    color: #e63946;
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-
-  /* Icon danh mục */
-  .category-title i {
-    margin-right: 10px;
-    color: #007bff;
-  }
-
-</style>
-
-
-<div class="category-container mb-5 p-3 rounded">
-  <h3 class="category-title">
-    <i class="fa-youtube-square"></i> @Model.CategoryName
-  </h3>
-
-  <div class="row">
-    @foreach (var product in Model.Products)
-    {
-      <div class="col-md-4 product-item">
-        <div class="card product-card">
-          <img src="@product.Image"
-          @* class="card-img-top"  *@
-          alt="@product.Name">
-          <div class="card-body">
-            <h5 class="card-title">@product.Name</h5>
-            <p class="card-text">@product.Description</p>
-            <p class="card-text price"><strong>@product.Price.ToString("N0")</strong> đ</p>
-          </div>
-        </div>
-      </div>
-    }
-  </div>
+	@if (Model.Products != null && Model.Products.Any())
+	{
+		<div class="container-items">
+			@foreach (var product in Model.Products)
+			{
+				<div class="product-card-modern">
+					<div class="card product-card-wrapper">
+						<!-- Phần hình ảnh sản phẩm -->
+						<div class="product-image-wrapper">
+							<img src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)"
+								 class="product-image-main btn-view-detail" 
+								 alt="@product.Name" 
+								 data-id="@product.Id">
+							<!-- Badge giảm giá (nếu có) -->
+							<div class="product-badge">-10%</div>
+							<!-- Nút yêu thích -->
+							<button class="product-favorite-btn" type="button">
+								<i class="far fa-heart"></i>
+							</button>
+						</div>
+						
+						<!-- Phần thông tin sản phẩm -->
+						<div class="card-body product-info">
+							<!-- Tên sản phẩm -->
+							<h5 class="product-title btn-view-detail" data-id="@product.Id">@product.Name</h5>
+							
+							<!-- Đánh giá sao -->
+							<div class="product-rating-modern">
+								<div class="stars">
+									<i class="fas fa-star"></i>
+									<i class="fas fa-star"></i>
+									<i class="fas fa-star"></i>
+									<i class="fas fa-star"></i>
+									<i class="fas fa-star"></i>
+								</div>
+								<span class="rating-text">(128)</span>
+							</div>
+							
+							<!-- Giá sản phẩm -->
+							<div class="product-price-section">
+								<span class="product-price-current">@String.Format("{0:N0}", product.Price) đ</span>
+								<span class="product-price-old">@String.Format("{0:N0}", 10000000) đ</span>
+							</div>
+							
+							<!-- Thông tin khuyến mãi -->
+							<div class="product-promo">
+								<i class="fas fa-gift"></i>
+								<span>Smember giảm thêm đến <strong>10%</strong></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+	}
+	else
+	{
+		<p class="text-muted">Không có sản phẩm nào trong danh mục này.</p>
+	}
 </div>

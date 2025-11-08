@@ -49,6 +49,11 @@ namespace MyProject.Products
 				State = p.State,
 				CreationTime = p.CreationTime,
 				Image = p.Image,
+				Brand = p.Brand,
+				WeightInGrams = p.WeightInGrams,
+				WidthCm = p.WidthCm,
+				HeightCm = p.HeightCm,
+				LengthCm = p.LengthCm,
 				CategoryId = p.CategoryId
 			}).ToList();
 		}
@@ -71,6 +76,11 @@ namespace MyProject.Products
 				State = p.State,
 				CreationTime = p.CreationTime,
 				Image = p.Image,
+				Brand = p.Brand,
+				WeightInGrams = p.WeightInGrams,
+				WidthCm = p.WidthCm,
+				HeightCm = p.HeightCm,
+				LengthCm = p.LengthCm
 			}).ToList();
 
 			return new PagedResultDto<ProductListDto>(Count, productDtos);
@@ -126,6 +136,11 @@ namespace MyProject.Products
 			product.State = input.State;
 			product.Image = input.Image;
 			product.CategoryId = input.CategoryId;
+			product.Brand = input.Brand;
+			product.WeightInGrams = input.WeightInGrams;
+			product.WidthCm = input.WidthCm;
+			product.HeightCm = input.HeightCm;
+			product.LengthCm = input.LengthCm;
 
 			// Lưu thay đổi vào CSDL``
 			await _productRepository.UpdateAsync(product);
@@ -139,6 +154,11 @@ namespace MyProject.Products
 				Price = product.Price,
 				State = product.State,
 				Image = product.Image,
+				Brand = product.Brand,
+				WeightInGrams = product.WeightInGrams,
+				WidthCm = product.WidthCm,
+				HeightCm = product.HeightCm,
+				LengthCm = product.LengthCm,
 				CategoryId = product.CategoryId,
 			};
 		}
@@ -153,7 +173,12 @@ namespace MyProject.Products
 				Price = input.Price,
 				State = input.State,
 				CategoryId = input.CategoryId,
-				Image = input.Image
+				Image = input.Image,
+				Brand = input.Brand,
+				WeightInGrams = input.WeightInGrams,
+				WidthCm = input.WidthCm,
+				HeightCm = input.HeightCm,
+				LengthCm = input.LengthCm
 			};
 
 			await _productRepository.InsertAsync(product);
@@ -166,7 +191,12 @@ namespace MyProject.Products
 				Description = product.Description,
 				Price = product.Price,
 				State = product.State,
-				Image = product.Image
+				Image = product.Image,
+				Brand = product.Brand,
+				WeightInGrams = product.WeightInGrams,
+				WidthCm = product.WidthCm,
+				HeightCm = product.HeightCm,
+				LengthCm = product.LengthCm
 			};
 		}
 
@@ -183,6 +213,11 @@ namespace MyProject.Products
 				State = product.State,
 				CreationTime = product.CreationTime,
 				Image = product.Image,
+				Brand = product.Brand,
+				WeightInGrams = product.WeightInGrams,
+				WidthCm = product.WidthCm,
+				HeightCm = product.HeightCm,
+				LengthCm = product.LengthCm,
 				CategoryId = product.CategoryId
 			};
 		}
@@ -264,7 +299,13 @@ namespace MyProject.Products
 				Price = products.Price,
 				State = products.State,
 				Image = products.Image,
+				Brand = products.Brand,
+				WeightInGrams = products.WeightInGrams,
+				WidthCm = products.WidthCm,
+				HeightCm = products.HeightCm,
+				LengthCm = products.LengthCm,
 				CreationTime = products.CreationTime,
+				CategoryId = products.CategoryId,
 			}).ToList();
 
 			return new PagedResultDto<ProductListDto>(Count, productDtos);

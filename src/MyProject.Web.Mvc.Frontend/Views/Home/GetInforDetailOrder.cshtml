@@ -1,136 +1,259 @@
-﻿@model MyProject.Web.Models.Orders.OrderViewSuccess
+﻿@using MyProject.Web.Models.Orders
+@model OrderViewSuccess
 
 @{
 	ViewData["Title"] = "Chi tiết đơn hàng";
+	
+	// Xác định trạng thái đơn hàng và các thông tin liên quan
+	var orderStatus = Model.Order.OrderStatus;
+	var statusText = orderStatus == 0 ? "Chờ xử lý" :
+					orderStatus == 1 ? "Đã xác nhận" :
+					orderStatus == 2 ? "Đang giao hàng" :
+					orderStatus == 3 ? "Đã hủy" :
+					orderStatus == 4 ? "Hoàn thành" : "Không xác định";
+	var statusIcon = orderStatus == 0 ? "fa-clock" :
+					orderStatus == 1 ? "fa-check-circle" :
+					orderStatus == 2 ? "fa-truck" :
+					orderStatus == 3 ? "fa-times-circle" :
+					orderStatus == 4 ? "fa-check-double" : "fa-question-circle";
+	var statusClass = $"status-{orderStatus}";
+	
+	// Xác định phương thức thanh toán
+	var paymentMethod = Model.Order.PaymentMethod;
+	var paymentIcon = paymentMethod == 0 ? "fas fa-university" :
+					paymentMethod == 1 ? "fas fa-credit-card" :
+					paymentMethod == 2 ? "fab fa-paypal" :
+					paymentMethod == 3 ? "fas fa-money-bill-wave" : "fas fa-exclamation-circle";
+	var paymentName = paymentMethod == 0 ? "Chuyển khoản ngân hàng" :
+					paymentMethod == 1 ? "Thẻ tín dụng" :
+					paymentMethod == 2 ? "PayPal" :
+					paymentMethod == 3 ? "Thanh toán khi nhận hàng" : "Không xác định";
 }
 
-@{
-	var statusClass = Model.Order.OrderStatus == 4 ? "text-success" :  // Hoàn thành - Xanh lá
-										Model.Order.OrderStatus == 3 ? "text-danger" :   // Đã hủy - Đỏ
-										Model.Order.OrderStatus == 2 ? "text-primary" :  // Đang giao hàng - Xanh dương
-										Model.Order.OrderStatus == 1 ? "text-warning" :  // Đã xác nhận - Vàng
-										"text-muted";                                    // Chờ xử lý - Xám
-}
+@* Link CSS file *@
+<link href="/css/order-detail.css" rel="stylesheet" />
 
-<link href="/css/detailOrder.css" rel="stylesheet" />
-
-<div class="container" style="margin-top: 14px;">
-	<!-- Tiêu đề đơn hàng -->
-	<div class="order-title-detail">
-		<p class="fw-bold order-title">
-			<span>Chi tiết đơn hàng #@Model.Order.Id -</span>
-			<span class="text-bold @statusClass">
-				@(Model.Order.OrderStatus == 4 ? "Hoàn thành" :
-								Model.Order.OrderStatus == 3 ? "Đã hủy" :
-								Model.Order.OrderStatus == 2 ? "Đang giao hàng" :
-								Model.Order.OrderStatus == 1 ? "Đã xác nhận" :
-								"Chờ xử lý")
+@* ============================================
+   ORDER DETAIL - Chi tiết đơn hàng
+   ============================================ *@
+<div class="order-detail-container">
+	@* ============================================
+	   HEADER - Tiêu đề và trạng thái đơn hàng
+	   ============================================ *@
+	<div class="order-detail-header @statusClass">
+		<div class="order-detail-title">
+			<i class="fas fa-receipt"></i>
+			<span>Chi tiết đơn hàng <span class="order-id">#@Model.Order.Id</span></span>
+			<span class="order-detail-status-badge status-@orderStatus">
+				<i class="fas @statusIcon"></i> @statusText
 			</span>
+		</div>
+		<p class="order-detail-time">
+			<i class="fas fa-calendar-alt"></i>
+			Đặt lúc: @Model.Order.CreationTime.ToString("HH:mm - dd/MM/yyyy")
 		</p>
-		<p class="text-muted order-time ">Đặt lúc: @Model.Order.CreationTime.ToString("HH:mm - dd/MM/yyyy")</p>
 	</div>
-	<p style="font-size: 14px; color: #d0021c">Lý do hủy:</p>
 
-
-	<!-- Thông tin người nhận -->
-	<div class="row order-info-user">
-		<div class="col-md-6">
-			<div class="card p-3">
-				<h5>
-					<i class="fa fa-map-marker-alt"></i>
-					THÔNG TIN NHẬN HÀNG
-				</h5>
-				<div class="order-info-customer">
-					<span>Người nhận:</span>
-					<p>@Model.Order.NameUser - 0866959003</p>
-				</div>
-				@* <p><strong>Nhận tại:</strong> @Model.Order.Address</p> *@
-				@* <p><strong>Nhận lúc:</strong> Trước @Model.Order.ExpectedDelivery.ToString("HH:mm - dd/MM/yyyy")</p> *@
-			</div>
-		</div>
-
-		<div class="col-md-6 order-info-payment">
-			<div class="card p-3">
-				@{
-					var paymentMethod = Model.Order.PaymentMethod;
-					var iconClass = "fas fa-exclamation-circle"; // Mặc định nếu không xác định
-					var methodName = "Không xác định";
-
-					switch (paymentMethod)
+	@* ============================================
+	   BODY - Thông tin chi tiết
+	   ============================================ *@
+	<div class="order-detail-body">
+		@* Thông tin khách hàng và thanh toán *@
+		<div class="row order-info-section">
+			@* Thông tin nhận hàng *@
+			<div class="col-md-6 mb-3">
+				<div class="order-info-card">
+					<div class="order-info-card-header">
+						<i class="fas fa-map-marker-alt"></i>
+						<h5>Thông tin nhận hàng</h5>
+					</div>
+					
+					@if (Model.CustomerProfile != null)
 					{
-						case 0:
-							iconClass = "fas fa-university ";
-							methodName = "Chuyển khoản ngân hàng";
-							break;
-						case 1:
-							iconClass = "fas fa-credit-card";
-							methodName = "Thẻ tín dụng";
-							break;
-						case 2:
-							iconClass = "fab fa-paypal";
-							methodName = "PayPal";
-							break;
-						case 3:
-							iconClass = "fas fa-money-bill-wave";
-							methodName = "Thanh toán khi nhận hàng";
-							break;
+						@* Hiển thị thông tin từ CustomerProfile *@
+						<div class="customer-info-with-avatar">
+							@if (!string.IsNullOrEmpty(Model.CustomerProfile.Avatar))
+							{
+								<img src="@Model.CustomerProfile.Avatar" alt="Avatar" class="customer-avatar" data-avatar="true" onerror="handleAvatarError(this)">
+							}
+							else
+							{
+								<div class="customer-avatar-placeholder">
+									<i class="fas fa-user"></i>
+								</div>
+							}
+							<div>
+								<p class="customer-name">@Model.CustomerProfile.FullName</p>
+							</div>
+						</div>
+						
+						@* Số điện thoại *@
+						<div class="order-info-item">
+							<i class="fas fa-phone order-info-item-icon"></i>
+							<div>
+								<div class="order-info-item-label">Số điện thoại</div>
+								<div class="order-info-item-value">@Model.CustomerProfile.PhoneNumber</div>
+							</div>
+						</div>
+						
+						@* Địa chỉ *@
+						<div class="order-info-item">
+							<i class="fas fa-map-marker-alt order-info-item-icon"></i>
+							<div>
+								<div class="order-info-item-label">Địa chỉ nhận hàng</div>
+								<div class="order-info-item-value">
+									@Model.CustomerProfile.Address
+									@if (!string.IsNullOrEmpty(Model.CustomerProfile.Ward) || !string.IsNullOrEmpty(Model.CustomerProfile.District) || !string.IsNullOrEmpty(Model.CustomerProfile.City))
+									{
+										<div class="order-info-item-value address-detail">
+											@if (!string.IsNullOrEmpty(Model.CustomerProfile.Ward))
+											{
+												<span>Phường/Xã: @Model.CustomerProfile.Ward</span>
+											}
+											@if (!string.IsNullOrEmpty(Model.CustomerProfile.District))
+											{
+												@if (!string.IsNullOrEmpty(Model.CustomerProfile.Ward)) { <span> • </span> }
+												<span>Quận/Huyện: @Model.CustomerProfile.District</span>
+											}
+											@if (!string.IsNullOrEmpty(Model.CustomerProfile.City))
+											{
+												@if (!string.IsNullOrEmpty(Model.CustomerProfile.Ward) || !string.IsNullOrEmpty(Model.CustomerProfile.District)) { <span> • </span> }
+												<span>Tỉnh/Thành phố: @Model.CustomerProfile.City</span>
+											}
+										</div>
+									}
+								</div>
+							</div>
+						</div>
 					}
-				}
-				<h5><i class="@iconClass"></i> HÌNH THỨC THANH TOÁN</h5>
-				<p>@methodName</p>
+					else
+					{
+						@* Fallback: Hiển thị thông tin từ Order nếu không có CustomerProfile *@
+						<div class="order-info-item">
+							<i class="fas fa-user order-info-item-icon"></i>
+							<div>
+								<div class="order-info-item-label">Người nhận</div>
+								<div class="order-info-item-value">@Model.Order.NameUser</div>
+							</div>
+						</div>
+					}
+				</div>
 			</div>
-		</div>
 
-	</div>
-
-	<!-- Danh sách sản phẩm -->
-	<div class="card mt-2">
-		<div class="card-header">
-			<h5 class="heading-title">
-				<i class="fas fa-shopping-bag"></i>
-				THÔNG TIN SẢN PHẨM
-			</h5>
-		</div>
-		<div class="">
-			@foreach (var item in Model.OrderListDetail)
-			{
-				var product = Model.ProductList.FirstOrDefault(p => p.Id == item.ProductId);
-				if (product != null)
-				{
-					<div class="product-item">
-						<div class="product-image">
-							<img src="@product.Image" class="" alt="@product.Name">
-						</div>
-						<div class="product-info">
-							<h6>@product.Name</h6>
-							<p class="text-success">Bảo hành: Còn BH đến @product.Price.ToString("dd/MM/yyyy")</p>
-							<p class="text-muted">Số lượng: @item.Quantity</p>
-						</div>
-						<div class="product-price">
-							<p class="">@((item.UnitPrice - item.DiscountPrice).ToString("#,##0"))₫</p>
-							<p style="text-decoration: line-through; font-size: 13px;" class="">@item.UnitPrice.ToString("#,##0")₫</p>
+			@* Hình thức thanh toán *@
+			<div class="col-md-6 mb-3">
+				<div class="order-info-card">
+					<div class="order-info-card-header">
+						<i class="@paymentIcon"></i>
+						<h5>Hình thức thanh toán</h5>
+					</div>
+					<div class="order-info-item">
+						<i class="@paymentIcon order-info-item-icon"></i>
+						<div>
+							<div class="order-info-item-label">Phương thức</div>
+							<p class="payment-method-name">@paymentName</p>
 						</div>
 					</div>
-
-				}
-			}
-
-			<div class="order-price-info">
-				<p class="order-price">
-					<span>Tạm tính:</span>
-					<span>@Model.Order.TotalAmount.ToString("#,##0") ₫</span>
-				</p>
-				<p class="order-price">
-					<span class="text-bold">Cần thanh toán</span>
-					<span>@Model.Order.TotalAmount.ToString("#,##0") ₫</span>
-				</p>
+				</div>
 			</div>
+		</div>
 
-			<div class="text-center mb-4">
-				<a href="@Url.Action("OrderList", "Order")" class="btn-back">
-				 VỀ TRANG DANH SÁCH ĐƠN HÀNG
-				</a>
+		@* ============================================
+		   DANH SÁCH SẢN PHẨM
+		   ============================================ *@
+		<div class="order-products-section">
+			<div class="order-info-card" style="padding: 0;">
+				<div class="order-products-header">
+					<i class="fas fa-shopping-bag"></i>
+					<h5>Thông tin sản phẩm</h5>
+				</div>
+				<div class="order-products-body">
+					@foreach (var item in Model.OrderListDetail)
+					{
+						var product = Model.ProductList.FirstOrDefault(p => p.Id == item.ProductId);
+						if (product != null)
+						{
+							@* Mỗi sản phẩm trong đơn hàng *@
+							<div class="order-product-item">
+								@* Hình ảnh sản phẩm *@
+								<img src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)" 
+									 alt="@product.Name" 
+									 class="order-product-image"
+									 onerror="this.src='/img/default.jpg'">
+								
+								@* Thông tin sản phẩm *@
+								<div class="order-product-info">
+									<div class="order-product-name">@product.Name</div>
+									<div class="order-product-meta">
+										<i class="fas fa-shield-alt text-success"></i> Bảo hành đến @product.Price.ToString("dd/MM/yyyy")
+									</div>
+									<div class="order-product-quantity">
+										<i class="fas fa-box"></i> Số lượng: @item.Quantity
+									</div>
+								</div>
+								
+								@* Giá tiền *@
+								<div class="order-product-price">
+									<div class="order-product-price-current">
+										@((item.UnitPrice * item.Quantity - item.DiscountPrice).ToString("#,##0"))₫
+									</div>
+									@if (item.DiscountPrice > 0)
+									{
+										<div class="order-product-price-old">
+											@((item.UnitPrice * item.Quantity).ToString("#,##0"))₫
+										</div>
+									}
+								</div>
+							</div>
+						}
+					}
+
+					@* Tổng kết giá tiền *@
+					<div class="order-price-summary">
+						<div class="order-price-row">
+							<span class="order-price-label">Tạm tính:</span>
+							<span class="order-price-value">@Model.Order.TotalAmount.ToString("#,##0") ₫</span>
+						</div>
+						@if (Model.Order.DiscountAmount > 0)
+						{
+							<div class="order-price-row">
+								<span class="order-price-label">Giảm giá:</span>
+								<span class="order-price-value text-success">-@Model.Order.DiscountAmount.ToString("#,##0") ₫</span>
+							</div>
+						}
+						<div class="order-price-row">
+							<span class="order-price-label">Cần thanh toán:</span>
+							<span class="order-price-value">@Model.Order.TotalAmount.ToString("#,##0") ₫</span>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
+
+	@* ============================================
+	   FOOTER - Nút quay lại
+	   ============================================ *@
+	<div class="order-detail-footer">
+		<a href="#" class="btn-back-to-orders" onclick="history.back(); return false;">
+			<i class="fas fa-arrow-left"></i> Quay lại danh sách đơn hàng
+		</a>
+	</div>
 </div>
+
+@* Script xử lý lỗi avatar *@
+<script>
+	function handleAvatarError(img) {
+		if (!img.dataset.defaultTried) {
+			img.dataset.defaultTried = 'true';
+			var defaultSrc = '/img/default.jpg';
+			if (img.src !== defaultSrc) {
+				img.src = defaultSrc;
+			} else {
+				img.style.display = 'none';
+			}
+		} else {
+			img.style.display = 'none';
+		}
+	}
+</script>

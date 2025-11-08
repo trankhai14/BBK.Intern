@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using MyProject.Users.Dto;
 using MyProject.Web.Models.Products;
+using MyProject.CustomerProfiles.Dto;
 
 namespace MyProject.Web.Models.Home
 {
@@ -13,6 +14,7 @@ namespace MyProject.Web.Models.Home
 
 	public class ProfileUser
 	{
-	  public UserDto User { get; set; }
+		public UserDto User { get; set; }
+		public List<CustomerProfileDto> CustomerProfiles { get; set; }
 	}
 }

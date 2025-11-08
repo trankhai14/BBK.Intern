@@ -1,0 +1,117 @@
+@using MyProject.CustomerProfiles.Dto
+@model dynamic
+@{
+	var isEdit = Model is UpdateCustomerProfileDto;
+	var createDto = isEdit ? null : Model as CreateCustomerProfileDto;
+	var updateDto = isEdit ? Model as UpdateCustomerProfileDto : null;
+}
+
+<div class="modal fade" id="customerProfileModal" tabindex="-1" role="dialog" aria-labelledby="customerProfileModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="customerProfileModalLabel">
+					@(isEdit ? "Chỉnh sửa thông tin khách hàng" : "Thêm thông tin khách hàng")
+				</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form id="customerProfileForm" enctype="multipart/form-data">
+				@if (isEdit)
+				{
+					<input type="hidden" name="Id" value="@updateDto.Id" />
+					<input type="hidden" name="Avatar" value="@updateDto.Avatar" />
+				}
+				<div class="modal-body">
+					<div class="mb-3 text-center">
+						<label class="form-label">Ảnh đại diện</label>
+						<div class="mb-2">
+							<img id="avatarPreview" 
+								 src="@(isEdit && !string.IsNullOrEmpty(updateDto.Avatar) ? updateDto.Avatar : "/img/default.jpg")" 
+								 alt="Avatar Preview" 
+								 class="rounded-circle" 
+								 style="width: 150px; height: 150px; object-fit: cover; border: 2px solid #dee2e6; cursor: pointer;" 
+								 onclick="document.getElementById('AvatarFile').click()"
+								 data-avatar="true"
+								 onerror="handleAvatarError(this)">
+						</div>
+						<input type="file" name="AvatarFile" id="AvatarFile" accept="image/*" class="form-control d-none" onchange="previewAvatar(this)" />
+						<small class="text-muted d-block">Chọn ảnh (JPG, PNG, GIF - tối đa 5MB)</small>
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Họ và tên <span class="text-danger">*</span></label>
+						<input type="text" name="FullName" class="form-control" value="@(isEdit ? updateDto.FullName : "")" required />
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Số điện thoại <span class="text-danger">*</span></label>
+						<input type="tel" name="PhoneNumber" class="form-control" value="@(isEdit ? updateDto.PhoneNumber : "")" required />
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label">Địa chỉ <span class="text-danger">*</span></label>
+						<input type="text" name="Address" class="form-control" value="@(isEdit ? updateDto.Address : "")" required />
+					</div>
+
+					<div class="row">
+						<div class="col-md-4 mb-3">
+							<label class="form-label">Phường/Xã</label>
+							<input type="text" name="Ward" class="form-control" value="@(isEdit ? updateDto.Ward : "")" />
+						</div>
+						<div class="col-md-4 mb-3">
+							<label class="form-label">Quận/Huyện</label>
+							<input type="text" name="District" class="form-control" value="@(isEdit ? updateDto.District : "")" />
+						</div>
+						<div class="col-md-4 mb-3">
+							<label class="form-label">Tỉnh/Thành phố <span class="text-danger">*</span></label>
+							<input type="text" name="City" class="form-control" value="@(isEdit ? updateDto.City : "")" required />
+						</div>
+					</div>
+
+					<div class="mb-3 form-check">
+						<input type="checkbox" name="IsDefault" id="IsDefault" class="form-check-input" value="true" @(isEdit && updateDto.IsDefault ? "checked" : "") />
+						<label class="form-check-label" for="IsDefault">Đặt làm địa chỉ mặc định</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+					<button type="submit" class="btn btn-primary">
+						@(isEdit ? "Cập nhật" : "Thêm mới")
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script>
+	function previewAvatar(input) {
+		if (input.files && input.files[0]) {
+			var reader = new FileReader();
+			reader.onload = function (e) {
+				var img = document.getElementById('avatarPreview');
+				img.src = e.target.result;
+				img.dataset.defaultTried = 'false'; // Reset khi load ảnh mới
+			};
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+
+	// Hàm xử lý lỗi avatar - tránh vòng lặp vô hạn
+	function handleAvatarError(img) {
+		if (!img.dataset.defaultTried) {
+			img.dataset.defaultTried = 'true';
+			var defaultSrc = '/img/default.jpg';
+			if (img.src !== defaultSrc) {
+				img.src = defaultSrc;
+			} else {
+				img.style.display = 'none';
+			}
+		} else {
+			img.style.display = 'none';
+		}
+	}
+</script>
+

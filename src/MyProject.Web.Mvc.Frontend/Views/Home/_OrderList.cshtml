@@ -1,20 +1,52 @@
 ﻿@using MyProject.Web.Models.Orders
 @model FilterStatusOrderViewModel
 
-<div class="card p-3">
-	<h4>Đơn hàng đã mua</h4>
-	<div class="d-flex mb-3 justify-content-between">
-		<a href="#" data-status="5" class="btn btn-outline-secondary btn-status active">Tất cả</a>
-		<a href="#" data-status="0" class="btn btn-outline-secondary btn-status">Chờ xử lý</a>
-		<a href="#" data-status="1" class="btn btn-outline-secondary btn-status">Đã xác nhận</a>
-		<a href="#" data-status="2" class="btn btn-outline-secondary btn-status">Đang giao hàng</a>
-		<a href="#" data-status="3" class="btn btn-outline-secondary btn-status">Đã hủy</a>
-		<a href="#" data-status="4" class="btn btn-outline-secondary btn-status">Thành công</a>
+@* Link CSS file *@
+<link href="/css/order-list.css" rel="stylesheet" />
+
+@* ============================================
+   ORDER LIST CONTAINER
+   ============================================ *@
+
+@* Filter Container - Chứa tiêu đề và các nút lọc theo trạng thái *@
+<div class="order-filter-container">
+	@* Tiêu đề section *@
+	<div class="order-title-section">
+		<h4><i class="fas fa-shopping-bag"></i> Đơn hàng đã mua</h4>
 	</div>
 
-	<div id="orderList">
-		@await Html.PartialAsync("FilterOrder", Model)
+	@* Filter Buttons - Lọc đơn hàng theo trạng thái *@
+	<div class="order-filter-buttons">
+		@* Button: Tất cả đơn hàng (status = 5) *@
+		<a href="#" data-status="5" class="btn-status-filter btn-status active">
+			<i class="fas fa-list"></i> Tất cả
+		</a>
+		@* Button: Chờ xử lý (status = 0) *@
+		<a href="#" data-status="0" class="btn-status-filter btn-status">
+			<i class="fas fa-clock"></i> Chờ xử lý
+		</a>
+		@* Button: Đã xác nhận (status = 1) *@
+		<a href="#" data-status="1" class="btn-status-filter btn-status">
+			<i class="fas fa-check-circle"></i> Đã xác nhận
+		</a>
+		@* Button: Đang giao hàng (status = 2) *@
+		<a href="#" data-status="2" class="btn-status-filter btn-status">
+			<i class="fas fa-truck"></i> Đang giao hàng
+		</a>
+		@* Button: Đã hủy (status = 3) *@
+		<a href="#" data-status="3" class="btn-status-filter btn-status">
+			<i class="fas fa-times-circle"></i> Đã hủy
+		</a>
+		@* Button: Hoàn thành (status = 4) *@
+		<a href="#" data-status="4" class="btn-status-filter btn-status">
+			<i class="fas fa-check-double"></i> Hoàn thành
+		</a>
 	</div>
+</div>
+
+@* Container chứa danh sách đơn hàng (sẽ được load động qua AJAX) *@
+<div id="orderList">
+	@await Html.PartialAsync("FilterOrder", Model)
 </div>
 
 

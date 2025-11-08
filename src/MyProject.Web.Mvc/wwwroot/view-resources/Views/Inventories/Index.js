@@ -1,9 +1,36 @@
 ﻿(function ($) {
   var _inventoryService = abp.services.app.inventory,
+    _inventoryTransactionService = abp.services.app.inventoryTransaction,
     l = abp.localization.getSource('MyProject'),
     _$modal = $('#InventoryCreateModal'),
     _$form = _$modal.find('form'),
     _$tableInventory = $('#InventoriesTable');
+
+  var _createMode = 'create'; // 'create' | 'import'
+
+  function updateCreateModeByProduct(productId) {
+    if (!productId) {
+      _createMode = 'create';
+      _$modal.find('.save-button span').text(l('Save'));
+      return;
+    }
+
+    abp.ui.setBusy(_$modal);
+    _inventoryService.getInventoryByProductId(productId)
+      .done(function () {
+        // Đã có kho -> chuyển sang Nhập kho
+        _createMode = 'import';
+        _$modal.find('.save-button span').text('Nhập kho');
+      })
+      .fail(function () {
+        // Chưa có kho -> tạo mới
+        _createMode = 'create';
+        _$modal.find('.save-button span').text(l('Save'));
+      })
+      .always(function () {
+        abp.ui.clearBusy(_$modal);
+      });
+  }
 
   var _$inventoryTable = _$tableInventory.DataTable({
     paging: true,
@@ -242,16 +269,36 @@
 
     abp.ui.setBusy(_$modal);
 
-    _inventoryService.createInventory(inventory).done(() => {
-      _$modal.modal('hide');
-      _$form[0].reset();
-      $('#ProductName').val('');
-      $('#ProductId').val('');
-      abp.notify.info(l('SavedSuccessfully'));
-      _$inventoryTable.ajax.reload();
-    }).always(() => {
-      abp.ui.clearBusy(_$modal);
-    });
+    if (_createMode === 'import') {
+      var importInput = {
+        productId: parseInt(inventory.ProductId),
+        quantity: parseInt(inventory.Quantity),
+        reason: 'Nhập bổ sung',
+        notes: inventory.Notes || null
+      };
+
+      _inventoryTransactionService.importInventory(importInput).done(function () {
+        _$modal.modal('hide');
+        _$form[0].reset();
+        $('#ProductName').val('');
+        $('#ProductId').val('');
+        abp.notify.info(l('SavedSuccessfully'));
+        _$inventoryTable.ajax.reload();
+      }).always(function () {
+        abp.ui.clearBusy(_$modal);
+      });
+    } else {
+      _inventoryService.createInventory(inventory).done(() => {
+        _$modal.modal('hide');
+        _$form[0].reset();
+        $('#ProductName').val('');
+        $('#ProductId').val('');
+        abp.notify.info(l('SavedSuccessfully'));
+        _$inventoryTable.ajax.reload();
+      }).always(() => {
+        abp.ui.clearBusy(_$modal);
+      });
+    }
   });
 
   // Search
@@ -277,6 +324,14 @@
     _$form.clearForm();
     $('#ProductName').val('');
     $('#ProductId').val('');
+    _createMode = 'create';
+    _$modal.find('.save-button span').text(l('Save'));
+  });
+
+  // Khi chọn sản phẩm từ modal chọn hàng
+  $(document).on('change', '#ProductId', function () {
+    var productId = $(this).val();
+    updateCreateModeByProduct(productId ? parseInt(productId) : null);
   });
 
 })(jQuery);

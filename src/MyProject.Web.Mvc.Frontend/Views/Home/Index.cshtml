@@ -92,29 +92,52 @@
 
 	<div id="product-slider" class="product-slider-container position-relative">
 		<!-- Danh sách sản phẩm -->
-		<div class="product-list d-flex flex-nowrap overflow-hidden">
+		<div class="product-list d-flex flex-nowrap">
 			@foreach (var product in Model.ProductData.Products)
 			{
-				<div id="product-list-new" 
-				class="product-card" 
-				style="width: 224px; margin-right: 10px;">
-					<div class="card">
-						<div class="card-body" style="height: 95%; text-align: center;">
+				<div class="product-card-modern">
+					<div class="card product-card-wrapper">
+						<!-- Phần hình ảnh sản phẩm -->
+						<div class="product-image-wrapper">
 							<img src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)"
-									 class="product-image btn-view-detail" alt="@product.Name" style="width: 160px; height: 160px;" data-id="@product.Id">
-							<div class="product-name">
-								<h3 class="product-name">@product.Name</h3>
+								 class="product-image-main btn-view-detail" 
+								 alt="@product.Name" 
+								 data-id="@product.Id">
+							<!-- Badge giảm giá (nếu có) -->
+							<div class="product-badge">-10%</div>
+							<!-- Nút yêu thích -->
+							<button class="product-favorite-btn" type="button">
+								<i class="far fa-heart"></i>
+							</button>
+						</div>
+						
+						<!-- Phần thông tin sản phẩm -->
+						<div class="card-body product-info">
+							<!-- Tên sản phẩm -->
+							<h5 class="product-title btn-view-detail" data-id="@product.Id">@product.Name</h5>
+							
+							<!-- Đánh giá sao -->
+							<div class="product-rating-modern">
+								<div class="stars">
+									<i class="fas fa-star"></i>
+									<i class="fas fa-star"></i>
+									<i class="fas fa-star"></i>
+									<i class="fas fa-star"></i>
+									<i class="fas fa-star"></i>
+								</div>
+								<span class="rating-text">(128)</span>
 							</div>
-							<div class="box-info-price">
-								<p style="font-size: 16px; color: #d70018;" class="product-price">@String.Format("{0:N0} đ", product.Price)</p>
-								<p style="font-size: 14px; color: #707070;" class="product-price">@String.Format("{0:N0} đ", 10000000)</p>
+							
+							<!-- Giá sản phẩm -->
+							<div class="product-price-section">
+								<span class="product-price-current">@String.Format("{0:N0}", product.Price) đ</span>
+								<span class="product-price-old">@String.Format("{0:N0}", 10000000) đ</span>
 							</div>
-							<div class="product-rating">
-								<i class="fas fa-star text-warning"></i>
-								<i class="fas fa-star text-warning"></i>
-								<i class="fas fa-star text-warning"></i>
-								<i class="fas fa-star text-warning"></i>
-								<i class="fas fa-star text-warning"></i>
+							
+							<!-- Thông tin khuyến mãi -->
+							<div class="product-promo">
+								<i class="fas fa-gift"></i>
+								<span>Smember giảm thêm đến <strong>10%</strong></span>
 							</div>
 						</div>
 					</div>
@@ -122,7 +145,6 @@
 			}
 		</div>
 
-		<!-- Nút điều hướng -->
 		<!-- Nút điều hướng -->
 		<button id="prevBtn" class="slider-btn prev-btn">
 			<i class="fas fa-chevron-left"></i>
@@ -135,49 +157,60 @@
 	@foreach (var category in Model.CategoryProducts)
 	{
 		<div class="category-section">
-			<div class="d-flex justify-content-between align-items-center">
-				<h3 class="text-primary mt-3">@category.CategoryName</h3>
-				<div>
-					<a class="related-tag btn-all-product-byId" data-id="@category.CategoryId" href="#">Xem tất cả</a>
-				</div>
-			</div>
-
 			@if (category.Products.Any())
 			{
-				<div class="row product-info-container ml-2">
+				<div class="d-flex justify-content-between align-items-center">
+					<h3 class="text-primary mt-3">@category.CategoryName</h3>
+					<div>
+						<a class="related-tag btn-all-product-byId" data-id="@category.CategoryId" href="#">Xem tất cả</a>
+					</div>
+				</div>
+				<div class="container-items">
 					@foreach (var product in category.Products)
 					{
-						<div class="swiper-slide me-1" style="width: 220px; margin-right: 10px">
-							<div class="card mb-3 product-category-list">
-								<div class="card-body">
-									<div class="product-image">
-										<img data-id="@product.Id" class="product-image btn-view-detail" style="width: 160px; height: 160px;" src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)" alt="@product.Name">
-									</div>
-									<div class="product-name" style="width: 100%">
-										<h3 class="card-title ">@product.Name</h3>
-									</div>
-									<p class="card-text product_price">@String.Format("{0:N0} đ", product.Price)</p>
-
-									@* <a href="@Url.Action("Detail", "Product", new { id = product.Id })" class="btn btn-info">Xem chi tiết</a> *@
-									<div class="block-smem-price">
-										Smember giảm thêm đến <span class="text-danger">10%</span>
-									</div>
-
-									<div class="bottom-div">
-										<div class="product-rating">
-											<i class="fas fa-star text-warning"></i>
-											<i class="fas fa-star text-warning"></i>
-											<i class="fas fa-star text-warning"></i>
-											<i class="fas fa-star text-warning"></i>
-											<i class="fas fa-star text-warning"></i>
+						<div class="product-card-modern">
+							<div class="card product-card-wrapper">
+								<!-- Phần hình ảnh sản phẩm -->
+								<div class="product-image-wrapper">
+									<img data-id="@product.Id" 
+										 class="product-image-main btn-view-detail" 
+										 src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)" 
+										 alt="@product.Name">
+									<!-- Badge giảm giá -->
+									<div class="product-badge">-10%</div>
+									<!-- Nút yêu thích -->
+									<button class="product-favorite-btn" type="button">
+										<i class="far fa-heart"></i>
+									</button>
+								</div>
+								
+								<!-- Phần thông tin sản phẩm -->
+								<div class="card-body product-info">
+									<!-- Tên sản phẩm -->
+									<h5 class="product-title btn-view-detail" data-id="@product.Id">@product.Name</h5>
+									
+									<!-- Đánh giá sao -->
+									<div class="product-rating-modern">
+										<div class="stars">
+											<i class="fas fa-star"></i>
+											<i class="fas fa-star"></i>
+											<i class="fas fa-star"></i>
+											<i class="fas fa-star"></i>
+											<i class="fas fa-star"></i>
 										</div>
-
-										<div class="">
-											<a href="#" class="favorite-btn">
-												Yêu thích
-											</a>
-											<i class="far fa-heart"></i>
-										</div>
+										<span class="rating-text">(128)</span>
+									</div>
+									
+									<!-- Giá sản phẩm -->
+									<div class="product-price-section">
+										<span class="product-price-current">@String.Format("{0:N0}", product.Price) đ</span>
+										<span class="product-price-old">@String.Format("{0:N0}", 10000000) đ</span>
+									</div>
+									
+									<!-- Thông tin khuyến mãi -->
+									<div class="product-promo">
+										<i class="fas fa-gift"></i>
+										<span>Smember giảm thêm đến <strong>10%</strong></span>
 									</div>
 								</div>
 							</div>
@@ -187,7 +220,7 @@
 			}
 			else
 			{
-				<p class="text-muted">Không có sản phẩm nào trong danh mục này.</p>
+				<!-- <p class="text-muted">Không có sản phẩm nào trong danh mục này.</p> -->
 			}
 		</div>
 	}

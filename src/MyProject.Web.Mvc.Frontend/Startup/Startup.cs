@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text.Encodings.Web;
 using System.Text.Unicode;
 using Microsoft.AspNetCore.Builder;
@@ -113,6 +114,20 @@ namespace MyProject.Web.Startup
 			{
 				FileProvider = new PhysicalFileProvider(@"E:\Uploads\"),
 				RequestPath = "/sliders"
+			});
+
+			// Cấu hình static files cho avatars
+			// Tạo thư mục nếu chưa tồn tại
+			string avatarsFolder = @"E:\Uploads\avatars\";
+			if (!Directory.Exists(avatarsFolder))
+			{
+				Directory.CreateDirectory(avatarsFolder);
+			}
+
+			app.UseStaticFiles(new StaticFileOptions
+			{
+				FileProvider = new PhysicalFileProvider(avatarsFolder),
+				RequestPath = "/avatars"
 			});
 
 

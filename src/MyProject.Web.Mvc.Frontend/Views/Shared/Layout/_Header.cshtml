@@ -3,116 +3,59 @@
 @using MyProject.Web.Views.Shared.Components.CategoryMenu
 @using MyProject.Web.Views.Shared.Components.HeaderMenu
 
- <style>
-	.navbar-brand{
-		font-size: 1.8rem;
-	}
-	.search-container {
-		width: 40%;
-		min-width: 250px;
-		justify-content: center;
-	}
+<link href="~/css/header.css" rel="stylesheet" asp-append-version="true" />
 
-	.search-input {
-		width: 100%;
-		transition: all 0.3s ease;
-	}
-
-		.search-input:focus {
-			box-shadow: 0px 0px 8px rgba(255, 255, 255, 0.6);
-		}
-
-	/* Hiệu ứng hover cho menu */
-	.navbar-nav .nav-link {
-		font-weight: 500;
-		padding: 8px 12px;
-		transition: all 0.3s ease-in-out;
-	}
-
-		.navbar-nav .nav-link:hover {
-			color: #ffeb3b !important;
-		}
-
-	/* Nút tìm kiếm */
-	.btn-search {
-		border-radius: 50%;
-		padding: 5px;
-	}
-
-	#searchInput {
-		border-radius: 20px;
-	}
-
-	/*category*/
-	.category-menu {
-		display: flex;
-		justify-content: center; /* Canh giữa các item */
-		background-color: #007bff; /* Màu nền */
-		list-style: none;
-	}
-
-		.category-menu a {
-			color: white;
-			text-decoration: none; /* Bỏ gạch chân */
-			font-weight: normal;
-			padding: 8px 15px; /* Tạo khoảng cách bên trong item */
-			border-radius: 5px; /* Bo góc cho đẹp */
-			transition: background 0.3s ease-in-out;
-		}
-
-			.category-menu a:hover {
-				background: rgba(255, 255, 255, 0.2); /* Hiệu ứng hover */
-			}
-
-</style>
-<!-- Thanh điều hướng -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary ">
+<!-- Thanh điều hướng chính -->
+<nav class="navbar navbar-expand-lg navbar-main">
 	<div class="container">
 		<!-- Logo -->
 		<a class="navbar-brand fw-bold d-flex align-items-center" href="/">
-			<i class="fas fa-store me-2"></i> Shop Điện Tử
+			<i class="fas fa-store"></i>
+			<span>Shop Điện Tử</span>
 		</a>
 
 		<!-- Toggle button cho mobile -->
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 
 		<!-- Nội dung Navbar -->
 		<div class="collapse navbar-collapse" id="navbarNav">
 			<!-- Ô tìm kiếm ở giữa -->
-			<form id="searchForm" class="d-flex mx-auto search-container">
-				<input id="searchInput" name="Keyword" class="form-control me-2 search-input" type="text" placeholder="Tìm kiếm sản phẩm">
-				<button class="btn btn-light btn-search" type="submit" style="
-					border-radius: 50%;
-					width: 45px;
-					height: 40px;
-					margin-left: 5px;">
-					<i class="fas fa-search"></i>
-				</button>
+			<form id="searchForm" class="search-container" style="flex: 1; max-width: 500px; margin: 0 auto;">
+				<div class="search-wrapper">
+					<input id="searchInput" 
+						   name="Keyword" 
+						   class="search-input" 
+						   type="text" 
+						   placeholder="Tìm kiếm sản phẩm...">
+					<button class="btn-search-modern" type="submit" aria-label="Tìm kiếm">
+						<i class="fas fa-search"></i>
+					</button>
+				</div>
 			</form>
 
-
 			<!-- Giỏ hàng & Đăng nhập bên phải -->
-			<ul class="navbar-nav ms-auto align-items-center">
+			<ul class="navbar-nav ml-auto align-items-center">
 				<li class="nav-item">
-						@await Component.InvokeAsync(typeof(CartMenuViewComponent))
+					@await Component.InvokeAsync(typeof(CartMenuViewComponent))
 				</li>
 				<li class="nav-item">
-					@* <a class="nav-link" href="/Account/Login">
-						<i class="fas fa-sign-in-alt me-1"></i> Đăng nhập
-					</a> *@
 					@await Component.InvokeAsync(typeof(HeaderMenuViewComponent))
-
 				</li>
 			</ul>
-
-			<!-- Danh mục sản phẩm dạng hàng ngang -->
+		</div>
 	</div>
 </nav>
-<div class="category-menu d-flex justify-content-center" style="list-style-type: none; background-color: #007bff!important; color: #fff">
-	@await Component.InvokeAsync(typeof(CategoryMenuViewComponent))
-</div>
+
+<!-- Menu danh mục -->
+<nav class="category-menu-modern">
+	<div class="container">
+		<ul class="navbar-nav d-flex flex-row justify-content-center flex-wrap">
+			@await Component.InvokeAsync(typeof(CategoryMenuViewComponent))
+		</ul>
+	</div>
+</nav>
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

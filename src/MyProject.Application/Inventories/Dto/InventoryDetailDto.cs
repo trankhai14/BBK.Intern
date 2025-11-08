@@ -30,3 +30,4 @@ namespace MyProject.Inventories.Dto
 		public string LastModifierUserName { get; set; }
 	}
 }
+

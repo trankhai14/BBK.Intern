@@ -1,0 +1,103 @@
+@* @using MyProject.CustomerProfiles.Dto
+@model List<CustomerProfileDto>
+@{
+	ViewData["Title"] = "Thông tin khách hàng";
+}
+
+<div class="container mt-4" style="max-width: 960px;">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<h3><i class="fas fa-user-circle"></i> Thông tin khách hàng</h3>
+		<a href="@Url.Action("Create")" class="btn btn-primary">
+			<i class="fas fa-plus"></i> Thêm mới
+		</a>
+	</div>
+
+	@if (Model == null || !Model.Any())
+	{
+		<div class="card p-5 text-center">
+			<i class="fas fa-address-card fa-3x text-muted mb-3"></i>
+			<h5>Chưa có thông tin khách hàng</h5>
+			<p class="text-muted">Hãy thêm thông tin khách hàng để sử dụng dịch vụ giao hàng</p>
+			<a href="@Url.Action("Create")" class="btn btn-primary mt-3">
+				<i class="fas fa-plus"></i> Thêm thông tin mới
+			</a>
+		</div>
+	}
+	else
+	{
+		<div class="row">
+			@foreach (var profile in Model)
+			{
+				<div class="col-md-6 mb-3">
+					<div class="card h-100 @(profile.IsDefault ? "border-primary" : "")">
+						<div class="card-header d-flex justify-content-between align-items-center">
+							<div class="d-flex align-items-center">
+								@if (!string.IsNullOrEmpty(profile.Avatar))
+								{
+									<img src="@profile.Avatar" alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;" onerror="this.src='/img/default-avatar.png'">
+								}
+								else
+								{
+									<div class="rounded-circle me-2 bg-secondary d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+										<i class="fas fa-user text-white"></i>
+									</div>
+								}
+								<h5 class="mb-0">
+									@if (profile.IsDefault)
+									{
+										<span class="badge bg-primary me-2">Mặc định</span>
+									}
+									@profile.FullName
+								</h5>
+							</div>
+							<div>
+								@if (!profile.IsDefault)
+								{
+									<form method="post" action="@Url.Action("SetAsDefault", new { id = profile.Id })" style="display: inline;">
+										<button type="submit" class="btn btn-sm btn-outline-primary" title="Đặt làm mặc định">
+											<i class="fas fa-star"></i>
+										</button>
+									</form>
+								}
+								<a href="@Url.Action("Edit", new { id = profile.Id })" class="btn btn-sm btn-outline-secondary" title="Chỉnh sửa">
+									<i class="fas fa-edit"></i>
+								</a>
+								<form method="post" action="@Url.Action("Delete", new { id = profile.Id })" style="display: inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa thông tin này?');">
+									<button type="submit" class="btn btn-sm btn-outline-danger" title="Xóa">
+										<i class="fas fa-trash"></i>
+									</button>
+								</form>
+							</div>
+						</div>
+						<div class="card-body">
+							<p class="mb-2">
+								<strong><i class="fas fa-phone"></i> Số điện thoại:</strong><br>
+								@profile.PhoneNumber
+							</p>
+							<p class="mb-2">
+								<strong><i class="fas fa-map-marker-alt"></i> Địa chỉ:</strong><br>
+								@profile.Address
+								@if (!string.IsNullOrEmpty(profile.Ward))
+								{
+									<br>Phường/Xã: @profile.Ward
+								}
+								@if (!string.IsNullOrEmpty(profile.District))
+								{
+									<br>Quận/Huyện: @profile.District
+								}
+								@if (!string.IsNullOrEmpty(profile.City))
+								{
+									<br>Tỉnh/Thành phố: @profile.City
+								}
+							</p>
+							<small class="text-muted">
+								<i class="fas fa-calendar"></i> Tạo lúc: @profile.CreationTime.ToString("dd/MM/yyyy HH:mm")
+							</small>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+	}
+</div>
+ *@

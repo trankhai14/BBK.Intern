@@ -31,3 +31,4 @@ namespace MyProject.Inventories
 		Task<InventoryTransactionDto> GetTransactionById(int id);
 	}
 }
+

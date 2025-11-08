@@ -22,6 +22,10 @@ using MyProject.Web.Models.Orders;
 using MyProject.OrderDetails;
 using MyProject.Orders;
 using MyProject.Users;
+using MyProject.CustomerProfiles;
+using MyProject.CustomerProfiles.Dto;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 namespace MyProject.Web.Controllers
 {
 	//[AbpMvcAuthorize]
@@ -35,6 +39,7 @@ namespace MyProject.Web.Controllers
 		private readonly IOrderAppService _orderAppService;
 		private readonly IOrderDetailAppService _orderDetailAppService;
 		private readonly IUserAppService _userAppService;
+		private readonly ICustomerProfileAppService _customerProfileAppService;
 
 		
 		public HomeController
@@ -46,7 +51,8 @@ namespace MyProject.Web.Controllers
 			ICartAppService cartAppService,
 			IOrderAppService orderAppService,
 			IOrderDetailAppService orderDetailAppService,
-			IUserAppService userAppService
+			IUserAppService userAppService,
+			ICustomerProfileAppService customerProfileAppService
 			)
 		{
 			_productAppService = productAppService;
@@ -57,6 +63,7 @@ namespace MyProject.Web.Controllers
 			_orderAppService = orderAppService;
 			_orderDetailAppService = orderDetailAppService;
 			_userAppService = userAppService;
+			_customerProfileAppService = customerProfileAppService;
 		}
 
 		public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
@@ -145,6 +152,19 @@ namespace MyProject.Web.Controllers
 			var product = await _productAppService.GetAsync(productId);
 			var category = await _categoryAppService.GetCategoryById(product.CategoryId);
 
+			// Lấy sản phẩm tương tự (cùng category, loại trừ sản phẩm hiện tại)
+			var relatedProductsResult = await _productAppService.Search(new GetAllProductsInput
+			{
+				CategoryId = product.CategoryId,
+				MaxResultCount = 8,
+				SkipCount = 0
+			});
+
+			var relatedProducts = relatedProductsResult.Items
+				.Where(p => p.Id != product.Id)
+				.Take(5)
+				.ToList();
+
 			var model = new DetailProductModel()
 			{
 				Id = product.Id,
@@ -152,9 +172,18 @@ namespace MyProject.Web.Controllers
 				Description = product.Description,
 				Price = product.Price,
 				Image = product.Image,
+				CategoryId = product.CategoryId,
+				CategoryName = category?.CategoryName ?? "",
+				Brand = product.Brand,
+				State = product.State,
+				CreationTime = product.CreationTime,
+				WeightInGrams = product.WeightInGrams,
+				WidthCm = product.WidthCm,
+				HeightCm = product.HeightCm,
+				LengthCm = product.LengthCm,
+				RelatedProducts = relatedProducts
 			};
 
-			model.CategoryName = category.CategoryName;
 			return View("_DetailProductWeb", model);
 		}
 
@@ -261,13 +290,169 @@ namespace MyProject.Web.Controllers
 			{
 				var userId = AbpSession.UserId ?? 0; // 0 là giá trị mặc định
 				var user = await _userAppService.GetUserById(userId);
+				var customerProfiles = new List<CustomerProfiles.Dto.CustomerProfileDto>();
+				
+				if (AbpSession.UserId != null)
+				{
+					customerProfiles = await _customerProfileAppService.GetAllByCurrentUser();
+				}
+
 				var model = new ProfileUser
 				{
 					User = user,
+					CustomerProfiles = customerProfiles
 				};
 				return PartialView("_UserInfos", model);
 			}
 				return PartialView("_OrderList");
+		}
+
+		// ========== CustomerProfile Actions ==========
+		private string UploadAvatar(IFormFile avatarFile)
+		{
+			if (avatarFile != null && avatarFile.Length > 0)
+			{
+				string[] allowedExtensions = { ".jpg", ".jpeg", ".png", ".gif" };
+				string fileExtension = Path.GetExtension(avatarFile.FileName).ToLower();
+				if (!allowedExtensions.Contains(fileExtension))
+				{
+					throw new ArgumentException("Định dạng ảnh không hợp lệ. Vui lòng chọn ảnh có định dạng .jpg, .jpeg, .png hoặc .gif");
+				}
+
+				if (avatarFile.Length > 5 * 1024 * 1024)
+				{
+					throw new ArgumentException("Kích thước ảnh không được vượt quá 5MB");
+				}
+
+				string uploadsFolder = @"E:\Uploads\avatars\";
+				Directory.CreateDirectory(uploadsFolder);
+
+				string uniqueFileName = DateTime.Now.ToString("yyyyMMddHHmmss") + "_" + Guid.NewGuid().ToString("N") + fileExtension;
+				string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+				using (var fileStream = new FileStream(filePath, FileMode.Create))
+				{
+					avatarFile.CopyTo(fileStream);
+				}
+
+				return "/avatars/" + uniqueFileName;
+			}
+			return null;
+		}
+
+		private void DeleteAvatarFile(string avatarPath)
+		{
+			if (string.IsNullOrEmpty(avatarPath)) return;
+			string fileName = Path.GetFileName(avatarPath);
+			if (string.IsNullOrEmpty(fileName)) return;
+			string folderPath = @"E:\Uploads\avatars\";
+			string fullPath = Path.Combine(folderPath, fileName);
+			if (System.IO.File.Exists(fullPath))
+			{
+				System.IO.File.Delete(fullPath);
+			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> CreateCustomerProfile(CreateCustomerProfileDto input)
+		{
+			try
+			{
+				if (input.AvatarFile != null)
+				{
+					input.Avatar = UploadAvatar(input.AvatarFile);
+				}
+				await _customerProfileAppService.Create(input);
+				return Json(new { success = true, message = "Thêm thông tin thành công" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = ex.Message });
+			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> UpdateCustomerProfile(UpdateCustomerProfileDto input)
+		{
+			try
+			{
+				var existingProfile = await _customerProfileAppService.GetById(input.Id);
+				
+				if (input.AvatarFile != null && input.AvatarFile.Length > 0)
+				{
+					if (!string.IsNullOrEmpty(existingProfile.Avatar))
+					{
+						DeleteAvatarFile(existingProfile.Avatar);
+					}
+					input.Avatar = UploadAvatar(input.AvatarFile);
+				}
+				else
+				{
+					input.Avatar = existingProfile.Avatar;
+				}
+
+				await _customerProfileAppService.Update(input);
+				return Json(new { success = true, message = "Cập nhật thông tin thành công" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = ex.Message });
+			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> DeleteCustomerProfile(int id)
+		{
+			try
+			{
+				var profile = await _customerProfileAppService.GetById(id);
+				if (!string.IsNullOrEmpty(profile.Avatar))
+				{
+					DeleteAvatarFile(profile.Avatar);
+				}
+				await _customerProfileAppService.Delete(id);
+				return Json(new { success = true, message = "Xóa thông tin thành công" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = ex.Message });
+			}
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> SetDefaultCustomerProfile(int id)
+		{
+			try
+			{
+				await _customerProfileAppService.SetAsDefault(id);
+				return Json(new { success = true, message = "Đặt làm mặc định thành công" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = ex.Message });
+			}
+		}
+
+		public async Task<IActionResult> GetCustomerProfileForm(int? id)
+		{
+			if (id.HasValue && id.Value > 0)
+			{
+				var profile = await _customerProfileAppService.GetById(id.Value);
+				var updateDto = new UpdateCustomerProfileDto
+				{
+					Id = profile.Id,
+					FullName = profile.FullName,
+					PhoneNumber = profile.PhoneNumber,
+					Address = profile.Address,
+					Ward = profile.Ward,
+					District = profile.District,
+					City = profile.City,
+					Avatar = profile.Avatar,
+					IsDefault = profile.IsDefault
+				};
+				return PartialView("_CustomerProfileForm", updateDto);
+			}
+			return PartialView("_CustomerProfileForm", new CreateCustomerProfileDto());
 		}
 
 		public async Task<IActionResult> GetInforDetailOrder(int orderId)
@@ -278,11 +463,21 @@ namespace MyProject.Web.Controllers
 			var productIds = orderDetail.Select(od => od.ProductId).ToList();
 			var products = await _productAppService.GetProductByIds(productIds);
 
+			// Lấy thông tin CustomerProfile từ UserId của đơn hàng
+			CustomerProfiles.Dto.CustomerProfileDto customerProfile = null;
+			if (order.UserId > 0)
+			{
+				var profiles = await _customerProfileAppService.GetAllByCurrentUser();
+				// Lấy profile mặc định hoặc profile đầu tiên
+				customerProfile = profiles.FirstOrDefault(p => p.IsDefault) ?? profiles.FirstOrDefault();
+			}
+
 			var model = new OrderViewSuccess
 			{
 				Order = order,
 				OrderListDetail = orderDetail,
-				ProductList = products
+				ProductList = products,
+				CustomerProfile = customerProfile
 			};
 
 			return PartialView("GetInforDetailOrder", model);

@@ -1,11 +1,13 @@
 ﻿@using MyProject.Web.Models.Products
+@using MyProject.Product.Dtos
+@using static MyProject.Products.Product
 @model DetailProductModel
-
 
 @section scripts
 {
 	<environment names="Development">
 		<script src="~/view-resources/Views/Carts/Index.js" asp-append-version="true"></script>
+		<script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
 	</environment>
 
 	<environment names="Staging,Production">
@@ -13,137 +15,273 @@
 	</environment>
 }
 
+<link href="/css/homeweb.css" rel="stylesheet" asp-append-version="true" />
+<link href="/css/detailproduct.css" rel="stylesheet" asp-append-version="true" />
 
-<style>
-	.product-image .img-private {
-		width: 100%;
-		max-width: 500px;
-		height: auto;
-		display: block;
-		margin: auto;
-		transition: transform 0.5s;
-	}
+<div class="container mt-3" style="max-width: 960px;">
+	<!-- Breadcrumb -->
+	<nav aria-label="breadcrumb" class="breadcrumb-modern">
+		<ol class="breadcrumb mb-2">
+			<li class="breadcrumb-item"><a href="/Home">Trang chủ</a></li>
+			<li class="breadcrumb-item"><a href="/Home/PageAllProduct?categoryId=@Model.CategoryId">@Model.CategoryName</a></li>
+			<li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+		</ol>
+	</nav>
 
-	.product-image .img-private:hover {
-		transform: scale(1.05);
-	}
+	<!-- Thông tin sản phẩm chính -->
+	<div class="product-detail-container">
+		<div class="row">
+			<!-- Hình ảnh sản phẩm -->
+			<div class="col-md-5">
+				<div class="text-center">
+					<img src="@(string.IsNullOrEmpty(Model.Image) ? "/img/default.jpg" : Model.Image)" 
+						 class="product-image-main-detail" 
+						 alt="@Model.Name">
+				</div>
+			</div>
 
-	.rating span {
-		color: gold;
-		font-size: 20px;
-	}
-</style>
+			<!-- Thông tin sản phẩm -->
+			<div class="col-md-7 product-info-section">
+				<!-- Tên sản phẩm -->
+				<h1 class="product-title-detail">@Model.Name</h1>
 
-<div class="container mt-4">
-	<div class="row">
-		<div class="col-md-12">
-			<!-- Breadcrumb -->
-			<nav aria-label="breadcrumb">
-				<ol class="breadcrumb bg-light p-2 rounded">
-					<li class="breadcrumb-item"><a href="/Home">Trang chủ</a></li>
-					<li class="breadcrumb-item " aria-current="page">@Model.CategoryName</li>
-				</ol>
-			</nav>
-		</div>
-	</div>
-	<!-- Tiêu đề -->
-	<div class="d-flex align-items-center pb-2 rounded">
-		<h3 class="text-primary fw-bold mb-0">@Model.Name</h3>
-	</div>
+				<!-- Đánh giá -->
+				<div class="rating-section">
+					<div class="rating-stars">
+						<i class="fas fa-star"></i>
+						<i class="fas fa-star"></i>
+						<i class="fas fa-star"></i>
+						<i class="fas fa-star"></i>
+						<i class="fas fa-star"></i>
+					</div>
+					<span class="rating-text">(4.5/5 - 128 đánh giá)</span>
+				</div>
 
-	<div class="row">
-		<!-- Hình ảnh sản phẩm -->
-		<div class="col-md-6">
-			<div class="product-image text-center">
-				<img src="@Model.Image" class="img-private img-fluid rounded shadow-sm" alt="@Model.Name">
+				<!-- Giá sản phẩm -->
+				<div class="product-price-section">
+					<span class="product-price-current">@String.Format("{0:N0}", Model.Price) đ</span>
+					@if (Model.Price < 20000000)
+					{
+						<span class="product-price-old">@String.Format("{0:N0}", Model.Price * 1.2m) đ</span>
+					}
+					<div class="mt-2">
+						@if (Model.State == ProductState.Available)
+						{
+							<span class="product-badge-status badge-available">Còn hàng</span>
+						}
+						else if (Model.State == ProductState.OutOfStock)
+						{
+							<span class="product-badge-status badge-outofstock">Hết hàng</span>
+						}
+						else
+						{
+							<span class="product-badge-status badge-discontinued">Ngừng kinh doanh</span>
+						}
+						<span class="badge bg-warning text-dark">Trả góp 0%</span>
+					</div>
+				</div>
+
+				<!-- Mô tả ngắn -->
+				@if (!string.IsNullOrEmpty(Model.Description))
+				{
+					<div class="mt-2">
+						<p style="color: #4a5568; line-height: 1.5; font-size: 14px; margin-bottom: 0;">@Model.Description</p>
+					</div>
+				}
+
+				<!-- Khuyến mãi -->
+				<div class="promo-box">
+					<h5 style="font-size: 16px; margin-bottom: 8px;"><i class="fas fa-gift"></i> Khuyến mãi đặc biệt</h5>
+					<ul class="promo-list">
+						<li>Giảm ngay 700.000đ khi mua online</li>
+						<li>Tặng kèm phụ kiện cao cấp</li>
+						<li>Bảo hành chính hãng 12 tháng</li>
+						<li>Miễn phí vận chuyển toàn quốc</li>
+					</ul>
+				</div>
+
+				<!-- Số lượng -->
+				<div class="quantity-input-group">
+					<label>Số lượng:</label>
+					<input id="quantity-add-detail" type="number" class="form-control" value="1" min="1" max="99">
+				</div>
+
+				<!-- Nút hành động -->
+				<div class="btn-action-group">
+					<button data-Id="@Model.Id" class="btn btn-add-cart btn-add-detail">
+						<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng
+					</button>
+					<button class="btn btn-buy-now">
+						<i class="fas fa-bolt"></i> Mua ngay
+					</button>
+				</div>
 			</div>
 		</div>
-
-		<!-- Thông tin sản phẩm -->
-		<div class="col-md-6">
-			<!-- Giá sản phẩm -->
-			<h4 class="text-danger fw-bold">
-				@String.Format("{0:N0}đ", Model.Price)
-				<small class="text-muted text-decoration-line-through">(20.490.000đ)</small>
-			</h4>
-			<span class="badge bg-warning text-dark">Trả góp 0%</span>
-
-			<!-- Khuyến mãi -->
-			<div class="mt-3 p-3 border rounded bg-light">
-				<h5 class="fw-bold text-primary">Khuyến mãi trị giá 3.290.000đ</h5>
-				<p class="text-muted">Giá và khuyến mãi dự kiến áp dụng đến 23:59 | 31/03</p>
-				<ul class="list-group">
-					<li class="list-group-item">
-						<strong>1.</strong> Chọn 1 trong các khuyến mãi:
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="promo" id="promo1">
-							<label class="form-check-label" for="promo1">Giảm ngay 700.000đ</label>
-						</div>
-						<div class="form-check">
-							<input class="form-check-input" type="radio" name="promo" id="promo2">
-							<label class="form-check-label" for="promo2">Tặng Microsoft 365 Personal</label>
-						</div>
-					</li>
-					<li class="list-group-item"><strong>2.</strong> Balo Acer Predator Gaming</li>
-					<li class="list-group-item"><strong>3.</strong> Phiếu mua AirPods & Apple Watch (300.000đ)</li>
-					<li class="list-group-item"><strong>4.</strong> Phiếu mua Xiaomi Watch S3 (700.000đ)</li>
-				</ul>
-			</div>
-
-			<!-- Số lượng -->
-			<div class="mt-3">
-				<label class="fw-bold">Số lượng:</label>
-				<input id="quantity-add-detail" type="number" class=" form-control w-25 d-inline-block" value="1" min="1">
-			</div>
-
-			<!-- Nút mua hàng -->
-			<div class="mt-3 d-flex gap-5 ">
-				<button data-Id="@Model.Id" class="btn btn-primary flex-grow-1 mr-3 btn-add-detail"><i class="fa fa-shopping-cart pr-1"></i>Thêm vào giỏ hàng</button>
-				<button class="btn btn-success flex-grow-1">Mua ngay</button>
-			</div>
-		</div>
-
 	</div>
 
 	<!-- Thông số kỹ thuật -->
-	<div class="mt-5">
-		<h4 class="fw-bold">Thông số kỹ thuật</h4>
-		<ul>
-			<li>CPU: Snapdragon 8 Gen 2</li>
-			<li>RAM: 8GB</li>
-			<li>Bộ nhớ: 256GB</li>
-			<li>Pin: 3700mAh</li>
-		</ul>
+	<div class="product-detail-container">
+		<h3 class="mb-3" style="font-weight: 700; color: #1d2939; border-bottom: 2px solid #d70018; padding-bottom: 8px; font-size: 20px;">
+			<i class="fas fa-info-circle"></i> Thông số kỹ thuật
+		</h3>
+		<table class="specs-table">
+			<tbody>
+				<tr>
+					<td>Tên sản phẩm</td>
+					<td>@Model.Name</td>
+				</tr>
+				@if (!string.IsNullOrEmpty(Model.Brand))
+				{
+					<tr>
+						<td>Thương hiệu</td>
+						<td>@Model.Brand</td>
+					</tr>
+				}
+				<tr>
+					<td>Danh mục</td>
+					<td>@Model.CategoryName</td>
+				</tr>
+				<tr>
+					<td>Giá bán</td>
+					<td><strong style="color: #d70018;">@String.Format("{0:N0}", Model.Price) đ</strong></td>
+				</tr>
+				<tr>
+					<td>Tình trạng</td>
+					<td>
+						@if (Model.State == ProductState.Available)
+						{
+							<span class="product-badge-status badge-available">Còn hàng</span>
+						}
+						else if (Model.State == ProductState.OutOfStock)
+						{
+							<span class="product-badge-status badge-outofstock">Hết hàng</span>
+						}
+						else
+						{
+							<span class="product-badge-status badge-discontinued">Ngừng kinh doanh</span>
+						}
+					</td>
+				</tr>
+				@if (Model.WeightInGrams.HasValue)
+				{
+					<tr>
+						<td>Trọng lượng</td>
+						<td>@Model.WeightInGrams.Value g (@String.Format("{0:F2}", Model.WeightInGrams.Value / 1000.0) kg)</td>
+					</tr>
+				}
+				@if (Model.WidthCm.HasValue || Model.HeightCm.HasValue || Model.LengthCm.HasValue)
+				{
+					<tr>
+						<td>Kích thước</td>
+						<td>
+							@if (Model.LengthCm.HasValue && Model.WidthCm.HasValue && Model.HeightCm.HasValue)
+							{
+								<span>@Model.LengthCm.Value cm × @Model.WidthCm.Value cm × @Model.HeightCm.Value cm</span>
+							}
+							else
+							{
+								<span>
+									@if (Model.LengthCm.HasValue) { <span>Dài: @Model.LengthCm.Value cm</span> }
+									@if (Model.WidthCm.HasValue) { <span>Rộng: @Model.WidthCm.Value cm</span> }
+									@if (Model.HeightCm.HasValue) { <span>Cao: @Model.HeightCm.Value cm</span> }
+								</span>
+							}
+						</td>
+					</tr>
+				}
+				<tr>
+					<td>Ngày thêm</td>
+					<td>@Model.CreationTime.ToString("dd/MM/yyyy")</td>
+				</tr>
+			</tbody>
+		</table>
 	</div>
 
 	<!-- Đánh giá khách hàng -->
-	<div class="mt-5">
-		<h4 class="fw-bold">Đánh giá sản phẩm</h4>
-		<div class="rating">
-			<span>&#9733;&#9733;&#9733;&#9733;&#9734;</span> (4.0/5)
+	<div class="product-detail-container">
+		<h3 class="mb-3" style="font-weight: 700; color: #1d2939; border-bottom: 2px solid #d70018; padding-bottom: 8px; font-size: 20px;">
+			<i class="fas fa-star"></i> Đánh giá sản phẩm
+		</h3>
+		<div class="rating-section mb-2">
+			<div class="rating-stars">
+				<i class="fas fa-star"></i>
+				<i class="fas fa-star"></i>
+				<i class="fas fa-star"></i>
+				<i class="fas fa-star"></i>
+				<i class="far fa-star"></i>
+			</div>
+			<span class="rating-text">4.0/5 (128 đánh giá)</span>
 		</div>
-		<textarea class="form-control mt-2" placeholder="Nhập đánh giá của bạn..."></textarea>
-		<button class="btn btn-success mt-2">Gửi đánh giá</button>
+		<textarea class="form-control mt-2" rows="3" placeholder="Chia sẻ đánh giá của bạn về sản phẩm này..." style="font-size: 14px;"></textarea>
+		<button class="btn btn-success mt-2" style="font-size: 14px; padding: 8px 16px;">
+			<i class="fas fa-paper-plane"></i> Gửi đánh giá
+		</button>
 	</div>
 
-	<!-- Sản phẩm liên quan -->
-	<div class="mt-5">
-		<h4 class="fw-bold">Sản phẩm liên quan</h4>
-		<div class="d-flex">
-			<div class="card mx-2" style="width: 18rem;">
-				<img src="/img/Products/20250220172828_f23ffce29cda48ac99decdc32b1fd1d3.jpg" class="card-img-top" alt="">
-				<div class="card-body">
-					<h5 class="card-title">Sản phẩm A</h5>
-					<p class="text-danger">3.500.000đ</p>
-				</div>
-			</div>
-			<div class="card mx-2" style="width: 18rem;">
-				<img src="/img/Products/20250220220201_45a375af7ba34763980096c505d1d20e.jpg" class="card-img-top" alt="">
-				<div class="card-body">
-					<h5 class="card-title">Sản phẩm B</h5>
-					<p class="text-danger">2.900.000đ</p>
-				</div>
+	<!-- Sản phẩm tương tự -->
+	@if (Model.RelatedProducts != null && Model.RelatedProducts.Any())
+	{
+		<div class="related-products-section">
+			<h3 class="related-products-title" style="font-size: 20px; margin-bottom: 15px;">
+				<i class="fas fa-th"></i> Sản phẩm tương tự
+			</h3>
+			<div class="related-products-container">
+				@foreach (var product in Model.RelatedProducts)
+				{
+					<div class="related-product-item">
+						<div class="product-card-modern">
+							<div class="card product-card-wrapper">
+								<!-- Phần hình ảnh sản phẩm -->
+								<div class="product-image-wrapper">
+									<img data-id="@product.Id" 
+										 class="product-image-main btn-view-detail" 
+										 src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)" 
+										 alt="@product.Name">
+									<!-- Badge giảm giá -->
+									<div class="product-badge">-10%</div>
+									<!-- Nút yêu thích -->
+									<button class="product-favorite-btn" type="button">
+										<i class="far fa-heart"></i>
+									</button>
+								</div>
+								
+								<!-- Phần thông tin sản phẩm -->
+								<div class="card-body product-info">
+									<!-- Tên sản phẩm -->
+									<h5 class="product-title btn-view-detail" data-id="@product.Id">@product.Name</h5>
+									
+									<!-- Đánh giá sao -->
+									<div class="product-rating-modern">
+										<div class="stars">
+											<i class="fas fa-star"></i>
+											<i class="fas fa-star"></i>
+											<i class="fas fa-star"></i>
+											<i class="fas fa-star"></i>
+											<i class="fas fa-star"></i>
+										</div>
+										<span class="rating-text">(128)</span>
+									</div>
+									
+									<!-- Giá sản phẩm -->
+									<div class="product-price-section">
+										<span class="product-price-current">@String.Format("{0:N0}", product.Price) đ</span>
+										@if (product.Price < 20000000)
+										{
+											<span class="product-price-old">@String.Format("{0:N0}", product.Price * 1.2m) đ</span>
+										}
+									</div>
+									
+									<!-- Thông tin khuyến mãi -->
+									<div class="product-promo">
+										<i class="fas fa-gift"></i>
+										<span>Smember giảm thêm đến <strong>10%</strong></span>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
 			</div>
 		</div>
-	</div>
+	}
 </div>

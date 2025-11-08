@@ -1,38 +1,48 @@
-﻿
-
-@foreach (var product in Model.Products)
+﻿@foreach (var product in Model.Products)
 {
-	<div class="swiper-slide me-1" style="width: 220px;">
-		<div class="card mb-3 product-category-list">
-			<div class="card-body">
-				<div class="product-image">
-					<img data-id="@product.Id" class="product-image btn-view-detail" style="width: 160px; height: 160px;" src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)" alt="@product.Name">
-				</div>
-				<div class="product-name mt-2" style="width: 100%">
-					<h3 class="card-title ">@product.Name</h3>
-				</div>
-				<p class="card-text product_price">@String.Format("{0:N0} đ", product.Price)</p>
-
-				@* <a href="@Url.Action("Detail", "Product", new { id = product.Id })" class="btn btn-info">Xem chi tiết</a> *@
-				<div class="block-smem-price">
-					Smember giảm thêm đến <span class="text-danger">10%</span>
-				</div>
-
-				<div class="bottom-div">
-					<div class="product-rating">
-						<i class="fas fa-star text-warning"></i>
-						<i class="fas fa-star text-warning"></i>
-						<i class="fas fa-star text-warning"></i>
-						<i class="fas fa-star text-warning"></i>
-						<i class="fas fa-star text-warning"></i>
+	<div class="product-card-modern">
+		<div class="card product-card-wrapper">
+			<!-- Phần hình ảnh sản phẩm -->
+			<div class="product-image-wrapper">
+				<img src="@(string.IsNullOrEmpty(product.Image) ? "/img/default.jpg" : product.Image)"
+					 class="product-image-main btn-view-detail" 
+					 alt="@product.Name" 
+					 data-id="@product.Id">
+				<!-- Badge giảm giá (nếu có) -->
+				<div class="product-badge">-10%</div>
+				<!-- Nút yêu thích -->
+				<button class="product-favorite-btn" type="button">
+					<i class="far fa-heart"></i>
+				</button>
+			</div>
+			
+			<!-- Phần thông tin sản phẩm -->
+			<div class="card-body product-info">
+				<!-- Tên sản phẩm -->
+				<h5 class="product-title btn-view-detail" data-id="@product.Id">@product.Name</h5>
+				
+				<!-- Đánh giá sao -->
+				<div class="product-rating-modern">
+					<div class="stars">
+						<i class="fas fa-star"></i>
+						<i class="fas fa-star"></i>
+						<i class="fas fa-star"></i>
+						<i class="fas fa-star"></i>
+						<i class="fas fa-star"></i>
 					</div>
-
-					<div class="">
-						<a href="#" class="favorite-btn">
-							Yêu thích
-						</a>
-						<i class="far fa-heart"></i>
-					</div>
+					<span class="rating-text">(128)</span>
+				</div>
+				
+				<!-- Giá sản phẩm -->
+				<div class="product-price-section">
+					<span class="product-price-current">@String.Format("{0:N0}", product.Price) đ</span>
+					<span class="product-price-old">@String.Format("{0:N0}", 10000000) đ</span>
+				</div>
+				
+				<!-- Thông tin khuyến mãi -->
+				<div class="product-promo">
+					<i class="fas fa-gift"></i>
+					<span>Smember giảm thêm đến <strong>10%</strong></span>
 				</div>
 			</div>
 		</div>

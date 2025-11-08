@@ -58,7 +58,7 @@
 				$this.data("loading", false); // Reset trạng thái loading
 			},
 			error: function () {
-				alert("Lỗi tải dữ liệu!");
+				abp.notify.error("Lỗi tải dữ liệu!");
 				$this.data("loading", false);
 			}
 		});

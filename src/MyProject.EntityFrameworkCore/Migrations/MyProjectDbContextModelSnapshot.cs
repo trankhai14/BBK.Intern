@@ -1645,6 +1645,76 @@ namespace MyProject.Migrations
                     b.ToTable("AppCategory");
                 });
 
+            modelBuilder.Entity("MyProject.CustomerProfiles.CustomerProfile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Avatar")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("City")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<DateTime>("CreationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("CreatorUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("DeleterUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime?>("DeletionTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("District")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("FullName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModificationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<long?>("LastModifierUserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<long>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Ward")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AppCustomerProfiles");
+                });
+
             modelBuilder.Entity("MyProject.Inventories.Inventory", b =>
                 {
                     b.Property<int>("Id")
@@ -1986,6 +2056,10 @@ namespace MyProject.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Brand")
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
@@ -1996,8 +2070,14 @@ namespace MyProject.Migrations
                         .HasMaxLength(65536)
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<decimal?>("HeightCm")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("LengthCm")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -2009,6 +2089,12 @@ namespace MyProject.Migrations
 
                     b.Property<byte>("State")
                         .HasColumnType("tinyint");
+
+                    b.Property<int?>("WeightInGrams")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("WidthCm")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 
@@ -2383,6 +2469,17 @@ namespace MyProject.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("MyProject.CustomerProfiles.CustomerProfile", b =>
+                {
+                    b.HasOne("MyProject.Authorization.Users.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("User");
                 });

@@ -1,0 +1,570 @@
+/* ============================================
+   ORDER DETAIL - Chi tiết đơn hàng Styles
+   ============================================ */
+
+/* Container chính */
+.order-detail-container {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    padding: 0;
+    overflow: hidden;
+}
+
+/* Header của order detail */
+.order-detail-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px 30px;
+    position: relative;
+    /* Đảm bảo text có độ tương phản tốt */
+}
+
+/* Overlay để đảm bảo text luôn rõ ràng */
+.order-detail-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+}
+
+.order-detail-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #ffffff !important;
+    /* Màu trắng tinh khiết */
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+    /* Shadow mạnh hơn */
+    position: relative;
+    z-index: 1;
+}
+
+.order-detail-title i {
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.order-detail-title .order-id {
+    color: #ffeb3b !important;
+    /* Màu vàng sáng hơn nữa */
+    font-weight: 900;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7), 0 1px 3px rgba(0, 0, 0, 0.5);
+    /* Shadow rất mạnh */
+    background: rgba(0, 0, 0, 0.2);
+    /* Background tối nhẹ để tăng độ tương phản */
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.order-detail-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: 12px;
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.order-detail-status-badge i {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Màu sắc cho từng trạng thái đơn hàng */
+/* Chờ xử lý - Vàng */
+.order-detail-status-badge.status-0 {
+    background: rgba(255, 193, 7, 0.9);
+    /* Vàng đậm */
+    border-color: rgba(255, 193, 7, 0.5);
+    color: #856404 !important;
+    /* Màu chữ tối để đọc được trên nền vàng */
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.order-detail-status-badge.status-0 i {
+    color: #856404;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Đã xác nhận - Xanh dương */
+.order-detail-status-badge.status-1 {
+    background: rgba(13, 110, 253, 0.9);
+    /* Xanh dương đậm */
+    border-color: rgba(13, 110, 253, 0.5);
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.order-detail-status-badge.status-1 i {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Đang giao hàng - Xanh nhạt */
+.order-detail-status-badge.status-2 {
+    background: rgba(13, 202, 240, 0.9);
+    /* Xanh nhạt đậm */
+    border-color: rgba(13, 202, 240, 0.5);
+    color: #055160 !important;
+    /* Màu chữ tối để đọc được */
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.order-detail-status-badge.status-2 i {
+    color: #055160;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Đã hủy - Đỏ */
+.order-detail-status-badge.status-3 {
+    background: rgba(220, 53, 69, 0.9);
+    /* Đỏ đậm */
+    border-color: rgba(220, 53, 69, 0.5);
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.order-detail-status-badge.status-3 i {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Hoàn thành - Xanh lá */
+.order-detail-status-badge.status-4 {
+    background: rgba(25, 135, 84, 0.9);
+    /* Xanh lá đậm */
+    border-color: rgba(25, 135, 84, 0.5);
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.order-detail-status-badge.status-4 i {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.order-detail-time {
+    font-size: 14px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+.order-detail-time i {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Body của order detail */
+.order-detail-body {
+    padding: 30px;
+}
+
+/* Section thông tin khách hàng và thanh toán */
+.order-info-section {
+    margin-bottom: 25px;
+}
+
+.order-info-card {
+    background: #fff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    height: 100%;
+    transition: all 0.3s ease;
+}
+
+.order-info-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #667eea;
+}
+
+.order-info-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.order-info-card-header h5 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.order-info-card-header i {
+    color: #667eea;
+    font-size: 18px;
+}
+
+/* Customer info với avatar */
+.customer-info-with-avatar {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.customer-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.customer-avatar-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    border: 3px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.customer-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0;
+}
+
+/* Info items */
+.order-info-item {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.order-info-item:last-child {
+    margin-bottom: 0;
+}
+
+.order-info-item-icon {
+    width: 20px;
+    color: #667eea;
+    font-size: 16px;
+    margin-top: 2px;
+}
+
+.order-info-item-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.order-info-item-value {
+    font-size: 15px;
+    color: #2d3748;
+    line-height: 1.5;
+}
+
+.order-info-item-value.address-detail {
+    font-size: 14px;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+/* Payment method */
+.payment-method-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+    margin: 0;
+}
+
+/* Products section */
+.order-products-section {
+    margin-top: 25px;
+}
+
+.order-products-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 15px 20px;
+    border-bottom: 2px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+.order-products-header h5 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.order-products-header i {
+    color: #667eea;
+    font-size: 18px;
+}
+
+.order-products-body {
+    padding: 20px;
+}
+
+/* Product item */
+.order-product-item {
+    display: flex;
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.order-product-item:last-child {
+    border-bottom: none;
+}
+
+.order-product-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+.order-product-info {
+    flex: 1;
+}
+
+.order-product-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 8px;
+}
+
+.order-product-meta {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 4px;
+}
+
+.order-product-quantity {
+    font-size: 14px;
+    color: #667eea;
+    font-weight: 600;
+}
+
+.order-product-price {
+    text-align: right;
+    min-width: 150px;
+}
+
+.order-product-price-current {
+    font-size: 18px;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 4px;
+}
+
+.order-product-price-old {
+    font-size: 14px;
+    color: #94a3b8;
+    text-decoration: line-through;
+}
+
+/* Price summary */
+.order-price-summary {
+    background: #f8f9fa;
+    padding: 20px;
+    border-top: 2px solid #e2e8f0;
+    margin-top: 20px;
+}
+
+.order-price-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    font-size: 15px;
+}
+
+.order-price-row:last-child {
+    border-top: 2px solid #e2e8f0;
+    margin-top: 10px;
+    padding-top: 15px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.order-price-label {
+    color: #64748b;
+}
+
+.order-price-value {
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.order-price-row:last-child .order-price-value {
+    color: #667eea;
+    font-size: 20px;
+}
+
+/* Back button */
+.order-detail-footer {
+    padding: 20px 30px;
+    background: #f8f9fa;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.btn-back-to-orders {
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    border: 2px solid #667eea;
+    background: #fff;
+    color: #667eea;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-back-to-orders:hover {
+    background: #667eea;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    text-decoration: none;
+}
+
+/* Status colors - Chỉ thay đổi background, không ảnh hưởng đến màu chữ */
+.status-0 {
+    background: rgba(255, 243, 205, 0.3);
+}
+
+/* Chờ xử lý */
+.status-1 {
+    background: rgba(207, 226, 255, 0.3);
+}
+
+/* Đã xác nhận */
+.status-2 {
+    background: rgba(209, 236, 241, 0.3);
+}
+
+/* Đang giao hàng */
+.status-3 {
+    background: rgba(248, 215, 218, 0.3);
+}
+
+/* Đã hủy */
+.status-4 {
+    background: rgba(209, 231, 221, 0.3);
+}
+
+/* Hoàn thành */
+
+/* Đảm bảo màu chữ trong header không bị override bởi status classes */
+/* Loại bỏ background overlay của status classes khỏi header để giữ gradient gốc */
+.order-detail-header.status-0,
+.order-detail-header.status-1,
+.order-detail-header.status-2,
+.order-detail-header.status-3,
+.order-detail-header.status-4 {
+    color: white !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    /* Giữ gradient gốc */
+}
+
+/* Đảm bảo tất cả text trong header có màu trắng và shadow rõ ràng */
+.order-detail-header.status-0 .order-detail-title,
+.order-detail-header.status-1 .order-detail-title,
+.order-detail-header.status-2 .order-detail-title,
+.order-detail-header.status-3 .order-detail-title,
+.order-detail-header.status-4 .order-detail-title {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+.order-detail-header.status-0 .order-detail-title i,
+.order-detail-header.status-1 .order-detail-title i,
+.order-detail-header.status-2 .order-detail-title i,
+.order-detail-header.status-3 .order-detail-title i,
+.order-detail-header.status-4 .order-detail-title i {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}
+
+.order-detail-header.status-0 .order-detail-title .order-id,
+.order-detail-header.status-1 .order-detail-title .order-id,
+.order-detail-header.status-2 .order-detail-title .order-id,
+.order-detail-header.status-3 .order-detail-title .order-id,
+.order-detail-header.status-4 .order-detail-title .order-id {
+    color: #ffeb3b !important;
+    /* Màu vàng sáng */
+    font-weight: 900 !important;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7), 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    padding: 2px 8px !important;
+    border-radius: 4px !important;
+}
+
+/* Status badge trong header - Màu sẽ được xác định bởi class status-0, status-1, etc. */
+/* Không override màu của status badge để giữ màu riêng theo trạng thái đã định nghĩa ở trên */
+
+.order-detail-header.status-0 .order-detail-time,
+.order-detail-header.status-1 .order-detail-time,
+.order-detail-header.status-2 .order-detail-time,
+.order-detail-header.status-3 .order-detail-time,
+.order-detail-header.status-4 .order-detail-time {
+    color: #ffffff !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+.order-detail-header.status-0 .order-detail-time i,
+.order-detail-header.status-1 .order-detail-time i,
+.order-detail-header.status-2 .order-detail-time i,
+.order-detail-header.status-3 .order-detail-time i,
+.order-detail-header.status-4 .order-detail-time i {
+    color: #ffffff !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5) !important;
+}

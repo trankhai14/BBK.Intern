@@ -1,0 +1,73 @@
+/* ============================================
+   ORDER LIST - Filter Container Styles
+   ============================================ */
+
+/* Container chứa filter buttons */
+.order-filter-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Section tiêu đề */
+.order-title-section {
+    margin-bottom: 20px;
+}
+
+.order-title-section h4 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+
+.order-title-section h4 i {
+    margin-right: 10px;
+    color: #667eea;
+}
+
+/* Container cho các filter buttons */
+.order-filter-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Mỗi filter button */
+.btn-status-filter {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 2px solid #e2e8f0;
+    background: #fff;
+    color: #64748b;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.btn-status-filter:hover {
+    border-color: #667eea;
+    color: #667eea;
+    background: #f0f4ff;
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.2);
+}
+
+/* Button đang active */
+.btn-status-filter.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+    color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Container cho danh sách đơn hàng */
+#orderList {
+    background: transparent;
+}

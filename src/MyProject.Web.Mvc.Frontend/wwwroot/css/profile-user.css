@@ -1,0 +1,137 @@
+/* ============================================
+   PROFILE USER PAGE - Main Layout Styles
+   ============================================ */
+
+/* Container chính cho trang profile */
+.profile-container {
+    background: #f8f9fa;
+    min-height: calc(100vh - 200px);
+    padding: 30px 0;
+}
+
+/* Sidebar chứa menu điều hướng */
+.profile-sidebar {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+/* Header của sidebar với gradient */
+.profile-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px 20px;
+    text-align: center;
+}
+
+.profile-header h5 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* Container cho menu items */
+.profile-menu {
+    padding: 15px 0;
+}
+
+/* Mỗi item trong menu */
+.profile-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    color: #495057;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.profile-menu-item:hover {
+    background: #f8f9fa;
+    color: #667eea;
+    border-left-color: #667eea;
+    text-decoration: none;
+}
+
+/* Menu item đang active */
+.profile-menu-item.active {
+    background: #f0f4ff;
+    color: #667eea;
+    border-left-color: #667eea;
+    font-weight: 600;
+}
+
+.profile-menu-item i {
+    width: 24px;
+    margin-right: 12px;
+    font-size: 18px;
+}
+
+/* Nút đăng xuất */
+.profile-logout {
+    margin: 15px;
+    padding: 12px;
+    background: #fff;
+    border: 2px solid #dc3545;
+    border-radius: 8px;
+    color: #dc3545;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.profile-logout:hover {
+    background: #dc3545;
+    color: white;
+    text-decoration: none;
+}
+
+/* Banner VIP ở cuối sidebar */
+.profile-vip-banner {
+    margin: 15px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 12px;
+    color: white;
+    text-align: center;
+}
+
+.profile-vip-banner h6 {
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.profile-vip-banner p {
+    font-size: 13px;
+    margin-bottom: 15px;
+    opacity: 0.95;
+}
+
+/* Container cho nội dung chính */
+.profile-content {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    min-height: 500px;
+    padding: 0;
+}
+
+/* Breadcrumb hiện đại */
+.breadcrumb-modern {
+    background: transparent;
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.breadcrumb-modern .breadcrumb-item a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.breadcrumb-modern .breadcrumb-item.active {
+    color: #6c757d;
+}

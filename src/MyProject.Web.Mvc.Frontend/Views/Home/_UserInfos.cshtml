@@ -1,20 +1,167 @@
 ﻿@using MyProject.Web.Models.Home
+@using MyProject.CustomerProfiles.Dto
 @model ProfileUser
 
-<div class="card p-3">
-	<h4>Thông tin User</h4>
-	<div class="row">
-		<div class="col-md-6">
-			@* <p><strong>ID:</strong> @Model.User.Id</p> *@
-			<p><strong>Họ và tên:</strong> @Model.User.FullName</p>
+@* Link CSS file *@
+<link href="/css/user-infos.css" rel="stylesheet" />
 
-			<p><strong>Email:</strong> @Model.User.EmailAddress</p>
-			<p>
-				<strong>Trạng thái:</strong>
-				<span class="badge @(Model.User.IsActive ? "bg-success" : "bg-danger")">
-					@(Model.User.IsActive ? "Hoạt động" : "Không hoạt động")
-				</span>
-			</p>
-		</div>
+@* ============================================
+   USER INFOS - Quản lý thông tin khách hàng
+   ============================================ *@
+<div class="user-info-container">
+	@* Header với gradient và nút thêm mới *@
+	<div class="user-info-header">
+		<h5>
+			<i class="fas fa-address-card"></i>
+			Thông tin và địa chỉ giao hàng
+		</h5>
+		<button type="button" class="btn btn-add-profile" onclick="openCustomerProfileForm()">
+			<i class="fas fa-plus"></i> Thêm mới
+		</button>
+	</div>
+	@* Body chứa danh sách profiles *@
+	<div class="user-info-body">
+		@* Kiểm tra xem có profile nào không *@
+		@if (Model.CustomerProfiles == null || !Model.CustomerProfiles.Any())
+		{
+			@* Empty state - Hiển thị khi chưa có profile *@
+			<div class="empty-profile-state">
+				<i class="fas fa-address-card"></i>
+				<h6>Chưa có thông tin khách hàng</h6>
+				<p>Hãy thêm thông tin khách hàng để sử dụng dịch vụ giao hàng</p>
+				<button type="button" class="btn btn-add-profile" onclick="openCustomerProfileForm()" style="background: #667eea; border-color: #667eea;">
+					<i class="fas fa-plus"></i> Thêm thông tin mới
+				</button>
+			</div>
+		}
+		else
+		{
+			@* Danh sách các profile cards *@
+			<div class="row" id="customerProfilesList">
+				@foreach (var profile in Model.CustomerProfiles)
+				{
+					@* Mỗi profile card *@
+					<div class="col-md-6 mb-4" data-profile-id="@profile.Id">
+						<div class="profile-card @(profile.IsDefault ? "default" : "")">
+							@* Header của profile card - Avatar, tên, và action buttons *@
+							<div class="profile-card-header">
+								<div class="profile-header-info">
+									@* Avatar hoặc placeholder *@
+									@if (!string.IsNullOrEmpty(profile.Avatar))
+									{
+										<img src="@profile.Avatar" alt="Avatar" class="profile-avatar" data-avatar="true" onerror="handleAvatarError(this)">
+									}
+									else
+									{
+										<div class="profile-avatar-placeholder">
+											<i class="fas fa-user"></i>
+										</div>
+									}
+									@* Tên và badge mặc định *@
+									<div class="profile-name-section">
+										<p class="profile-name">
+											@if (profile.IsDefault)
+											{
+												<span class="profile-default-badge">Mặc định</span>
+											}
+											@profile.FullName
+										</p>
+									</div>
+								</div>
+								@* Action buttons (Set default, Edit, Delete) *@
+								<div class="profile-actions">
+									@if (!profile.IsDefault)
+									{
+										<button type="button" class="btn-profile-action set-default" title="Đặt làm mặc định" onclick="setAsDefault(@profile.Id)">
+											<i class="fas fa-star"></i>
+										</button>
+									}
+									<button type="button" class="btn-profile-action edit" title="Chỉnh sửa" onclick="openCustomerProfileForm(@profile.Id)">
+										<i class="fas fa-edit"></i>
+									</button>
+									<button type="button" class="btn-profile-action delete" title="Xóa" onclick="deleteCustomerProfile(@profile.Id)">
+										<i class="fas fa-trash"></i>
+									</button>
+								</div>
+							</div>
+							@* Body của profile card - Thông tin chi tiết *@
+							<div class="profile-card-body">
+								@* Thông tin số điện thoại *@
+								<div class="profile-info-item">
+									<i class="fas fa-phone profile-info-icon"></i>
+									<div class="profile-info-content">
+										<div class="profile-info-label">Số điện thoại</div>
+										<div class="profile-info-value">@profile.PhoneNumber</div>
+									</div>
+								</div>
+								@* Thông tin địa chỉ *@
+								<div class="profile-info-item">
+									<i class="fas fa-map-marker-alt profile-info-icon"></i>
+									<div class="profile-info-content">
+										<div class="profile-info-label">Địa chỉ</div>
+										<div class="profile-info-value">
+											@profile.Address
+											@* Chi tiết địa chỉ (Ward, District, City) *@
+											@if (!string.IsNullOrEmpty(profile.Ward) || !string.IsNullOrEmpty(profile.District) || !string.IsNullOrEmpty(profile.City))
+											{
+												<div class="profile-address-detail">
+													@if (!string.IsNullOrEmpty(profile.Ward))
+													{
+														<span>Phường/Xã: @profile.Ward</span>
+													}
+													@if (!string.IsNullOrEmpty(profile.District))
+													{
+														@if (!string.IsNullOrEmpty(profile.Ward)) { <span> • </span> }
+														<span>Quận/Huyện: @profile.District</span>
+													}
+													@if (!string.IsNullOrEmpty(profile.City))
+													{
+														@if (!string.IsNullOrEmpty(profile.Ward) || !string.IsNullOrEmpty(profile.District)) { <span> • </span> }
+														<span>Tỉnh/Thành phố: @profile.City</span>
+													}
+												</div>
+											}
+										</div>
+									</div>
+								</div>
+							</div>
+							@* Footer của profile card - Thời gian tạo *@
+							<div class="profile-footer">
+								<i class="fas fa-calendar"></i>
+								<span>Tạo lúc: @profile.CreationTime.ToString("dd/MM/yyyy HH:mm")</span>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+		}
 	</div>
 </div>
+
+@* ============================================
+   MODAL CONTAINER
+   ============================================ *@
+@* Container để load modal form tạo/sửa profile (load động qua AJAX) *@
+<div id="customerProfileModalContainer"></div>
+
+@* ============================================
+   SCRIPTS
+   ============================================ *@
+<script>
+	@* Hàm xử lý lỗi avatar - tránh vòng lặp vô hạn khi ảnh không tồn tại *@
+	function handleAvatarError(img) {
+		if (!img.dataset.defaultTried) {
+			img.dataset.defaultTried = 'true';
+			var defaultSrc = '/img/default.jpg';
+			if (img.src !== defaultSrc) {
+				img.src = defaultSrc;
+			} else {
+				img.style.display = 'none';
+			}
+		} else {
+			img.style.display = 'none';
+		}
+	}
+</script>
+@* Link JavaScript file chứa các hàm quản lý profile *@
+<script src="~/view-resources/Views/Home/UserInfos.js" asp-append-version="true"></script>

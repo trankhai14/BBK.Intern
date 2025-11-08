@@ -5,6 +5,8 @@
 	ViewData["Title"] = "Giỏ hàng";
 }
 
+<link href="/css/cart.css" rel="stylesheet" asp-append-version="true" />
+
 @section scripts
 {
 	<environment names="Development">
@@ -15,192 +17,244 @@
 		@* <script src="~/view-resources/Views/Carts/Index.min.js" asp-append-version="true"></script> *@
 	</environment>
 }
-<style>
-	/* Căn giữa nội dung giỏ hàng trống mà không ảnh hưởng đến header */
-	.empty-cart-container {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		min-height: calc(100vh - 70px); /* Trừ đi chiều cao của header */
-		padding: 20px;
-	}
 
-	/* Định dạng nội dung bên trong */
-	.empty-cart-content {
-		max-width: 400px;
-		background: #fff;
-		padding: 30px;
-		border-radius: 10px;
-		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-	}
+<div class="cart-page-container">
+	@if (Model == null || Model.Carts == null || !Model.Carts.Any())
+	{
+		<!-- Phần hiển thị giỏ hàng trống -->
+		<main class="empty-cart-container">
+			<div class="empty-cart-content">
+				<!-- Hình ảnh giỏ hàng trống -->
+				<img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png"
+					 alt="Empty Cart" class="mb-3">
 
-</style>
+				<!-- Tiêu đề và nội dung -->
+				<h4>Giỏ hàng trống</h4>
+				<p>Không có sản phẩm nào trong giỏ hàng của bạn.</p>
 
-<div class="container mt-4">
-	<div class="mx-auto col-lg-7 col-md-8 col-sm-10">
-		<!-- Tiêu đề giỏ hàng -->
-		<!-- Danh sách sản phẩm trong giỏ hàng -->
-    @if (Model == null || Model.Carts == null || !Model.Carts.Any())
-    {
-      <!-- Phần hiển thị giỏ hàng trống -->
-      <main class="empty-cart-container">
-        <div class="empty-cart-content text-center">
-          <!-- Hình ảnh giỏ hàng trống -->
-          <img src="https://cdn-icons-png.flaticon.com/512/2038/2038854.png"
-               alt="Empty Cart" width="180" class="mb-3">
-
-          <!-- Tiêu đề và nội dung -->
-          <h4 class="fw-bold text-dark">Giỏ hàng trống</h4>
-          <p class="text-muted">Không có sản phẩm nào trong giỏ hàng của bạn.</p>
-
-          <!-- Nút quay về trang chủ -->
-          <a href="/" class="btn btn-primary px-4 py-2 rounded-pill shadow-sm">
-            🛒 Tiếp tục mua sắm
-          </a>
-
-          <!-- Hỗ trợ khách hàng -->
-          <p class="mt-3 text-secondary small">
-            Cần trợ giúp? Gọi ngay
-            <a href="tel:1900232460" class="text-decoration-none fw-bold">1900 232 460</a>
-            hoặc <a href="tel:02836221060" class="text-decoration-none fw-bold">028.3622.1060</a> (8h00 - 21h30)
-          </p>
-        </div>
-      </main>
-
-      <!-- Tự động chuyển hướng về trang chủ sau 10 giây -->
-      <script>
-        setTimeout(function () {
-            window.location.href = "/";
-        }, 10000);
-      </script>
-    }
-    else
-    {
-      <h3 class="text-center">🛒 Giỏ Hàng</h3>
-
-      <!-- Các phần hiển thị giỏ hàng -->
-      @foreach (var item in Model.Carts)
-      {
-        <div class="cart-item d-flex border-bottom pb-3 mb-3 bg-white p-3 rounded">
-          <!-- Ảnh sản phẩm -->
-          <img src="@item.Image" alt="@item.Name" width="100" height="100" class="rounded border">
-
-          <!-- Thông tin sản phẩm -->
-          <div class="ml-3 ms-3 flex-grow-1">
-            <h6 class="mb-1 fw-bold">@item.Name</h6>
-            <p class="text-muted small">@item.Description</p>
-
-            <!-- Chọn khuyến mãi -->
-            <p class="fw-bold mt-3 mb-1">Chọn 1 trong 2 khuyến mãi</p>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="promo-@item.Id" id="promo1-@item.Id">
-              <label class="form-check-label small" for="promo1-@item.Id">Giảm ngay 700,000đ</label>
-            </div>
-            <div class="form-check">
-              <input class="form-check-input" type="radio" name="promo-@item.Id" id="promo2-@item.Id">
-              <label class="form-check-label small" for="promo2-@item.Id">Tặng Microsoft 365 Personal</label>
-            </div>
-            <a href="#" class="text-primary small d-block mt-2">5 Khuyến mãi ⮟</a>
-          </div>
-
-          <!-- Tăng giảm số lượng và xóa -->
-          <div class="d-flex flex-column align-items-end">
-            <button data-id="@item.Id" class="btn btn-sm text-danger btn-delete mb-2">
-              🗑️ Xóa
-            </button>
-
-            <div class="d-flex align-items-center">
-              <button class="btn btn-outline-secondary btn-sm btn-reduce" data-id="@item.Id">-</button>
-              <input data-id="@item.Id" type="text" class="quantity-input form-control text-center mx-1"
-                     value="@item.Quantity" style="width: 45px;">
-              <button class="btn btn-outline-secondary btn-sm btn-increase" data-id="@item.Id">+</button>
-            </div>
-
-            <span data-unit-price="@item.Price" class="product-price text-danger fw-bold mt-2">
-              @String.Format("{0:N0} đ", item.TotalPrice)
-            </span>
-          </div>
-        </div>
-      }
-
-      <!-- Phần tiếp theo như tổng tiền, phương thức thanh toán, nút đặt hàng -->
-			<div class="bg-light p-3 rounded">
-				<div class="d-flex justify-content-between align-items-center w-100">
-					<strong class="text-dark">Tổng cộng:</strong>
-					<span id="totalPrice" class=" fw-bold"></span>
-				</div>
-			</div>
-
-			<!-- Phương thức thanh toán -->
-			<div class="bg-white p-3 rounded border mt-3">
-				<h5 class="fw-bold">Hình thức thanh toán</h5>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="paymentMethod" id="cod">
-					<label class="form-check-label d-flex align-items-center" for="cod">
-						<i class="fas fa-money-bill-wave text-success me-2 pr-2"></i> Thanh toán tiền mặt khi nhận hàng
-					</label>
-				</div>
-				<div class="form-check">
-					<input class="form-check-input" type="radio" name="paymentMethod" id="bankTransfer">
-					<label class="form-check-label d-flex align-items-center" for="bankTransfer">
-						<i class="fas fa-university text-primary me-2 pr-2"></i> Chuyển khoản ngân hàng
-					</label>
-				</div>
-
-				<!-- Bootstrap collapse với icon mũi tên -->
-				<a href="#paymentMethods" data-bs-toggle="collapse" class="text-primary small d-block mt-2">
-					5 hình thức thanh toán khác <i class="fas fa-chevron-down"></i>
+				<!-- Nút quay về trang chủ -->
+				<a href="/" class="btn btn-primary">
+					🛒 Tiếp tục mua sắm
 				</a>
-				<!-- Danh sách ẩn -->
-				<div class="collapse mt-2" id="paymentMethods">
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="paymentMethod" id="momo">
-						<label class="form-check-label" for="momo">Thanh toán qua Momo</label>
-					</div>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="paymentMethod" id="creditCard">
-						<label class="form-check-label" for="creditCard">Thanh toán bằng thẻ tín dụng</label>
-					</div>
-					<div class="form-check">
-						<input class="form-check-input" type="radio" name="paymentMethod" id="zalopay">
-						<label class="form-check-label" for="zalopay">Ví ZaloPay</label>
-					</div>
-				</div>
 
-
-				<!-- Chính sách -->
-				<div class="form-check mt-3">
-					<input class="form-check-input" type="checkbox" id="agreePolicy" checked>
-					<label class="form-check-label" for="agreePolicy">
-						Tôi đồng ý với <a href="#" class="text-primary">Chính sách xử lý dữ liệu cá nhân</a> của Thế Giới Di Động
-					</label>
-				</div>
-
-				<!-- Nút đặt hàng -->
-				<button id="btnCheckout" data-userId="@Model.UserId" data-nameUser="@Model.NameUser" class="btn btn-warning w-100 mt-3 fw-bold">Đặt hàng</button>
+				<!-- Hỗ trợ khách hàng -->
+				<p class="text-secondary">
+					Cần trợ giúp? Gọi ngay
+					<a href="tel:1900232460">1900 232 460</a>
+					hoặc <a href="tel:02836221060">028.3622.1060</a> (8h00 - 21h30)
+				</p>
 			</div>
-    }
-	</div>
+		</main>
 
-	<!-- Modal Xác Nhận Xóa -->
-	<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="confirmDeleteLabel">Xác nhận xóa sản phẩm</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		<!-- Tự động chuyển hướng về trang chủ sau 10 giây -->
+		<script>
+			setTimeout(function () {
+				window.location.href = "/";
+			}, 10000);
+		</script>
+	}
+	else
+	{
+		<!-- Tiêu đề giỏ hàng -->
+		<div class="cart-header">
+			<h2>
+				<i class="fas fa-shopping-cart"></i>
+				Giỏ hàng của tôi
+			</h2>
+			<span class="cart-item-count">(@Model.Carts.Count sản phẩm)</span>
+		</div>
+
+		<div class="row">
+			<!-- Cột trái: Danh sách sản phẩm -->
+			<div class="col-lg-8 col-md-12">
+				<div class="cart-items-list">
+					@foreach (var item in Model.Carts)
+					{
+						<div class="cart-item">
+							<!-- Ảnh sản phẩm -->
+							<div class="cart-item-image">
+								<img src="@(string.IsNullOrEmpty(item.Image) ? "/img/default.jpg" : item.Image)" 
+									 alt="@item.Name">
+							</div>
+
+							<!-- Thông tin sản phẩm -->
+							<div class="cart-item-info">
+								<h5 class="cart-item-name">@item.Name</h5>
+								@if (!string.IsNullOrEmpty(item.Description))
+								{
+									<p class="cart-item-description">@item.Description</p>
+								}
+
+								<!-- Chọn khuyến mãi -->
+								<div class="cart-item-promo">
+									<p class="cart-item-promo-title">Chọn 1 trong 2 khuyến mãi</p>
+									<div class="cart-item-promo-options">
+										<div class="cart-item-promo-option">
+											<input type="radio" name="promo-@item.Id" id="promo1-@item.Id">
+											<label for="promo1-@item.Id">Giảm ngay 700,000đ</label>
+										</div>
+										<div class="cart-item-promo-option">
+											<input type="radio" name="promo-@item.Id" id="promo2-@item.Id">
+											<label for="promo2-@item.Id">Tặng Microsoft 365 Personal</label>
+										</div>
+									</div>
+									<a href="#" class="cart-item-promo-more">5 Khuyến mãi khác <i class="fas fa-chevron-down"></i></a>
+								</div>
+							</div>
+
+							<!-- Phần điều khiển (số lượng, giá, xóa) -->
+							<div class="cart-item-controls">
+								<!-- Nút xóa -->
+								<button data-id="@item.Id" class="cart-item-delete btn-delete" type="button">
+									<i class="fas fa-trash-alt"></i>
+									<span>Xóa</span>
+								</button>
+
+								<!-- Điều khiển số lượng -->
+								<div class="cart-item-quantity">
+									<button class="btn-reduce" data-id="@item.Id" type="button">-</button>
+									<input data-id="@item.Id" 
+										   type="text" 
+										   class="quantity-input" 
+										   value="@item.Quantity"
+										   readonly>
+									<button class="btn-increase" data-id="@item.Id" type="button">+</button>
+								</div>
+
+								<!-- Giá sản phẩm -->
+								<span data-unit-price="@item.Price.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" class="product-price cart-item-price">
+									@String.Format("{0:N0} đ", item.TotalPrice)
+								</span>
+							</div>
+						</div>
+					}
 				</div>
-				<div class="modal-body">
-					 Bạn có chắc chắn muốn xóa nó không?
+			</div>
+
+			<!-- Cột phải: Tổng tiền và thanh toán -->
+			<div class="col-lg-4 col-md-12">
+				<!-- Tổng tiền -->
+				<div class="cart-summary">
+					<div class="cart-summary-row">
+						<span class="cart-summary-label">Tạm tính:</span>
+						<span class="cart-summary-value" id="subTotalPrice"></span>
+					</div>
+					<div class="cart-summary-row">
+						<span class="cart-summary-label">Phí vận chuyển:</span>
+						<span class="cart-summary-value">Miễn phí</span>
+					</div>
+					<div class="cart-summary-row">
+						<span class="cart-summary-label">Tổng cộng:</span>
+						<span class="cart-summary-value" id="totalPrice"></span>
+					</div>
 				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" id="confirmCancelBtn" data-bs-dismiss="modal">Hủy</button>
-					<button type="button" class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+
+				<!-- Phương thức thanh toán -->
+				<div class="cart-payment">
+					<h5 class="cart-payment-title">
+						<i class="fas fa-credit-card"></i>
+						Hình thức thanh toán
+					</h5>
+					<div class="cart-payment-options">
+						<div class="cart-payment-option">
+							<input type="radio" name="paymentMethod" id="cod" value="cod" checked>
+							<label for="cod">
+								<i class="fas fa-money-bill-wave text-success"></i>
+								Thanh toán tiền mặt khi nhận hàng
+							</label>
+						</div>
+						<div class="cart-payment-option">
+							<input type="radio" name="paymentMethod" id="bankTransfer" value="bankTransfer">
+							<label for="bankTransfer">
+								<i class="fas fa-university text-primary"></i>
+								Chuyển khoản ngân hàng
+							</label>
+						</div>
+					</div>
+
+					<!-- Bootstrap collapse với icon mũi tên -->
+					<a href="#paymentMethods" 
+					   data-toggle="collapse" 
+					   class="cart-payment-more"
+					   aria-expanded="false">
+						5 hình thức thanh toán khác <i class="fas fa-chevron-down"></i>
+					</a>
+
+					<!-- Danh sách ẩn -->
+					<div class="collapse cart-payment-collapse" id="paymentMethods">
+						<div class="cart-payment-options">
+							<div class="cart-payment-option">
+								<input type="radio" name="paymentMethod" id="momo" value="momo">
+								<label for="momo">
+									<i class="fas fa-mobile-alt text-danger"></i>
+									Thanh toán qua Momo
+								</label>
+							</div>
+							<div class="cart-payment-option">
+								<input type="radio" name="paymentMethod" id="creditCard" value="creditCard">
+								<label for="creditCard">
+									<i class="fas fa-credit-card text-info"></i>
+									Thanh toán bằng thẻ tín dụng
+								</label>
+							</div>
+							<div class="cart-payment-option">
+								<input type="radio" name="paymentMethod" id="zalopay" value="zalopay">
+								<label for="zalopay">
+									<i class="fas fa-wallet text-primary"></i>
+									Ví ZaloPay
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<!-- Chính sách -->
+					<div class="cart-policy">
+						<div class="cart-policy-checkbox">
+							<input type="checkbox" id="agreePolicy" checked>
+							<label for="agreePolicy">
+								Tôi đồng ý với <a href="#">Chính sách xử lý dữ liệu cá nhân</a> của Thế Giới Di Động
+							</label>
+						</div>
+					</div>
+
+					<!-- Nút đặt hàng -->
+					<button id="btnCheckout" 
+							data-userId="@Model.UserId" 
+							data-nameUser="@Model.NameUser" 
+							class="cart-checkout-btn">
+						<i class="fas fa-shopping-bag me-2"></i>
+						Đặt hàng ngay
+					</button>
 				</div>
+			</div>
+		</div>
+	}
+</div>
+
+<!-- Modal Xác Nhận Xóa -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirmDeleteLabel">
+					<i class="fas fa-exclamation-triangle text-warning mr-2"></i>
+					Xác nhận xóa sản phẩm
+				</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<p class="mb-0">Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?</p>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" id="confirmCancelBtn" data-dismiss="modal">
+					<i class="fas fa-times mr-2"></i>Hủy
+				</button>
+				<button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+					<i class="fas fa-trash-alt mr-2"></i>Xóa
+				</button>
 			</div>
 		</div>
 	</div>
 </div>
-
-
-

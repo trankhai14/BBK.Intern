@@ -9,6 +9,7 @@ using Abp.UI;
 using Microsoft.EntityFrameworkCore;
 using MyProject.Inventories.Dto;
 //using MyProject.Products;
+using MyProject.InventoryTransactions;
 
 
 namespace MyProject.Inventories
@@ -20,14 +21,17 @@ namespace MyProject.Inventories
 	{
 		private readonly IRepository<Inventory> _inventoryRepository;
 		private readonly IRepository<MyProject.Products.Product> _productRepository;
+        private readonly IRepository<InventoryTransaction> _transactionRepository;
 
 		public InventoryAppService(
 			IRepository<Inventory> inventoryRepository,
-			IRepository<MyProject.Products.Product> productRepository
+			IRepository<MyProject.Products.Product> productRepository,
+			IRepository<InventoryTransaction> transactionRepository
 		)
 		{
 			_inventoryRepository = inventoryRepository;
 			_productRepository = productRepository;
+            _transactionRepository = transactionRepository;
 		}
 
 		#region READ - Đọc dữ liệu
@@ -60,20 +64,20 @@ namespace MyProject.Inventories
 				query =  query.Where(x => x.Quantity <= input.MaxQuantity.Value);
 			}
 
-			if (input.IsLowStock.HasValue && input.IsLowStock.Value)
-			{
-				query = query.Where(x => x.Quantity <= x.MinQuantity && x.MinQuantity > 0);
-			}
+			//if (input.IsLowStock.HasValue && input.IsLowStock.Value)
+			//{
+			//	query = query.Where(x => x.Quantity <= x.MinQuantity && x.MinQuantity > 0);
+			//}
 
-			if (input.NeedReorder.HasValue && input.NeedReorder.Value)
-			{
-				query =  query.Where(x => x.Quantity <= x.ReorderLevel && x.ReorderLevel > 0);
-			}
+			//if (input.NeedReorder.HasValue && input.NeedReorder.Value)
+			//{
+			//	query =  query.Where(x => x.Quantity <= x.ReorderLevel && x.ReorderLevel > 0);
+			//}
 
-			if (input.Status.HasValue)
-			{
-				query =  query.Where(x => x.Status == input.Status.Value);
-			}
+			//if (input.Status.HasValue)
+			//{
+			//	query =  query.Where(x => x.Status == input.Status.Value);
+			//}
 
 			if (!string.IsNullOrWhiteSpace(input.Keyword))
 			{
@@ -130,12 +134,15 @@ namespace MyProject.Inventories
 
 		public async Task<InventoryDetailDto> GetInventoryByProductId(int productId)
 		{
-			var inventory = await _inventoryRepository.GetAll()
+			var inventory = await _inventoryRepository
+				.GetAll()
+				.Where(x => x.ProductId == productId)
 				.Include(x => x.Product)
-				.FirstOrDefaultAsync(x => x.ProductId == productId);
+				.FirstOrDefaultAsync();
 
-			if (inventory == null)
-				throw new UserFriendlyException("Không tìm thấy kho hàng cho sản phẩm này");
+			// Debug: Nếu inventory null, log lại các giá trị liên quan để kiểm tra
+			//if (inventory == null)
+			//	throw new UserFriendlyException();
 
 			return MapToDetailDto(inventory);
 		}

@@ -21,6 +21,11 @@ namespace MyProject.Product.Dtos
 
 		public IFormFile ImageFile { get; set; }  // Thêm thuộc tính này
 		public string Image { get; set; }  // Lưu đường dẫn ảnh
+		public string Brand { get; set; }
+		public int? WeightInGrams { get; set; }
+		public decimal? WidthCm { get; set; }
+		public decimal? HeightCm { get; set; }
+		public decimal? LengthCm { get; set; }
 
 		public int CategoryId { get; set; }
 		public string CategoryName { get; set; }

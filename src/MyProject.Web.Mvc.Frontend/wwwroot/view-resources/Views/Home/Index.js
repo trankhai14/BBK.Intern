@@ -1,54 +1,60 @@
 ﻿(function ($) {
-	//var _productService = abp.services.app.product;
-	//var _cartService = abp.services.app.cart;
+  //var _productService = abp.services.app.product;
+  //var _cartService = abp.services.app.cart;
 
-	$('#searchForm').on('submit', function (e) {
-		e.preventDefault(); // Ngăn reload trang
+  $('#searchForm').on('submit', function (e) {
+    e.preventDefault(); // Ngăn reload trang
 
-		var keyword = $('#searchInput').val().trim(); // Lấy từ khóa tìm kiếm
+    var keyword = $('#searchInput').val().trim(); // Lấy từ khóa tìm kiếm
 
-		if (keyword) {
-			window.location.href = "/Home/SearchProductsWeb?keyword=" + encodeURIComponent(keyword);
-		} else {
-			window.location.href = "/";
-		}
-	});
-
-
-	$('.btn-view-detail').on('click', function (e) {
-		e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
-
-		var productId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
-
-		if (productId) {
-			window.location.href = "/Home/GetDetailProduct?Id=" + productId; // Chuyển hướng đến trang chi tiết sản phẩm
-		} else {
-			console.log("Không tìm thấy sản phẩm!"); // Báo lỗi nếu không có ID
-		}
-	});
-
-
-	$('.cart').on('click', function (e) {
-		e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
-
-		var userId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
-		window.location.href = "/Carts/Index"
-	});
-
-
-	$('.btn-add-cart').on('click', function (e) {
-		var _cartService = abp.services.app.cart;
-		e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
-			
-		var productId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
-		bool = true;
-		_cartService.addToCart(
-			productId, 1, bool
-		).done(function () {
-			abp.notify.info("Thêm sản phẩm vào giỏ hàng thành công");
-			window.location.href = "/Carts/Index"
-		});
+    if (keyword) {
+      window.location.href = "/Home/SearchProductsWeb?keyword=" + encodeURIComponent(keyword);
+    } else {
+      window.location.href = "/";
+    }
   });
+
+
+  $('.btn-view-detail').on('click', function (e) {
+    e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
+
+    var productId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
+
+    if (productId) {
+      window.location.href = "/Home/GetDetailProduct?Id=" + productId; // Chuyển hướng đến trang chi tiết sản phẩm
+    } else {
+      console.log("Không tìm thấy sản phẩm!"); // Báo lỗi nếu không có ID
+    }
+  });
+
+
+  // Handler này đã được xử lý trong Carts/Index.js hoặc không cần thiết
+  //$('.cart').on('click', function (e) {
+  //  e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
+  //
+  //  var userId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
+  //  window.location.href = "/Carts/Index"
+  //});
+
+
+  //$('.btn-add-cart').on('click', function (e) {
+  //  // Bỏ qua nếu button cũng có class btn-add-detail (đã được xử lý bởi Carts/Index.js)
+  //  if ($(this).hasClass('btn-add-detail')) {
+  //    return;
+  //  }
+
+  //  var _cartService = abp.services.app.cart;
+  //  e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
+
+  //  var productId = $(this).data('id'); // Lấy ID sản phẩm từ thuộc tính data-id
+  //  bool = true;
+  //  _cartService.addToCart(
+  //    productId, 1, bool
+  //  ).done(function () {
+  //    abp.notify.info("Thêm sản phẩm vào giỏ hàng thành công");
+  //    window.location.href = "/Carts/Index"
+  //  });
+  //});
 
   $('.btn-all-product').on('click', function (e) {
     // Mặc định là null
@@ -56,7 +62,7 @@
   });
 
   $('.btn-all-product-byId').on('click', function (e) {
-    e.preventDefault(); 
+    e.preventDefault();
     var categoryId = $(this).data('id');
 
     window.location.href = "/Home/PageAllProduct?categoryId=" + categoryId;
@@ -136,7 +142,7 @@
     updateView("next");
   });
 
- 
+
 
 
 })(jQuery);

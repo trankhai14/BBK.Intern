@@ -31,3 +31,4 @@ namespace MyProject.Inventories.Dto
 		public string Notes { get; set; }
 	}
 }
+

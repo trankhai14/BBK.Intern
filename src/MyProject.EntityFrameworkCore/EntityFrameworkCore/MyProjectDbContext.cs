@@ -14,6 +14,7 @@ using MyProject.Tours;
 using MyProject.Orders;
 using MyProject.Inventories;
 using MyProject.InventoryTransactions;
+using MyProject.CustomerProfiles;
 
 
 namespace MyProject.EntityFrameworkCore
@@ -37,6 +38,7 @@ namespace MyProject.EntityFrameworkCore
 		public DbSet<OrderDetail> OrderDetail { get; set; }
 		public DbSet<Inventory> Inventories { get; set; }
 		public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
+		public DbSet<CustomerProfile> CustomerProfiles { get; set; }
 
 		public MyProjectDbContext(DbContextOptions<MyProjectDbContext> options)
 						: base(options)
