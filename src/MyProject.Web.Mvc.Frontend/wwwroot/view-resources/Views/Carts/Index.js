@@ -245,7 +245,28 @@
 		e.stopImmediatePropagation(); // Ngăn tất cả các handler khác
 		var $btn = $(this);
 		var productId = $btn.data('id');
-		var quantityInput = parseInt($('#quantity-add-detail').val()) || 1;
+		var $quantityInput = $('#quantity-add-detail');
+		var quantityInput = parseInt($quantityInput.val()) || 1;
+
+		// Kiểm tra FlashSale constraints
+		var flashSaleProductId = $quantityInput.data('flashsale-product-id');
+		if (flashSaleProductId) {
+			// Sản phẩm trong FlashSale - validate số lượng
+			var maxQuantity = parseInt($quantityInput.data('flashsale-max-quantity')) || 0;
+			var remainingQuantity = parseInt($quantityInput.data('flashsale-remaining')) || 0;
+
+			if (quantityInput > maxQuantity) {
+				abp.notify.error('Số lượng mua vượt quá giới hạn. Tối đa: ' + maxQuantity + ' sản phẩm');
+				$quantityInput.val(maxQuantity);
+				return;
+			}
+
+			if (quantityInput > remainingQuantity) {
+				abp.notify.error('Số lượng còn lại không đủ. Còn lại: ' + remainingQuantity + ' sản phẩm');
+				$quantityInput.val(remainingQuantity);
+				return;
+			}
+		}
 
 		// Disable button để tránh click nhiều lần
 		$btn.prop('disabled', true);
@@ -259,7 +280,18 @@
 			// Sản phẩm đã có trong giỏ, chỉ cần tăng số lượng cho nó
 			var currentQty = parseInt($cartItem.find('.quantity-input').val()) || 0;
 			var newQty = currentQty + quantityInput;
-			if (newQty > 10) newQty = 10;
+
+			// Validate FlashSale max quantity nếu có
+			if (flashSaleProductId) {
+				var maxQuantity = parseInt($quantityInput.data('flashsale-max-quantity')) || 0;
+				if (newQty > maxQuantity) {
+					abp.notify.error('Tổng số lượng không được vượt quá ' + maxQuantity + ' sản phẩm');
+					$btn.prop('disabled', false);
+					return;
+				}
+			} else {
+				if (newQty > 10) newQty = 10;
+			}
 
 			_cartService.updateCart(productId, newQty).done(function () {
 				abp.notify.success("Đã cập nhật số lượng sản phẩm trong giỏ hàng");

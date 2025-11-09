@@ -1,5 +1,6 @@
 ﻿@using MyProject.Web.Models.Products
 @using MyProject.Product.Dtos
+@using MyProject.FlashSales.Dto
 @using static MyProject.Products.Product
 @model DetailProductModel
 
@@ -17,6 +18,7 @@
 
 <link href="/css/homeweb.css" rel="stylesheet" asp-append-version="true" />
 <link href="/css/detailproduct.css" rel="stylesheet" asp-append-version="true" />
+<link href="/css/flashsale.css" rel="stylesheet" asp-append-version="true" />
 
 <div class="container mt-3" style="max-width: 960px;">
 	<!-- Breadcrumb -->
@@ -42,6 +44,16 @@
 
 			<!-- Thông tin sản phẩm -->
 			<div class="col-md-7 product-info-section">
+				<!-- FlashSale Badge -->
+				@if (Model.FlashSaleProduct != null)
+				{
+					<div class="mb-2">
+						<span class="badge bg-danger" style="font-size: 14px; padding: 8px 15px;">
+							<i class="fas fa-bolt"></i> FLASHSALE
+						</span>
+					</div>
+				}
+
 				<!-- Tên sản phẩm -->
 				<h1 class="product-title-detail">@Model.Name</h1>
 
@@ -59,10 +71,34 @@
 
 				<!-- Giá sản phẩm -->
 				<div class="product-price-section">
+					@if (Model.FlashSaleProduct != null)
+					{
+						<!-- FlashSale Price -->
+						<span class="product-price-current" style="color: #d70018; font-size: 28px;">
+							@String.Format("{0:N0}", Model.FlashSaleProduct.FlashSalePrice) đ
+						</span>
+						<span class="product-price-old" style="font-size: 18px; margin-left: 10px;">
+							@String.Format("{0:N0}", Model.FlashSaleProduct.OriginalPrice) đ
+						</span>
+						@* @{ *@
+							var discountPercent = Model.FlashSaleProduct.OriginalPrice > 0 
+								? ((Model.FlashSaleProduct.OriginalPrice - Model.FlashSaleProduct.FlashSalePrice) / Model.FlashSaleProduct.OriginalPrice) * 100 
+								: 0;
+						// }
+						<div class="mt-2">
+							<span class="badge bg-danger" style="font-size: 14px;">
+								Giảm @Math.Round(discountPercent, 0)%
+							</span>
+						</div>
+					}
+					else
+					{
+						<!-- Normal Price -->
 					<span class="product-price-current">@String.Format("{0:N0}", Model.Price) đ</span>
 					@if (Model.Price < 20000000)
 					{
 						<span class="product-price-old">@String.Format("{0:N0}", Model.Price * 1.2m) đ</span>
+						}
 					}
 					<div class="mt-2">
 						@if (Model.State == ProductState.Available)
@@ -80,6 +116,49 @@
 						<span class="badge bg-warning text-dark">Trả góp 0%</span>
 					</div>
 				</div>
+
+				<!-- FlashSale Info -->
+				@if (Model.FlashSaleProduct != null)
+				{
+					<div class="flashsale-info-detail mt-3 mb-3 p-3" style="background: #fff3cd; border-radius: 8px; border: 1px solid #ffc107;">
+						<h5 style="color: #d70018; margin-bottom: 10px;">
+							<i class="fas fa-fire"></i> Thông tin FlashSale
+						</h5>
+						<div class="row">
+							<div class="col-md-6">
+								<p style="margin-bottom: 5px;">
+									<strong>Số lượng còn lại:</strong> 
+									<span class="badge bg-warning">@Model.FlashSaleProduct.RemainingQuantity sản phẩm</span>
+								</p>
+								<p style="margin-bottom: 5px;">
+									<strong>Đã bán:</strong> @Model.FlashSaleProduct.SoldQuantity/@Model.FlashSaleProduct.FlashSaleQuantity
+								</p>
+								@if (Model.FlashSaleProduct.MaxQuantityPerUser.HasValue)
+								{
+									<p style="margin-bottom: 5px;">
+										<strong>Giới hạn mua:</strong> @Model.FlashSaleProduct.MaxQuantityPerUser sản phẩm/người
+									</p>
+								}
+							</div>
+							<div class="col-md-6">
+								@{
+									var soldPercent = Model.FlashSaleProduct.FlashSaleQuantity > 0 
+										? ((decimal)Model.FlashSaleProduct.SoldQuantity / Model.FlashSaleProduct.FlashSaleQuantity) * 100 
+										: 0;
+								}
+								<div class="progress" style="height: 20px; margin-top: 10px;">
+									<div class="progress-bar progress-bar-danger" role="progressbar" 
+										 style="width: @Math.Round(soldPercent, 0)%" 
+										 aria-valuenow="@Model.FlashSaleProduct.SoldQuantity" 
+										 aria-valuemin="0" 
+										 aria-valuemax="@Model.FlashSaleProduct.FlashSaleQuantity">
+										@Math.Round(soldPercent, 0)%
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				}
 
 				<!-- Mô tả ngắn -->
 				@if (!string.IsNullOrEmpty(Model.Description))
@@ -103,17 +182,57 @@
 				<!-- Số lượng -->
 				<div class="quantity-input-group">
 					<label>Số lượng:</label>
+					@if (Model.FlashSaleProduct != null)
+					{
+						var maxQuantity = Model.FlashSaleProduct.MaxQuantityPerUser.HasValue 
+							? Math.Min(Model.FlashSaleProduct.MaxQuantityPerUser.Value, Model.FlashSaleProduct.RemainingQuantity) 
+							: Model.FlashSaleProduct.RemainingQuantity;
+						<input id="quantity-add-detail" 
+							   type="number" 
+							   class="form-control" 
+							   value="1" 
+							   min="1" 
+							   max="@maxQuantity"
+							   data-flashsale-product-id="@Model.FlashSaleProduct.Id"
+							   data-flashsale-max-quantity="@maxQuantity"
+							   data-flashsale-remaining="@Model.FlashSaleProduct.RemainingQuantity">
+						<small class="form-text text-muted">
+							Tối đa: @maxQuantity sản phẩm
+							@if (Model.FlashSaleProduct.MaxQuantityPerUser.HasValue)
+							{
+								<span>(Giới hạn: @Model.FlashSaleProduct.MaxQuantityPerUser sản phẩm/người)</span>
+							}
+						</small>
+					}
+					else
+					{
 					<input id="quantity-add-detail" type="number" class="form-control" value="1" min="1" max="99">
+					}
 				</div>
 
 				<!-- Nút hành động -->
 				<div class="btn-action-group">
+					@if (Model.FlashSaleProduct != null)
+					{
+						<button data-Id="@Model.Id" 
+								class="btn btn-add-cart btn-add-detail"
+								data-flashsale-product-id="@Model.FlashSaleProduct.Id"
+								style="background: #d70018; border-color: #d70018; color: white;">
+							<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng FlashSale
+						</button>
+						<button class="btn btn-buy-now" style="background: #ff4444; border-color: #ff4444; color: white;">
+							<i class="fas fa-bolt"></i> Mua ngay FlashSale
+						</button>
+					}
+					else
+					{
 					<button data-Id="@Model.Id" class="btn btn-add-cart btn-add-detail">
 						<i class="fas fa-shopping-cart"></i> Thêm vào giỏ hàng
 					</button>
 					<button class="btn btn-buy-now">
 						<i class="fas fa-bolt"></i> Mua ngay
 					</button>
+					}
 				</div>
 			</div>
 		</div>
@@ -143,7 +262,20 @@
 				</tr>
 				<tr>
 					<td>Giá bán</td>
-					<td><strong style="color: #d70018;">@String.Format("{0:N0}", Model.Price) đ</strong></td>
+					<td>
+						@if (Model.FlashSaleProduct != null)
+						{
+							<strong style="color: #d70018;">@String.Format("{0:N0}", Model.FlashSaleProduct.FlashSalePrice) đ</strong>
+							<span style="text-decoration: line-through; color: #999; margin-left: 10px;">
+								@String.Format("{0:N0}", Model.FlashSaleProduct.OriginalPrice) đ
+							</span>
+							<span class="badge bg-danger ml-2">FlashSale</span>
+						}
+						else
+						{
+							<strong style="color: #d70018;">@String.Format("{0:N0}", Model.Price) đ</strong>
+						}
+					</td>
 				</tr>
 				<tr>
 					<td>Tình trạng</td>
@@ -263,11 +395,11 @@
 									</div>
 									
 									<!-- Giá sản phẩm -->
-									<div class="product-price-section">
-										<span class="product-price-current">@String.Format("{0:N0}", product.Price) đ</span>
+									<div class="product-price-section" style="margin-top: 8px; margin-bottom: 8px;">
+										<span class="product-price-current" style="font-size: 15px; font-weight: 600; color: #d70018;">@String.Format("{0:N0}", product.Price) đ</span>
 										@if (product.Price < 20000000)
 										{
-											<span class="product-price-old">@String.Format("{0:N0}", product.Price * 1.2m) đ</span>
+											<span class="product-price-old" style="font-size: 12px; color: #999; text-decoration: line-through; margin-left: 6px;">@String.Format("{0:N0}", product.Price * 1.2m) đ</span>
 										}
 									</div>
 									

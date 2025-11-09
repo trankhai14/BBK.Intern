@@ -1,0 +1,75 @@
+@using MyProject.Web.Models.FlashSales
+@using MyProject.FlashSales.Dto
+@model FlashSaleDetailViewModel
+
+@{
+	ViewBag.Title = Model.FlashSale.Name;
+}
+
+@section scripts
+{
+	<environment names="Development">
+		<script src="~/view-resources/Views/FlashSales/Detail.js" asp-append-version="true"></script>
+	</environment>
+	<environment names="Staging,Production">
+		<script src="~/view-resources/Views/FlashSales/Detail.min.js" asp-append-version="true"></script>
+	</environment>
+}
+
+<link href="/css/flashsale.css" rel="stylesheet" />
+
+<div class="container mt-4" style="max-width: 1200px !important">
+	<!-- Breadcrumb -->
+	<nav aria-label="breadcrumb" class="breadcrumb-modern mb-3">
+		<ol class="breadcrumb">
+			<li class="breadcrumb-item"><a href="/Home">Trang chủ</a></li>
+			<li class="breadcrumb-item"><a href="/FlashSales">FlashSale</a></li>
+			<li class="breadcrumb-item active" aria-current="page">@Model.FlashSale.Name</li>
+		</ol>
+	</nav>
+
+	<!-- FlashSale Header -->
+	<div class="flashsale-header-detail mb-4">
+		<div class="row align-items-center">
+			<div class="col-md-8">
+				<h1 class="flashsale-title-detail">@Model.FlashSale.Name</h1>
+				@if (!string.IsNullOrEmpty(Model.FlashSale.Description))
+				{
+					<p class="flashsale-description-detail">@Model.FlashSale.Description</p>
+				}
+			</div>
+			<div class="col-md-4 text-right">
+				<div class="countdown-timer" data-end-time="@Model.FlashSale.EndTime.ToString("yyyy-MM-ddTHH:mm:ss")">
+					<div class="countdown-label">Kết thúc sau:</div>
+					<div class="countdown-display">
+						<span class="countdown-hours">00</span>:
+						<span class="countdown-minutes">00</span>:
+						<span class="countdown-seconds">00</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- FlashSale Products -->
+	@if (Model.FlashSale.Products != null && Model.FlashSale.Products.Any())
+	{
+		<div class="flashsale-products-detail">
+			<div class="row">
+				@foreach (var product in Model.FlashSale.Products)
+				{
+					<div class="col-md-3 mb-4">
+						@await Html.PartialAsync("_FlashSaleProductCard", product)
+					</div>
+				}
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="alert alert-warning text-center">
+			<h4>FlashSale này chưa có sản phẩm</h4>
+		</div>
+	}
+</div>
+

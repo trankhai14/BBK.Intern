@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Abp.Application.Services;
@@ -647,6 +648,255 @@ namespace MyProject.FlashSales
 		}
 
 		#endregion
-}
+
+		#region Frontend Methods
+
+		/// <summary>
+		/// Lấy danh sách FlashSale đang active và không bị ẩn (cho Frontend)
+		/// Chỉ lấy các FlashSale: IsActive = true, IsHidden = false, có sản phẩm
+		/// </summary>
+		/// <returns>Danh sách FlashSale active</returns>
+		public async Task<List<FlashSaleDto>> GetActiveFlashSales()
+		{
+			var now = DateTime.Now;
+
+			// Lấy các FlashSale active, không bị ẩn, có sản phẩm và chưa kết thúc
+			var flashSales = await _flashSaleRepository.GetAll()
+				.Include(fs => fs.FlashSaleProducts)
+				.ThenInclude(fsp => fsp.Product)
+				.Where(fs => fs.IsActive && !fs.IsHidden && fs.FlashSaleProducts.Any())
+				.Where(fs => fs.EndTime > now) // Chưa kết thúc
+				.OrderByDescending(fs => fs.StartTime)
+				.ToListAsync();
+
+			// Map sang DTO và tính Status dựa trên thời gian
+			var result = flashSales.Select(fs =>
+			{
+				var status = fs.CalculatedStatus;
+				return new FlashSaleDto
+				{
+					Id = fs.Id,
+					Name = fs.Name,
+					Description = fs.Description,
+					StartTime = fs.StartTime,
+					EndTime = fs.EndTime,
+					Status = status,
+					StatusText = GetStatusText(status),
+					IsActive = fs.IsActive,
+					IsHidden = fs.IsHidden,
+					CreationTime = fs.CreationTime,
+					LastModificationTime = fs.LastModificationTime,
+					TotalProducts = fs.FlashSaleProducts.Count,
+					TotalSold = fs.FlashSaleProducts.Sum(p => p.SoldQuantity),
+					Products = fs.FlashSaleProducts.Select(fsp => new FlashSaleProductDto
+					{
+						Id = fsp.Id,
+						FlashSaleId = fsp.FlashSaleId,
+						ProductId = fsp.ProductId,
+						ProductName = fsp.Product.Name,
+						ProductImage = fsp.Product.Image,
+						OriginalPrice = fsp.Product.Price,
+						FlashSalePrice = fsp.FlashSalePrice,
+						FlashSaleQuantity = fsp.FlashSaleQuantity,
+						SoldQuantity = fsp.SoldQuantity,
+						RemainingQuantity = fsp.RemainingQuantity,
+						MaxQuantityPerUser = fsp.MaxQuantityPerUser,
+						ReservedQuantity = fsp.ReservedQuantity,
+						IsReturnedToInventory = fsp.IsReturnedToInventory
+					}).ToList()
+				};
+			}).ToList();
+
+			return result;
+		}
+
+		/// <summary>
+		/// Lấy danh sách FlashSale đang diễn ra (Status = Ongoing) (cho Frontend)
+		/// </summary>
+		/// <returns>Danh sách FlashSale đang diễn ra</returns>
+		public async Task<List<FlashSaleDto>> GetOngoingFlashSales()
+		{
+			var now = DateTime.Now;
+
+			// Lấy các FlashSale đang diễn ra (trong khoảng thời gian StartTime và EndTime)
+			var flashSales = await _flashSaleRepository.GetAll()
+				.Include(fs => fs.FlashSaleProducts)
+				.ThenInclude(fsp => fsp.Product)
+				.Where(fs => fs.IsActive && !fs.IsHidden && fs.FlashSaleProducts.Any())
+				.Where(fs => fs.StartTime <= now && fs.EndTime >= now) // Đang diễn ra
+				.OrderByDescending(fs => fs.StartTime)
+				.ToListAsync();
+
+			// Map sang DTO
+			var result = flashSales.Select(fs => new FlashSaleDto
+			{
+				Id = fs.Id,
+				Name = fs.Name,
+				Description = fs.Description,
+				StartTime = fs.StartTime,
+				EndTime = fs.EndTime,
+				Status = FlashSaleStatus.Ongoing,
+				StatusText = GetStatusText(FlashSaleStatus.Ongoing),
+				IsActive = fs.IsActive,
+				IsHidden = fs.IsHidden,
+				CreationTime = fs.CreationTime,
+				LastModificationTime = fs.LastModificationTime,
+				TotalProducts = fs.FlashSaleProducts.Count,
+				TotalSold = fs.FlashSaleProducts.Sum(p => p.SoldQuantity),
+				Products = fs.FlashSaleProducts.Select(fsp => new FlashSaleProductDto
+				{
+					Id = fsp.Id,
+					FlashSaleId = fsp.FlashSaleId,
+					ProductId = fsp.ProductId,
+					ProductName = fsp.Product.Name,
+					ProductImage = fsp.Product.Image,
+					OriginalPrice = fsp.Product.Price,
+					FlashSalePrice = fsp.FlashSalePrice,
+					FlashSaleQuantity = fsp.FlashSaleQuantity,
+					SoldQuantity = fsp.SoldQuantity,
+					RemainingQuantity = fsp.RemainingQuantity,
+					MaxQuantityPerUser = fsp.MaxQuantityPerUser,
+					ReservedQuantity = fsp.ReservedQuantity,
+					IsReturnedToInventory = fsp.IsReturnedToInventory
+				}).ToList()
+			}).ToList();
+
+			return result;
+		}
+
+		/// <summary>
+		/// Lấy danh sách sản phẩm trong FlashSale theo FlashSaleId (cho Frontend)
+		/// </summary>
+		/// <param name="flashSaleId">ID của FlashSale</param>
+		/// <returns>Danh sách sản phẩm trong FlashSale</returns>
+		public async Task<List<FlashSaleProductDto>> GetFlashSaleProductsByFlashSaleId(int flashSaleId)
+		{
+			// Lấy FlashSale và các sản phẩm
+			var flashSale = await _flashSaleRepository.GetAll()
+				.Include(fs => fs.FlashSaleProducts)
+				.ThenInclude(fsp => fsp.Product)
+				.FirstOrDefaultAsync(fs => fs.Id == flashSaleId);
+
+			if (flashSale == null)
+			{
+				throw new UserFriendlyException("Không tìm thấy chương trình FlashSale");
+			}
+
+			// Map sang DTO
+			var result = flashSale.FlashSaleProducts.Select(fsp => new FlashSaleProductDto
+			{
+				Id = fsp.Id,
+				FlashSaleId = fsp.FlashSaleId,
+				ProductId = fsp.ProductId,
+				ProductName = fsp.Product.Name,
+				ProductImage = fsp.Product.Image,
+				OriginalPrice = fsp.Product.Price,
+				FlashSalePrice = fsp.FlashSalePrice,
+				FlashSaleQuantity = fsp.FlashSaleQuantity,
+				SoldQuantity = fsp.SoldQuantity,
+				RemainingQuantity = fsp.RemainingQuantity,
+				MaxQuantityPerUser = fsp.MaxQuantityPerUser,
+				ReservedQuantity = fsp.ReservedQuantity,
+				IsReturnedToInventory = fsp.IsReturnedToInventory
+			}).ToList();
+
+			return result;
+		}
+
+		/// <summary>
+		/// Kiểm tra sản phẩm có trong FlashSale đang diễn ra không (cho Frontend)
+		/// </summary>
+		/// <param name="productId">ID của sản phẩm</param>
+		/// <returns>Thông tin FlashSaleProduct nếu có, null nếu không có</returns>
+		public async Task<FlashSaleProductDto> GetFlashSaleProductByProductId(int productId)
+		{
+			var now = DateTime.Now;
+
+			// Tìm FlashSaleProduct của sản phẩm trong FlashSale đang diễn ra
+			var flashSaleProduct = await _flashSaleProductRepository.GetAll()
+				.Include(fsp => fsp.FlashSale)
+				.Include(fsp => fsp.Product)
+				.Where(fsp => fsp.ProductId == productId)
+				.Where(fsp => fsp.FlashSale.IsActive && !fsp.FlashSale.IsHidden)
+				.Where(fsp => fsp.FlashSale.StartTime <= now && fsp.FlashSale.EndTime >= now) // Đang diễn ra
+				.FirstOrDefaultAsync();
+
+			if (flashSaleProduct == null)
+			{
+				return null; // Sản phẩm không có trong FlashSale đang diễn ra
+			}
+
+			// Map sang DTO
+			return new FlashSaleProductDto
+			{
+				Id = flashSaleProduct.Id,
+				FlashSaleId = flashSaleProduct.FlashSaleId,
+				ProductId = flashSaleProduct.ProductId,
+				ProductName = flashSaleProduct.Product.Name,
+				ProductImage = flashSaleProduct.Product.Image,
+				OriginalPrice = flashSaleProduct.Product.Price,
+				FlashSalePrice = flashSaleProduct.FlashSalePrice,
+				FlashSaleQuantity = flashSaleProduct.FlashSaleQuantity,
+				SoldQuantity = flashSaleProduct.SoldQuantity,
+				RemainingQuantity = flashSaleProduct.RemainingQuantity,
+				MaxQuantityPerUser = flashSaleProduct.MaxQuantityPerUser,
+				ReservedQuantity = flashSaleProduct.ReservedQuantity,
+				IsReturnedToInventory = flashSaleProduct.IsReturnedToInventory
+			};
+		}
+
+		/// <summary>
+		/// Mua sản phẩm FlashSale - Cập nhật SoldQuantity (cho Frontend)
+		/// Method này được gọi khi user đặt hàng sản phẩm FlashSale
+		/// </summary>
+		/// <param name="flashSaleProductId">ID của FlashSaleProduct</param>
+		/// <param name="quantity">Số lượng mua</param>
+		/// <param name="userId">ID của user mua</param>
+		public async Task PurchaseFlashSaleProduct(int flashSaleProductId, int quantity, long userId)
+		{
+			// Lấy FlashSaleProduct
+			var flashSaleProduct = await _flashSaleProductRepository.GetAll()
+				.Include(fsp => fsp.FlashSale)
+				.FirstOrDefaultAsync(fsp => fsp.Id == flashSaleProductId);
+
+			if (flashSaleProduct == null)
+			{
+				throw new UserFriendlyException("Không tìm thấy sản phẩm FlashSale");
+			}
+
+			// Kiểm tra FlashSale có đang diễn ra không
+			var now = DateTime.Now;
+			if (flashSaleProduct.FlashSale.StartTime > now || flashSaleProduct.FlashSale.EndTime < now)
+			{
+				throw new UserFriendlyException("FlashSale không đang diễn ra");
+			}
+
+			// Kiểm tra số lượng còn lại
+			if (flashSaleProduct.RemainingQuantity < quantity)
+			{
+				throw new UserFriendlyException($"Số lượng còn lại không đủ. Còn lại: {flashSaleProduct.RemainingQuantity}");
+			}
+
+			// Kiểm tra giới hạn số lượng mua per user (nếu có)
+			if (flashSaleProduct.MaxQuantityPerUser.HasValue && quantity > flashSaleProduct.MaxQuantityPerUser.Value)
+			{
+				throw new UserFriendlyException($"Số lượng mua tối đa là {flashSaleProduct.MaxQuantityPerUser.Value}");
+			}
+
+			// TODO: Kiểm tra user đã mua bao nhiêu sản phẩm này (cần tích hợp với Order system)
+			// Hiện tại chưa có bảng Order, nên tạm thời bỏ qua check này
+
+			// Cập nhật SoldQuantity
+			flashSaleProduct.SoldQuantity += quantity;
+			// RemainingQuantity là property chỉ đọc, ta không set trực tiếp được
+			// Nếu cần update, hãy chắc chắn logic tính toán ở nơi dùng
+
+			// Lưu vào database
+			await _flashSaleProductRepository.UpdateAsync(flashSaleProduct);
+			await CurrentUnitOfWork.SaveChangesAsync();
+		}
+
+		#endregion
+	}
 }
 

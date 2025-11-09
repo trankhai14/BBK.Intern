@@ -6,20 +6,24 @@
 }
 @using MyProject.Web.Models.Products
 @using MyProject.Web.Views.Shared.Components.Body
+@using MyProject.Web.Models.FlashSales
 @model HomePageViewModel
 
 @section scripts
 {
 	<environment names="Development">
 		<script src="~/view-resources/Views/Home/Index.js" asp-append-version="true"></script>
+		<script src="~/view-resources/Views/FlashSales/Index.js" asp-append-version="true"></script>
 	</environment>
 
 	<environment names="Staging,Production">
 		<script src="~/view-resources/Views/Home/Index.min.js" asp-append-version="true"></script>
+		<script src="~/view-resources/Views/FlashSales/Index.min.js" asp-append-version="true"></script>
 	</environment>
 }
 
 <link href="/css/homeweb.css" rel="stylesheet" />
+<link href="/css/flashsale.css" rel="stylesheet" />
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -78,6 +82,11 @@
 		<p>Không có slider nào đang hoạt động.</p>
 	}
 
+	<!-- FlashSale Section -->
+	@if (Model.FlashSales != null && Model.FlashSales.Any())
+	{
+		@await Html.PartialAsync("_FlashSaleSection", Model.FlashSales)
+	}
 
 	<div class="product-list-title">
 		<h2 class="mt-2" style="font-weight: 700;

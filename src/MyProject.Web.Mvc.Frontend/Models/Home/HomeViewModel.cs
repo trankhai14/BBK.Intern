@@ -2,6 +2,7 @@
 using MyProject.Users.Dto;
 using MyProject.Web.Models.Products;
 using MyProject.CustomerProfiles.Dto;
+using MyProject.FlashSales.Dto;
 
 namespace MyProject.Web.Models.Home
 {
@@ -9,7 +10,12 @@ namespace MyProject.Web.Models.Home
 	{
 		public ProductViewModel ProductData { get; set; }
 		public List<CategoryProductViewModel> CategoryProducts { get; set; }
+		public List<FlashSaleDto> FlashSales { get; set; }
 
+		public HomePageViewModel()
+		{
+			FlashSales = new List<FlashSaleDto>();
+		}
 	}
 
 	public class ProfileUser

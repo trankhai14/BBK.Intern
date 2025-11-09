@@ -5,53 +5,59 @@
     Layout = null;
     // Model được truyền từ Index.cshtml - đây là form tạo mới nên không cần dữ liệu ban đầu
 }
-@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateFlashSale")))
-<form name="FlashSaleCreateForm" role="form" class="form-horizontal">
-    <div class="modal-body">
-        <div class="form-group row required">
+<div class="modal fade" id="FlashSaleCreateModal" tabindex="-1" role="dialog" aria-labelledby="FlashSaleCreateLabel" data-backdrop="static">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      @await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(L("CreateFlashSale")))
+      <form name="FlashSaleCreateForm" role="form" class="form-horizontal">
+        <div class="modal-body">
+          <div class="form-group row required">
             <label class="col-md-3 col-form-label" for="Name">@L("Name")</label>
             <div class="col-md-9">
-                <input id="Name" type="text" class="form-control" name="Name" required maxlength="256">
+              <input id="Name" type="text" class="form-control" name="Name" required maxlength="256">
             </div>
-        </div>
+          </div>
 
-        <div class="form-group row">
+          <div class="form-group row">
             <label class="col-md-3 col-form-label" for="Description">@L("Description")</label>
             <div class="col-md-9">
-                <textarea id="Description" class="form-control" name="Description" rows="3" maxlength="2000"></textarea>
+              <textarea id="Description" class="form-control" name="Description" rows="3" maxlength="2000"></textarea>
             </div>
-        </div>
+          </div>
 
-        <div class="form-group row required">
+          <div class="form-group row required">
             <label class="col-md-3 col-form-label" for="StartTime">@L("StartTime")</label>
             <div class="col-md-9">
-                <input id="StartTime" type="datetime-local" class="form-control" name="StartTime" required>
+              <input id="StartTime" type="datetime-local" class="form-control" name="StartTime" required>
             </div>
-        </div>
+          </div>
 
-        <div class="form-group row required">
+          <div class="form-group row required">
             <label class="col-md-3 col-form-label" for="EndTime">@L("EndTime")</label>
             <div class="col-md-9">
-                <input id="EndTime" type="datetime-local" class="form-control" name="EndTime" required>
+              <input id="EndTime" type="datetime-local" class="form-control" name="EndTime" required>
             </div>
-        </div>
+          </div>
 
-        <div class="form-group row">
+          <div class="form-group row">
             <label class="col-md-3 col-form-label" for="IsActive">@L("IsActive")</label>
             <div class="col-md-9">
-                <input id="IsActive" type="checkbox" name="IsActive" value="true" checked />
+              <input id="IsActive" type="checkbox" name="IsActive" value="true" checked />
             </div>
-        </div>
+          </div>
 
-        <div class="form-group row">
+          <div class="form-group row">
             <label class="col-md-3 col-form-label" for="IsHidden">@L("IsHidden")</label>
             <div class="col-md-9">
-                <input id="IsHidden" type="checkbox" name="IsHidden" value="true" />
+              <input id="IsHidden" type="checkbox" name="IsHidden" value="true" />
             </div>
+          </div>
         </div>
-    </div>
-    @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
-</form>
+        @await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+      </form>
 
+    </div>
+  </div>
+</div>
 <script src="~/view-resources/Views/FlashSales/_CreateModal.js" asp-append-version="true"></script>
 

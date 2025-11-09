@@ -1,0 +1,63 @@
+@using MyProject.FlashSales.Dto
+@model List<FlashSaleDto>
+
+@if (Model != null && Model.Any())
+{
+	@foreach (var flashSale in Model.Take(1)) // Hiển thị FlashSale đầu tiên trên trang chủ
+	{
+		<div class="flashsale-section-home mb-4">
+			<!-- FlashSale Banner -->
+			<div class="flashsale-banner">
+				<div class="row align-items-center">
+					<div class="col-md-8">
+						<h2 class="flashsale-title-home">@flashSale.Name</h2>
+						@if (!string.IsNullOrEmpty(flashSale.Description))
+						{
+							<p class="flashsale-description-home">@flashSale.Description</p>
+						}
+					</div>
+					<div class="col-md-4 text-right">
+						<div class="countdown-timer" data-end-time="@flashSale.EndTime.ToString("yyyy-MM-ddTHH:mm:ss")">
+							<div class="countdown-label">Kết thúc sau:</div>
+							<div class="countdown-display">
+								<span class="countdown-hours">00</span>:
+								<span class="countdown-minutes">00</span>:
+								<span class="countdown-seconds">00</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Top FlashSale Products -->
+			<div class="flashsale-products-home mt-3">
+				<div class="row">
+					@foreach (var product in flashSale.Products.Take(5))
+					{
+						<div class="col-md-2-4 mb-3">
+							@await Html.PartialAsync("~/Views/FlashSales/_FlashSaleProductCard.cshtml", product)
+						</div>
+					}
+				</div>
+
+				@if (flashSale.Products.Count > 5)
+				{
+					<div class="text-center mt-3">
+						<a href="/FlashSales/Detail/@flashSale.Id" class="btn btn-danger btn-lg">
+							Xem tất cả @flashSale.Products.Count sản phẩm FlashSale
+						</a>
+					</div>
+				}
+				else if (flashSale.Products.Count > 0)
+				{
+					<div class="text-center mt-3">
+						<a href="/FlashSales/Detail/@flashSale.Id" class="btn btn-danger btn-lg">
+							Xem chi tiết FlashSale
+						</a>
+					</div>
+				}
+			</div>
+		</div>
+	}
+}
+

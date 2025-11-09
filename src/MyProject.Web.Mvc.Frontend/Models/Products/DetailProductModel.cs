@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MyProject.Product.Dtos;
+using MyProject.FlashSales.Dto;
 using static MyProject.Products.Product;
 
 namespace MyProject.Web.Models.Products
@@ -26,5 +27,8 @@ namespace MyProject.Web.Models.Products
 		
 		// Sản phẩm tương tự
 		public List<ProductListDto> RelatedProducts { get; set; }
+
+		// FlashSale information
+		public FlashSaleProductDto FlashSaleProduct { get; set; }
 	}
 }

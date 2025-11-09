@@ -1,0 +1,90 @@
+@using MyProject.Web.Models.FlashSales
+@model FlashSaleListViewModel
+
+@{
+	ViewBag.Title = "FlashSale";
+}
+
+@section scripts
+{
+	<environment names="Development">
+		<script src="~/view-resources/Views/FlashSales/Index.js" asp-append-version="true"></script>
+	</environment>
+	<environment names="Staging,Production">
+		<script src="~/view-resources/Views/FlashSales/Index.min.js" asp-append-version="true"></script>
+	</environment>
+}
+
+<link href="/css/flashsale.css" rel="stylesheet" />
+
+<div class="container mt-4" style="max-width: 1200px !important">
+	<h1 class="mb-4" style="font-weight: 700; color: #1d2939;">FlashSale Đang Diễn Ra</h1>
+
+	@if (Model.FlashSales != null && Model.FlashSales.Any())
+	{
+		@foreach (var flashSale in Model.FlashSales)
+		{
+			<div class="flashsale-card mb-4">
+				<!-- FlashSale Header -->
+				<div class="flashsale-header">
+					<div class="row align-items-center">
+						<div class="col-md-8">
+							<h2 class="flashsale-title">@flashSale.Name</h2>
+							@if (!string.IsNullOrEmpty(flashSale.Description))
+							{
+								<p class="flashsale-description">@flashSale.Description</p>
+							}
+						</div>
+						<div class="col-md-4 text-right">
+							<div class="countdown-timer" data-end-time="@flashSale.EndTime.ToString("yyyy-MM-ddTHH:mm:ss")">
+								<div class="countdown-label">Kết thúc sau:</div>
+								<div class="countdown-display">
+									<span class="countdown-hours">00</span>:
+									<span class="countdown-minutes">00</span>:
+									<span class="countdown-seconds">00</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- FlashSale Products -->
+				<div class="flashsale-products mt-3">
+					<div class="row">
+						@foreach (var product in flashSale.Products.Take(8))
+						{
+							<div class="col-md-3 mb-3">
+								@await Html.PartialAsync("_FlashSaleProductCard", product)
+							</div>
+						}
+					</div>
+
+					@if (flashSale.Products.Count > 8)
+					{
+						<div class="text-center mt-3">
+							<a href="/FlashSales/Detail/@flashSale.Id" class="btn btn-primary">
+								Xem tất cả @flashSale.Products.Count sản phẩm
+							</a>
+						</div>
+					}
+					else if (flashSale.Products.Count > 0)
+					{
+						<div class="text-center mt-3">
+							<a href="/FlashSales/Detail/@flashSale.Id" class="btn btn-primary">
+								Xem chi tiết FlashSale
+							</a>
+						</div>
+					}
+				</div>
+			</div>
+		}
+	}
+	else
+	{
+		<div class="alert alert-info text-center">
+			<h4>Hiện tại không có FlashSale nào đang diễn ra</h4>
+			<p>Vui lòng quay lại sau để xem các chương trình FlashSale sắp tới.</p>
+		</div>
+	}
+</div>
+

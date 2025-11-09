@@ -1,0 +1,83 @@
+@using MyProject.FlashSales.Dto
+@model FlashSaleProductDto
+
+@{
+	var discountPercentage = Model.OriginalPrice > 0 
+		? ((Model.OriginalPrice - Model.FlashSalePrice) / Model.OriginalPrice) * 100 
+		: 0;
+	var soldPercentage = Model.FlashSaleQuantity > 0 
+		? ((decimal)Model.SoldQuantity / Model.FlashSaleQuantity) * 100 
+		: 0;
+}
+
+<div class="product-card-flashsale">
+	<div class="card product-card-wrapper">
+		<!-- FlashSale Badge -->
+		<div class="flashsale-badge">FLASHSALE</div>
+		
+		<!-- Discount Badge -->
+		@if (discountPercentage > 0)
+		{
+			<div class="discount-badge">-@Math.Round(discountPercentage, 0)%</div>
+		}
+
+		<!-- Product Image -->
+		<div class="product-image-wrapper">
+			<img src="@(string.IsNullOrEmpty(Model.ProductImage) ? "/img/default.jpg" : Model.ProductImage)"
+				 class="product-image-main"
+				 alt="@Model.ProductName"
+				 onclick="window.location.href='/Home/GetDetailProduct?Id=@Model.ProductId'">
+		</div>
+
+		<!-- Product Info -->
+		<div class="card-body product-info">
+			<!-- Product Name -->
+			<h5 class="product-title" onclick="window.location.href='/Home/GetDetailProduct?Id=@Model.ProductId'">
+				@Model.ProductName
+			</h5>
+
+			<!-- Price Section -->
+			<div class="product-price-section">
+				<span class="product-price-current">@String.Format("{0:N0}", Model.FlashSalePrice) đ</span>
+				@if (Model.OriginalPrice > Model.FlashSalePrice)
+				{
+					<span class="product-price-old">@String.Format("{0:N0}", Model.OriginalPrice) đ</span>
+				}
+			</div>
+
+			<!-- Progress Bar -->
+			<div class="progress-bar-section mt-2">
+				<div class="progress-info">
+					<span class="progress-text">Đã bán: @Model.SoldQuantity/@Model.FlashSaleQuantity</span>
+					<span class="progress-percentage">@Math.Round(soldPercentage, 0)%</span>
+				</div>
+				<div class="progress">
+					<div class="progress-bar progress-bar-danger" role="progressbar" 
+						 style="width: @Math.Round(soldPercentage, 0)%" 
+						 aria-valuenow="@Model.SoldQuantity" 
+						 aria-valuemin="0" 
+						 aria-valuemax="@Model.FlashSaleQuantity">
+					</div>
+				</div>
+			</div>
+
+			<!-- Remaining Quantity -->
+			<div class="remaining-quantity mt-2">
+				<span class="badge bg-warning">Còn lại: @Model.RemainingQuantity sản phẩm</span>
+			</div>
+
+			<!-- Action Buttons -->
+			<div class="btn-action-group mt-3">
+				<button class="btn btn-danger btn-buy-now-flashsale w-100" 
+						data-product-id="@Model.ProductId"
+						data-flashsale-product-id="@Model.Id"
+						data-flashsale-price="@Model.FlashSalePrice"
+						data-max-quantity="@(Model.MaxQuantityPerUser ?? Model.RemainingQuantity)"
+						data-remaining-quantity="@Model.RemainingQuantity">
+					<i class="fas fa-bolt"></i> Mua ngay
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+

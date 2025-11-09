@@ -10,7 +10,11 @@
         paging: true,
         serverSide: true,
         listAction: {
-          ajaxFunction: _productService.search
+          ajaxFunction: _productService.search,
+          inputFilter: function () {
+            // Lấy dữ liệu từ form search để gửi lên server
+            return $('#ProductSelectSearchForm').serializeFormToObject(true);
+          }
         },
         buttons: [
           {
@@ -66,9 +70,44 @@
         // Thông báo
         abp.notify.success('Đã chọn sản phẩm: ' + productName);
       });
+
     } else {
       // Nếu modal được mở nhiều lần, chỉ cần reload lại
       $('#ProductSelectTable').DataTable().ajax.reload();
+    }
+  });
+
+  /**
+   * Xử lý tìm kiếm sản phẩm
+   * Reload DataTable với từ khóa tìm kiếm
+   */
+  $(document).on('click', '#ProductSelectSearchBtn', function () {
+    if ($.fn.DataTable.isDataTable('#ProductSelectTable')) {
+      $('#ProductSelectTable').DataTable().draw(false);
+    }
+  });
+
+  /**
+   * Xử lý reset form tìm kiếm
+   * Clear input và reload DataTable
+   */
+  $(document).on('click', '#ProductSelectResetBtn', function () {
+    $('#ProductSelectSearchForm')[0].reset();
+    if ($.fn.DataTable.isDataTable('#ProductSelectTable')) {
+      $('#ProductSelectTable').DataTable().draw(false);
+    }
+  });
+
+  /**
+   * Xử lý Enter key trong input search
+   * Tự động trigger search khi nhấn Enter
+   */
+  $(document).on('keypress', '#ProductSelectKeyword', function (e) {
+    if (e.which === 13) {  // Enter key
+      e.preventDefault();
+      if ($.fn.DataTable.isDataTable('#ProductSelectTable')) {
+        $('#ProductSelectTable').DataTable().draw(false);
+      }
     }
   });
 

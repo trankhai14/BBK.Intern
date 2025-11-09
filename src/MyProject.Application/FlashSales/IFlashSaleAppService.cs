@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
@@ -61,6 +62,31 @@ namespace MyProject.FlashSales
 		/// Lấy thông tin FlashSaleProduct theo ID
 		/// </summary>
 		Task<FlashSaleProductDto> GetFlashSaleProductById(int flashSaleProductId);
+
+		/// <summary>
+		/// Lấy danh sách FlashSale đang active và không bị ẩn (cho Frontend)
+		/// </summary>
+		Task<List<FlashSaleDto>> GetActiveFlashSales();
+
+		/// <summary>
+		/// Lấy danh sách FlashSale đang diễn ra (Status = Ongoing) (cho Frontend)
+		/// </summary>
+		Task<List<FlashSaleDto>> GetOngoingFlashSales();
+
+		/// <summary>
+		/// Lấy danh sách sản phẩm trong FlashSale theo FlashSaleId (cho Frontend)
+		/// </summary>
+		Task<List<FlashSaleProductDto>> GetFlashSaleProductsByFlashSaleId(int flashSaleId);
+
+		/// <summary>
+		/// Kiểm tra sản phẩm có trong FlashSale đang diễn ra không (cho Frontend)
+		/// </summary>
+		Task<FlashSaleProductDto> GetFlashSaleProductByProductId(int productId);
+
+		/// <summary>
+		/// Mua sản phẩm FlashSale - Cập nhật SoldQuantity (cho Frontend)
+		/// </summary>
+		Task PurchaseFlashSaleProduct(int flashSaleProductId, int quantity, long userId);
 	}
 }
 

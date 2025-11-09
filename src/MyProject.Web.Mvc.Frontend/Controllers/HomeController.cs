@@ -26,6 +26,8 @@ using MyProject.CustomerProfiles;
 using MyProject.CustomerProfiles.Dto;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using MyProject.FlashSales;
+using MyProject.FlashSales.Dto;
 namespace MyProject.Web.Controllers
 {
 	//[AbpMvcAuthorize]
@@ -40,6 +42,7 @@ namespace MyProject.Web.Controllers
 		private readonly IOrderDetailAppService _orderDetailAppService;
 		private readonly IUserAppService _userAppService;
 		private readonly ICustomerProfileAppService _customerProfileAppService;
+		private readonly IFlashSaleAppService _flashSaleAppService;
 
 		
 		public HomeController
@@ -52,7 +55,8 @@ namespace MyProject.Web.Controllers
 			IOrderAppService orderAppService,
 			IOrderDetailAppService orderDetailAppService,
 			IUserAppService userAppService,
-			ICustomerProfileAppService customerProfileAppService
+			ICustomerProfileAppService customerProfileAppService,
+			IFlashSaleAppService flashSaleAppService
 			)
 		{
 			_productAppService = productAppService;
@@ -64,6 +68,7 @@ namespace MyProject.Web.Controllers
 			_orderDetailAppService = orderDetailAppService;
 			_userAppService = userAppService;
 			_customerProfileAppService = customerProfileAppService;
+			_flashSaleAppService = flashSaleAppService;
 		}
 
 		public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
@@ -113,10 +118,14 @@ namespace MyProject.Web.Controllers
 				}
 			}
 
+			// Lấy FlashSale đang diễn ra
+			var ongoingFlashSales = await _flashSaleAppService.GetOngoingFlashSales();
+
 			var homePageViewModel = new HomePageViewModel
 			{
 				ProductData = productViewModel,
-				CategoryProducts = categoryProductViewModels
+				CategoryProducts = categoryProductViewModels,
+				FlashSales = ongoingFlashSales ?? new List<MyProject.FlashSales.Dto.FlashSaleDto>()
 			};
 
 			return View(homePageViewModel);
@@ -165,6 +174,17 @@ namespace MyProject.Web.Controllers
 				.Take(5)
 				.ToList();
 
+			// Kiểm tra sản phẩm có trong FlashSale đang diễn ra không
+			FlashSaleProductDto flashSaleProduct = null;
+			try
+			{
+				flashSaleProduct = await _flashSaleAppService.GetFlashSaleProductByProductId(product.Id);
+			}
+			catch
+			{
+				// Nếu không có FlashSale, bỏ qua
+			}
+
 			var model = new DetailProductModel()
 			{
 				Id = product.Id,
@@ -181,7 +201,8 @@ namespace MyProject.Web.Controllers
 				WidthCm = product.WidthCm,
 				HeightCm = product.HeightCm,
 				LengthCm = product.LengthCm,
-				RelatedProducts = relatedProducts
+				RelatedProducts = relatedProducts,
+				FlashSaleProduct = flashSaleProduct
 			};
 
 			return View("_DetailProductWeb", model);
