@@ -57,18 +57,6 @@
 				<!-- Tên sản phẩm -->
 				<h1 class="product-title-detail">@Model.Name</h1>
 
-				<!-- Đánh giá -->
-				<div class="rating-section">
-					<div class="rating-stars">
-						<i class="fas fa-star"></i>
-						<i class="fas fa-star"></i>
-						<i class="fas fa-star"></i>
-						<i class="fas fa-star"></i>
-						<i class="fas fa-star"></i>
-					</div>
-					<span class="rating-text">(4.5/5 - 128 đánh giá)</span>
-				</div>
-
 				<!-- Giá sản phẩm -->
 				<div class="product-price-section">
 					@if (Model.FlashSaleProduct != null)
@@ -321,6 +309,137 @@
 						</td>
 					</tr>
 				}
+				
+				<!-- Thông tin kỹ thuật điện thoại -->
+				@if (!string.IsNullOrEmpty(Model.Sku))
+				{
+					<tr>
+						<td>Mã SKU</td>
+						<td>@Model.Sku</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.ModelNumber))
+				{
+					<tr>
+						<td>Số model</td>
+						<td><strong>@Model.ModelNumber</strong></td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.Chipset))
+				{
+					<tr>
+						<td>Chip xử lý</td>
+						<td>@Model.Chipset</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.Ram))
+				{
+					<tr>
+						<td>RAM</td>
+						<td>@Model.Ram</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.Storage))
+				{
+					<tr>
+						<td>Bộ nhớ trong</td>
+						<td>@Model.Storage</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.Screen))
+				{
+					<tr>
+						<td>Màn hình</td>
+						<td>@Model.Screen</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.OperatingSystem))
+				{
+					<tr>
+						<td>Hệ điều hành</td>
+						<td>@Model.OperatingSystem</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.Battery))
+				{
+					<tr>
+						<td>Dung lượng pin</td>
+						<td>@Model.Battery</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.Camera))
+				{
+					<tr>
+						<td>Camera sau</td>
+						<td>@Model.Camera</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.FrontCamera))
+				{
+					<tr>
+						<td>Camera trước</td>
+						<td>@Model.FrontCamera</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.Sim))
+				{
+					<tr>
+						<td>Thông tin SIM</td>
+						<td>@Model.Sim</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.Connectivity))
+				{
+					<tr>
+						<td>Kết nối</td>
+						<td>@Model.Connectivity</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.Security))
+				{
+					<tr>
+						<td>Bảo mật</td>
+						<td>@Model.Security</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.Charging))
+				{
+					<tr>
+						<td>Sạc nhanh</td>
+						<td>@Model.Charging</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.ChargingPort))
+				{
+					<tr>
+						<td>Cổng sạc</td>
+						<td>@Model.ChargingPort</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.Color))
+				{
+					<tr>
+						<td>Màu sắc</td>
+						<td>@Model.Color</td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.Warranty))
+				{
+					<tr>
+						<td>Bảo hành</td>
+						<td><strong>@Model.Warranty</strong></td>
+					</tr>
+				}
+				@if (!string.IsNullOrEmpty(Model.TechnicalSpecifications))
+				{
+					<tr>
+						<td>Thông tin kỹ thuật khác</td>
+						<td>
+							<div style="white-space: pre-line; line-height: 1.6;">@Model.TechnicalSpecifications</div>
+						</td>
+					</tr>
+				}
+				
 				<tr>
 					<td>Ngày thêm</td>
 					<td>@Model.CreationTime.ToString("dd/MM/yyyy")</td>

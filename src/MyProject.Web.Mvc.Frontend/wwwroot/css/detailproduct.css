@@ -33,6 +33,61 @@
     line-height: 1.3;
 }
 
+/* CSS cho phần giá trong trang chi tiết sản phẩm - hiển thị đầy đủ */
+.product-detail-container .product-price-section,
+.product-info-section .product-price-section {
+    margin: 15px 0;
+    padding: 15px;
+    background: #fff4e6;
+    border-radius: 6px;
+    border-left: 3px solid #d70018;
+    display: flex;
+    flex-wrap: wrap;
+    /* Cho phép xuống dòng nếu cần */
+    align-items: baseline;
+    gap: 12px;
+    width: 100%;
+}
+
+/* Override CSS từ homeweb.css cho trang chi tiết */
+.product-detail-container .product-price-section .product-price-current,
+.product-info-section .product-price-section .product-price-current {
+    font-size: 26px;
+    font-weight: 700;
+    color: #d70018;
+    margin-right: 12px;
+    white-space: normal !important;
+    /* Cho phép xuống dòng */
+    overflow: visible !important;
+    /* Hiển thị đầy đủ */
+    text-overflow: clip !important;
+    /* Không cắt bằng ellipsis */
+    flex-shrink: 0;
+    /* Không co lại */
+    word-break: break-word;
+    /* Xuống dòng từ nếu quá dài */
+    max-width: 100% !important;
+    /* Không giới hạn chiều rộng */
+}
+
+.product-detail-container .product-price-section .product-price-old,
+.product-info-section .product-price-section .product-price-old {
+    font-size: 16px;
+    color: #707070;
+    text-decoration: line-through;
+    white-space: normal !important;
+    /* Cho phép xuống dòng */
+    overflow: visible !important;
+    /* Hiển thị đầy đủ */
+    text-overflow: clip !important;
+    /* Không cắt bằng ellipsis */
+    word-break: break-word;
+    /* Xuống dòng từ nếu quá dài */
+    max-width: 100% !important;
+    /* Không giới hạn chiều rộng */
+}
+
+/* Fallback cho các trường hợp khác */
 .product-price-section {
     margin: 15px 0;
     padding: 15px;

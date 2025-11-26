@@ -62,6 +62,12 @@
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    height: 480px;
+    /* Chiều cao cố định cho flash sale card */
+    min-height: 480px;
+    max-height: 480px;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-card-flashsale .product-card-wrapper:hover {
@@ -121,6 +127,13 @@
 /* Product Info */
 .product-card-flashsale .product-info {
     padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    /* Cho phép flex item co lại */
+    overflow: hidden;
+    /* Ẩn phần tràn */
 }
 
 .product-card-flashsale .product-title {
@@ -143,6 +156,14 @@
 /* Price Section */
 .product-card-flashsale .product-price-section {
     margin-bottom: 10px;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-wrap: nowrap;
+    /* Không cho xuống dòng */
+    overflow: hidden;
+    /* Ẩn phần tràn */
+    width: 100%;
 }
 
 .product-card-flashsale .product-price-current {
@@ -150,12 +171,32 @@
     font-weight: 700;
     color: #d70018;
     margin-right: 10px;
+    white-space: nowrap;
+    /* Không xuống dòng */
+    overflow: hidden;
+    /* Ẩn phần tràn */
+    text-overflow: ellipsis;
+    /* Hiển thị ... nếu quá dài */
+    flex-shrink: 1;
+    /* Có thể co lại một chút nếu cần */
+    max-width: calc(100% - 80px);
+    /* Để chỗ cho giá cũ */
+    min-width: 0;
+    /* Cho phép co lại */
 }
 
 .product-card-flashsale .product-price-old {
     font-size: 14px;
     color: #999;
     text-decoration: line-through;
+    white-space: nowrap;
+    /* Không xuống dòng */
+    overflow: hidden;
+    /* Ẩn phần tràn */
+    text-overflow: ellipsis;
+    /* Hiển thị ... nếu quá dài */
+    flex-shrink: 1;
+    /* Có thể co lại nếu cần */
 }
 
 /* Progress Bar */
@@ -228,43 +269,53 @@
 
 /* FlashSale Section on Home Page */
 .flashsale-section-home {
-    background: linear-gradient(135deg, #d70018 0%, #ff4444 100%);
+    background: #fff;
     border-radius: 12px;
-    padding: 30px;
+    padding: 24px 24px 28px;
+    margin-top: 20px;
     margin-bottom: 30px;
-    color: #fff;
+    color: #1d2939;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    border: 1px solid #eef0f3;
 }
 
 .flashsale-banner {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    padding: 16px 18px;
+    background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+    border: 1px solid #eef0f3;
+    border-radius: 10px;
 }
 
 .flashsale-title-home {
-    font-size: 32px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 10px;
+    font-size: 28px;
+    font-weight: 800;
+    color: #d70018;
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
 }
 
 .flashsale-description-home {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+    color: #475569;
     margin-bottom: 0;
 }
 
 .flashsale-section-home .countdown-timer {
-    background: rgba(255, 255, 255, 0.2);
+    background: #fff;
     border-radius: 8px;
-    padding: 15px;
+    padding: 12px 14px;
+    border: 1px dashed #e2e8f0;
 }
 
 .flashsale-section-home .countdown-label {
-    color: rgba(255, 255, 255, 0.9);
+    color: #64748b;
 }
 
 .flashsale-section-home .countdown-display {
-    color: #fff;
-    font-size: 28px;
+    color: #0f172a;
+    font-size: 24px;
+    letter-spacing: 1px;
 }
 
 /* FlashSale Detail Page */

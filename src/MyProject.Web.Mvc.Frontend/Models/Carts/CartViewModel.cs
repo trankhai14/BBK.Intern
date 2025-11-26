@@ -24,6 +24,11 @@ namespace MyProject.Web.Models.Carts
 		public string Image { get; set; }  // Lưu đường dẫn ảnh
 		public long Quantity { get; set; }
 
+		// Thông tin FlashSale
+		public bool IsFlashSale { get; set; } // Sản phẩm có trong FlashSale đang diễn ra không
+		public decimal FlashSalePrice { get; set; } // Giá FlashSale (giá đã giảm)
+		public decimal OriginalPrice { get; set; } // Giá gốc (giá ban đầu)
+
 	}
 	
 }

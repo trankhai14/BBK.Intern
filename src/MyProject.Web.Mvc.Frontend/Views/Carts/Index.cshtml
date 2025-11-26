@@ -122,9 +122,30 @@
 								</div>
 
 								<!-- Giá sản phẩm -->
-								<span data-unit-price="@item.Price.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" class="product-price cart-item-price">
-									@String.Format("{0:N0} đ", item.TotalPrice)
-								</span>
+								<div class="cart-item-price-section">
+									@if (item.IsFlashSale)
+									{
+										<!-- Nếu có FlashSale: Hiển thị giá FlashSale và giá gốc gạch ngang -->
+										<span data-unit-price="@item.FlashSalePrice.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" 
+											  data-original-price="@item.OriginalPrice.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)"
+											  class="product-price cart-item-price flashsale-price" 
+											  style="color: #d70018; font-weight: 600;">
+											@String.Format("{0:N0} đ", item.TotalPrice)
+										</span>
+										<br />
+										<span class="product-price-old" style="font-size: 14px; color: #999; text-decoration: line-through;">
+											@String.Format("{0:N0} đ", item.Quantity * item.OriginalPrice)
+										</span>
+									}
+									else
+									{
+										<!-- Nếu không có FlashSale: Hiển thị giá bình thường -->
+										<span data-unit-price="@item.Price.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)" 
+											  class="product-price cart-item-price">
+											@String.Format("{0:N0} đ", item.TotalPrice)
+										</span>
+									}
+								</div>
 							</div>
 						</div>
 					}
@@ -151,7 +172,7 @@
 
 				<!-- Phương thức thanh toán -->
 				<div class="cart-payment">
-					<h5 class="cart-payment-title">
+@* 					<h5 class="cart-payment-title">
 						<i class="fas fa-credit-card"></i>
 						Hình thức thanh toán
 					</h5>
@@ -170,18 +191,18 @@
 								Chuyển khoản ngân hàng
 							</label>
 						</div>
-					</div>
+					</div> *@
 
 					<!-- Bootstrap collapse với icon mũi tên -->
-					<a href="#paymentMethods" 
+			@* 		<a href="#paymentMethods" 
 					   data-toggle="collapse" 
 					   class="cart-payment-more"
 					   aria-expanded="false">
 						5 hình thức thanh toán khác <i class="fas fa-chevron-down"></i>
-					</a>
+					</a> *@
 
 					<!-- Danh sách ẩn -->
-					<div class="collapse cart-payment-collapse" id="paymentMethods">
+					@* <div class="collapse cart-payment-collapse" id="paymentMethods">
 						<div class="cart-payment-options">
 							<div class="cart-payment-option">
 								<input type="radio" name="paymentMethod" id="momo" value="momo">
@@ -205,7 +226,7 @@
 								</label>
 							</div>
 						</div>
-					</div>
+					</div> *@
 
 					<!-- Chính sách -->
 					<div class="cart-policy">

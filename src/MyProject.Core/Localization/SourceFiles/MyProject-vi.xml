@@ -122,6 +122,15 @@
 		<text name="Shipping" value="Đang vận chuyển" />
 		<text name="Canceled" value="Đã hủy" />
 		<text name="Success" value="Thành công" />
+		<text name="ImportSlips" value="Phiếu nhập kho" />
+		<text name="ExportSlips" value="Phiếu xuất kho" />
+		<text name="Stocktakings" value="Kiểm kê kho" />
+		<text name="InventoryTransactions" value="Lịch sử giao dịch" />
+		<text name="WarehouseManagement" value="Quản lý kho" />
+		<text name="Inventories" value="Tồn kho" />
+		<text name="Suppliers" value="Nhà cung cấp" />
+		<text name="FlashSales" value="Flash Sale" />
+		<text name="CustomerProfiles" value="Hồ sơ khách hàng" />
 
 
 	</texts>

@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
+using MyProject.Authorization;
 using MyProject.FlashSales.Dto;
 using MyProject.Inventories;
 using MyProject.Products;
@@ -19,6 +21,7 @@ namespace MyProject.FlashSales
 	/// Xử lý các nghiệp vụ: tạo, sửa, xóa FlashSale và quản lý sản phẩm trong FlashSale
 	/// Tích hợp với Inventory để khóa và hoàn trả số lượng sản phẩm
 	/// </summary>
+	//[AbpAuthorize(PermissionNames.Pages_FlashSales)]
 	public class FlashSaleAppService : MyProjectAppServiceBase, IFlashSaleAppService
 	{
 		#region Private Fields
@@ -214,6 +217,7 @@ namespace MyProject.FlashSales
 		/// </summary>
 		/// <param name="input">Thông tin FlashSale cần tạo</param>
 		/// <returns>FlashSale vừa tạo</returns>
+		[AbpAuthorize(PermissionNames.Pages_FlashSales_Create)]
 		public async Task<FlashSaleDto> Create(CreateFlashSaleDto input)
 		{
 			// Validate thời gian - Kiểm tra thời gian kết thúc phải sau thời gian bắt đầu
@@ -255,6 +259,7 @@ namespace MyProject.FlashSales
 		/// </summary>
 		/// <param name="input">Thông tin FlashSale cần cập nhật</param>
 		/// <returns>FlashSale đã cập nhật</returns>
+		[AbpAuthorize(PermissionNames.Pages_FlashSales_Edit)]
 		public async Task<FlashSaleDto> Update(UpdateFlashSaleDto input)
 		{
 			var flashSale = await _flashSaleRepository.GetAsync(input.Id);
@@ -298,6 +303,7 @@ namespace MyProject.FlashSales
 		/// Lưu ý: Tự động hoàn trả số lượng sản phẩm về Inventory trước khi xóa
 		/// </summary>
 		/// <param name="id">ID của FlashSale cần xóa</param>
+		[AbpAuthorize(PermissionNames.Pages_FlashSales_Delete)]
 		public async Task Delete(int id)
 		{
 			// Lấy FlashSale kèm theo danh sách sản phẩm

@@ -1,0 +1,89 @@
+@using MyProject.Web.Startup
+@using MyProject.Web.Models.Suppliers
+@model SupplierViewModel
+
+@{
+	ViewBag.Title = L("Suppliers");
+	ViewBag.CurrentPageName = PageNames.Suppliers;
+}
+
+@section scripts
+{
+	<environment names="Development">
+		<script src="~/view-resources/Views/Suppliers/Index.js" asp-append-version="true"></script>
+	</environment>
+
+	<environment names="Staging,Production">
+		<script src="~/view-resources/Views/Suppliers/Index.min.js" asp-append-version="true"></script>
+	</environment>
+}
+
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-6">
+				<h1>Nhà cung cấp</h1>
+			</div>
+			<div class="col-sm-6">
+				<a href="javascript:;" data-toggle="modal" data-target="#SupplierCreateModal" class="btn bg-blue float-sm-right">
+					<i class="fa fa-plus-square"></i>
+					@L("Create")
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<div class="row">
+							<div class="col-md-6">
+								<!--Use for bulk actions-->
+							</div>
+							<div class="col-md-6">
+								<!-- Search form can be added here -->
+							</div>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="table-responsive">
+							<table id="SuppliersTable" class="table table-striped table-bordered">
+								<thead>
+									<tr>
+										<th>Mã</th>
+										<th>Tên nhà cung cấp</th>
+										<th>Điện thoại</th>
+										<th>Email</th>
+										<th>Địa chỉ</th>
+										<th>Người liên hệ</th>
+										<th>Trạng thái</th>
+										<th style="width: 150px">@L("Actions")</th>
+									</tr>
+								</thead>
+								<tbody>
+									<!-- Rows will be loaded dynamically -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+@await Html.PartialAsync("~/Views/Suppliers/_CreateModal.cshtml", Model)
+
+<!-- Edit Modal -->
+<div class="modal fade" id="SupplierEditModal" tabindex="-1" role="dialog" aria-labelledby="SupplierEditModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<!-- Content will be loaded dynamically -->
+		</div>
+	</div>
+</div>
+

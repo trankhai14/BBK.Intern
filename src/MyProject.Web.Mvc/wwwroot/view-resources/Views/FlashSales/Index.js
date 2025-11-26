@@ -18,12 +18,14 @@
             {
                 name: 'refresh',
                 text: '<i class="fas fa-redo-alt"></i>',
+                titleAttr: 'Làm mới danh sách',
                 action: () => _$flashSalesTable.draw(false)
             }
         ],
         responsive: {
             details: {
-                type: 'column'
+                type: 'column',
+                target: 'tr'
             }
         },
         columnDefs: [
@@ -35,12 +37,16 @@
             {
                 targets: 1,
                 data: 'name',
-                sortable: false
+                sortable: false,
+                width: '20%',
+                responsivePriority: 1
             },
             {
                 targets: 2,
                 data: 'startTime',
                 sortable: false,
+                width: '12%',
+                responsivePriority: 3,
                 render: function (data) {
                     return data ? new Date(data).toLocaleString('vi-VN') : '';
                 }
@@ -49,6 +55,8 @@
                 targets: 3,
                 data: 'endTime',
                 sortable: false,
+                width: '12%',
+                responsivePriority: 3,
                 render: function (data) {
                     return data ? new Date(data).toLocaleString('vi-VN') : '';
                 }
@@ -56,50 +64,64 @@
             {
                 targets: 4,
                 data: 'statusText',
-                sortable: false
+                sortable: false,
+                width: '10%',
+                responsivePriority: 2
             },
             {
                 targets: 5,
                 data: 'totalProducts',
-                sortable: false
+                sortable: false,
+                width: '8%',
+                responsivePriority: 4
             },
             {
                 targets: 6,
                 data: 'totalSold',
-                sortable: false
+                sortable: false,
+                width: '8%',
+                responsivePriority: 4
             },
             {
                 targets: 7,
                 data: 'isActive',
                 sortable: false,
+                width: '8%',
+                responsivePriority: 4,
                 render: data => `<input type="checkbox" disabled ${data ? 'checked' : ''}>`
             },
             {
                 targets: 8,
                 data: 'isHidden',
                 sortable: false,
+                width: '8%',
+                responsivePriority: 4,
                 render: data => `<input type="checkbox" disabled ${data ? 'checked' : ''}>`
             },
             {
                 targets: 9,
                 data: null,
                 sortable: false,
-                autoWidth: false,
+                width: '14%',
+                responsivePriority: 1,
                 defaultContent: '',
                 render: (data, type, row, meta) => {
+                    const hideButtonTitle = row.isHidden ? 'Hiển thị flash sale' : 'Ẩn flash sale';
                     return [
-                        `   <button type="button" class="btn btn-sm bg-secondary edit-flash-sale" data-flash-sale-id="${row.id}" data-toggle="modal" data-target="#FlashSaleEditModal">`,
-                        `       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
+                        `<div class="btn-group" role="group">`,
+                        `   <button type="button" class="btn btn-sm bg-secondary edit-flash-sale" data-flash-sale-id="${row.id}" data-toggle="modal" data-target="#FlashSaleEditModal" title="Chỉnh sửa flash sale">`,
+                        `       <i class="fas fa-pencil-alt"></i>`,
                         '   </button>',
-                        `   <button type="button" class="btn btn-sm bg-danger delete-flash-sale" data-flash-sale-id="${row.id}" data-flash-sale-name="${row.name}">`,
-                        `       <i class="fas fa-trash"></i> ${l('Delete')}`,
+                        `   <button type="button" class="btn btn-sm ${row.isHidden ? 'bg-success' : 'bg-warning'} toggle-hide-flash-sale" data-flash-sale-id="${row.id}" title="${hideButtonTitle}">`,
+                        `       <i class="fas fa-eye${row.isHidden ? '' : '-slash'}"></i>`,
                         '   </button>',
-                        `   <button type="button" class="btn btn-sm ${row.isHidden ? 'bg-success' : 'bg-warning'} toggle-hide-flash-sale" data-flash-sale-id="${row.id}">`,
-                        `       <i class="fas fa-eye${row.isHidden ? '' : '-slash'}"></i> ${row.isHidden ? l('Show') : l('Hide')}`,
+                        `   <button type="button" class="btn btn-sm bg-info detail-flash-sale" data-flash-sale-id="${row.id}" title="Xem chi tiết flash sale">`,
+                        `       <i class="fas fa-eye"></i>`,
                         '   </button>',
-                        `   <button type="button" class="btn btn-sm bg-info detail-flash-sale" data-flash-sale-id="${row.id}">`,
-                        `       <i class="fas fa-eye"></i> ${l('Details')}`,
-                        '   </button>'
+                        `   <button type="button" class="btn btn-sm bg-danger delete-flash-sale" data-flash-sale-id="${row.id}" data-flash-sale-name="${row.name}" title="Xóa flash sale">`,
+                        `       <i class="fas fa-trash"></i>`,
+                        '   </button>',
+                        '</div>'
                     ].join('');
                 }
             }

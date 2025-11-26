@@ -20,5 +20,17 @@ namespace MyProject.Products.Dtos
     public string CategoryInput { get; set; }
 
     public string Keyword { get; set; }
+
+		/// <summary>
+		/// Lọc theo ID nhà cung cấp
+		/// </summary>
+		public int? SupplierId { get; set; }
+
+		/// <summary>
+		/// Chỉ lấy sản phẩm có tồn kho (có record trong Inventory)
+		/// Mặc định: false (không filter, lấy tất cả sản phẩm - dùng cho admin)
+		/// Set true để chỉ lấy sản phẩm có tồn kho (dùng cho frontend)
+		/// </summary>
+		public bool OnlyWithInventory { get; set; } = false;
 	}
 }

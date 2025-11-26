@@ -74,5 +74,20 @@ namespace MyProject.Inventories
 		/// Kiểm tra kho hàng có đủ số lượng không
 		/// </summary>
 		Task<bool> CheckInventorySufficient(int productId, int requiredQuantity);
+
+		/// <summary>
+		/// Giữ hàng tạm thời cho đơn hàng (tăng ReservedQuantity)
+		/// </summary>
+		Task ReserveInventory(int productId, int quantity);
+
+		/// <summary>
+		/// Giảm ReservedQuantity và Quantity khi đơn hàng thanh toán thành công
+		/// </summary>
+		Task CommitReservedInventory(int productId, int quantity);
+
+		/// <summary>
+		/// Giải phóng hàng đã giữ khi đơn hủy/không thanh toán
+		/// </summary>
+		Task ReleaseReservedInventory(int productId, int quantity);
 	}
 }

@@ -85,7 +85,9 @@
     <text name="Actions">Actions</text>
     <text name="CouldNotCompleteLoginOperation">Could not complete login operation. Please try again later.</text>
     <text name="CouldNotValidateExternalUser">Could not validate external user</text>
+    <text name="CreateRole">Create role</text>
     <text name="EditRole">Edit role</text>
+    <text name="DeleteRole">Delete role</text>
     <text name="EditTenant">Edit tenant</text>
     <text name="EditUser">Edit user</text>
     <text name="TenantIdIsNotActive{0}">TenantId {0} is not active</text>
@@ -159,9 +161,22 @@
 		<text name="Tours">Tours</text>
 		<text name="TourList">Tour list</text>
 		<text name="SliderList">Slider list</text>
+		<text name="OrderList">Order list</text>
 		<text name="CreateNewTour">Create new tour</text>
 		<text name="TourImage">Tour image</text>
 		<text name="EditTours">Edit tours</text>
+		<text name="ImportSlips">Import Slips</text>
+		<text name="ExportSlips">Export Slips</text>
+		<text name="Stocktakings">Stocktakings</text>
+		<text name="InventoryTransactions">Inventory Transactions</text>
+		<text name="WarehouseManagement">Warehouse Management</text>
+		<text name="Inventories">Inventories</text>
+		<text name="Suppliers">Suppliers</text>
+		<text name="FlashSales">Flash Sales</text>
+		<text name="CustomerProfiles">Customer Profiles</text>
+
+		<!-- Permissions -->
+
 
 	</texts>
 </localizationDictionary>

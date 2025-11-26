@@ -54,117 +54,18 @@ namespace MyProject.Web.Startup
                         permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Roles)
                     )
                 )
-                .AddItem( // Menu items below is just for demonstration!
-                    new MenuItemDefinition(
-                        "MultiLevelMenu",
-                        L("MultiLevelMenu"),
-                        icon: "fas fa-circle"
-                    ).AddItem(
-                        new MenuItemDefinition(
-                            "AspNetBoilerplate",
-                            new FixedLocalizableString("ASP.NET Boilerplate"),
-                            icon: "far fa-circle"
-                        ).AddItem(
-                            new MenuItemDefinition(
-                                "AspNetBoilerplateHome",
-                                new FixedLocalizableString("Home"),
-                                url: "https://aspnetboilerplate.com?ref=abptmpl",
-                                icon: "far fa-dot-circle"
-                            )
-                        ).AddItem(
-                            new MenuItemDefinition(
-                                "AspNetBoilerplateTemplates",
-                                new FixedLocalizableString("Templates"),
-                                url: "https://aspnetboilerplate.com/Templates?ref=abptmpl",
-                                icon: "far fa-dot-circle"
-                            )
-                        ).AddItem(
-                            new MenuItemDefinition(
-                                "AspNetBoilerplateSamples",
-                                new FixedLocalizableString("Samples"),
-                                url: "https://aspnetboilerplate.com/Samples?ref=abptmpl",
-                                icon: "far fa-dot-circle"
-                            )
-                        ).AddItem(
-                            new MenuItemDefinition(
-                                "AspNetBoilerplateDocuments",
-                                new FixedLocalizableString("Documents"),
-                                url: "https://aspnetboilerplate.com/Pages/Documents?ref=abptmpl",
-                                icon: "far fa-dot-circle"
-                            )
-                        )
-                    ).AddItem(
-                        new MenuItemDefinition(
-                            "AspNetZero",
-                            new FixedLocalizableString("ASP.NET Zero"),
-                            icon: "far fa-circle"
-                        ).AddItem(
-                            new MenuItemDefinition(
-                                "AspNetZeroHome",
-                                new FixedLocalizableString("Home"),
-                                url: "https://aspnetzero.com?ref=abptmpl",
-                                icon: "far fa-dot-circle"
-                            )
-                        ).AddItem(
-                            new MenuItemDefinition(
-                                "AspNetZeroFeatures",
-                                new FixedLocalizableString("Features"),
-                                url: "https://aspnetzero.com/Features?ref=abptmpl",
-                                icon: "far fa-dot-circle"
-                            )
-                        ).AddItem(
-                            new MenuItemDefinition(
-                                "AspNetZeroPricing",
-                                new FixedLocalizableString("Pricing"),
-                                url: "https://aspnetzero.com/Pricing?ref=abptmpl#pricing",
-                                icon: "far fa-dot-circle"
-                            )
-                        ).AddItem(
-                            new MenuItemDefinition(
-                                "AspNetZeroFaq",
-                                new FixedLocalizableString("Faq"),
-                                url: "https://aspnetzero.com/Faq?ref=abptmpl",
-                                icon: "far fa-dot-circle"
-                            )
-                        ).AddItem(
-                            new MenuItemDefinition(
-                                "AspNetZeroDocuments",
-                                new FixedLocalizableString("Documents"),
-                                url: "https://aspnetzero.com/Documents?ref=abptmpl",
-                                icon: "far fa-dot-circle"
-                            )
-                        )
-                    )
-                )
-                //.AddItem(
-                //    new MenuItemDefinition(
-                //    "TaskList",
-                //    L("TaskList"),
-                //    url: "Tasks",
-                //    icon: "fa fa-tasks"
-                //    )
-                //)
                 .AddItem(
                     new MenuItemDefinition(
-                    "ProductList",
+                    PageNames.Products,
                     L("ProductList"),
                     url: "Products",
                     icon: "fa fa-box",
-										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Products)
+					permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Products)
                     )
                 )
-        //        .AddItem(
-								//		new MenuItemDefinition(
-								//		"Web",
-								//		L("Web"),
-								//		url: "Web",
-								//		icon: "fa fa-box",
-								//		permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Categories)
-        //            )
-								//)
                 .AddItem(
 										new MenuItemDefinition(
-										"CategoryList",
+										PageNames.Categories,
 										L("CategoryList"),
 										url: "Categories",
 										icon: "fa fa-th-large",
@@ -172,33 +73,69 @@ namespace MyProject.Web.Startup
                     )
 								).AddItem(
 										new MenuItemDefinition(
-										"SliderList",
+										PageNames.Sliders,
 										L("SliderList"),
 										url: "Sliders",
-										icon: "fa fa-th-large"
+										icon: "fa fa-th-large",
+										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Sliders)
 										)
 								)
-        //        .AddItem(
-								//		new MenuItemDefinition(
-								//		"TourList",
-								//		L("TourList"),
-								//		url: "Tours",
-								//		icon: "fa fa-th-large"
-								//		)
-								//)
                 .AddItem(
 										new MenuItemDefinition(
-										"OrderList",
+										PageNames.Orders,
 										L("OrderList"),
 										url: "Orders",
-										icon: "fa fa-th-large"
+										icon: "fa fa-shopping-cart",
+										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Orders)
 										)
-								).AddItem(
+								)
+								// Menu Quản lý kho (nhiều cấp)
+								.AddItem(
 										new MenuItemDefinition(
-										"Inventories",
-										L("Inventories"),
-										url: "Inventories",
-										icon: "fa fa-th-large"
+										"WarehouseManagement",
+										L("WarehouseManagement"),
+										icon: "fa fa-warehouse",
+										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Inventories)
+										).AddItem(
+											new MenuItemDefinition(
+											"Inventories",
+											L("Inventories"),
+											url: "Inventories",
+											icon: "fa fa-boxes",
+											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Inventories)
+											)
+										).AddItem(
+											new MenuItemDefinition(
+											PageNames.ImportSlips,
+											L("ImportSlips"),
+											url: "ImportSlips",
+											icon: "fa fa-arrow-down",
+											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Inventories)
+											)
+										).AddItem(
+											new MenuItemDefinition(
+											PageNames.ExportSlips,
+											L("ExportSlips"),
+											url: "ExportSlips",
+											icon: "fa fa-arrow-up",
+											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Inventories)
+											)
+										).AddItem(
+											new MenuItemDefinition(
+											PageNames.Stocktakings,
+											L("Stocktakings"),
+											url: "Stocktakings",
+											icon: "fa fa-clipboard-check",
+											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Inventories)
+											)
+										).AddItem(
+											new MenuItemDefinition(
+											PageNames.InventoryTransactions,
+											L("InventoryTransactions"),
+											url: "InventoryTransactions",
+											icon: "fa fa-history",
+											permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Inventories)
+											)
 										)
 								).AddItem(
 										new MenuItemDefinition(
@@ -206,7 +143,7 @@ namespace MyProject.Web.Startup
 										L("CustomerProfiles"),
 										url: "CustomerProfiles",
 										icon: "fa fa-user-circle",
-										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Users)
+										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_CustomerProfiles)
 										)
 								).AddItem(
 										new MenuItemDefinition(
@@ -214,7 +151,15 @@ namespace MyProject.Web.Startup
 										L("FlashSales"),
 										url: "FlashSales",
 										icon: "fa fa-bolt",
-										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Products)
+										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_FlashSales)
+										)
+								).AddItem(
+										new MenuItemDefinition(
+										PageNames.Suppliers,
+										L("Suppliers"),
+										url: "Suppliers",
+										icon: "fa fa-truck",
+										permissionDependency: new SimplePermissionDependency(PermissionNames.Pages_Suppliers)
 										)
 								);
 

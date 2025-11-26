@@ -1,0 +1,230 @@
+@using MyProject.Web.Models.Common.Modals
+@using MyProject.Web.Models.ExportSlips
+@using MyProject.ExportSlips
+@model EditExportSlipViewModel
+
+@{
+	Layout = null;
+}
+
+<div class="modal-header">
+	<h4 class="modal-title">Sửa phiếu xuất kho: @Model.ExportSlip.ExportCode</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<form name="exportSlipEditForm" role="form" class="form-horizontal">
+	<input type="hidden" name="Id" value="@Model.ExportSlip.Id" />
+	
+	<div class="modal-body">
+		@if (Model.ExportSlip.Status != ExportStatus.Draft)
+		{
+			<div class="alert alert-warning">
+				<i class="fa fa-exclamation-triangle"></i> <strong>Lưu ý:</strong> Chỉ có thể sửa phiếu xuất ở trạng thái <strong>Nháp</strong>. 
+				Trạng thái hiện tại: <strong>@Model.ExportSlip.StatusName</strong>
+			</div>
+		}
+
+		<!-- Thông tin chung -->
+		<div class="row mb-3">
+			<div class="col-md-12">
+				<h5 class="border-bottom pb-2">Thông tin chung</h5>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group row">
+					<label class="col-md-4 col-form-label fw-bold">Mã phiếu xuất</label>
+					<div class="col-md-8">
+						<input type="text" class="form-control" value="@Model.ExportSlip.ExportCode" readonly>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group row required">
+					<label class="col-md-4 col-form-label fw-bold">Ngày xuất kho</label>
+					<div class="col-md-8">
+						<input type="datetime-local" class="form-control" name="ExportDate" value="@Model.ExportSlip.ExportDate.ToString("yyyy-MM-ddTHH:mm")" required>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group row required">
+					<label class="col-md-4 col-form-label fw-bold">Loại xuất kho</label>
+					<div class="col-md-8">
+						<select class="form-control" name="Type" required>
+							@{
+								var selectedType = Model.ExportSlip.Type;
+							}
+							@if (selectedType == ExportType.Order)
+							{
+								<option value="1" selected>Xuất cho đơn hàng</option>
+							}
+							else
+							{
+								<option value="1">Xuất cho đơn hàng</option>
+							}
+							@if (selectedType == ExportType.SupplierReturn)
+							{
+								<option value="2" selected>Xuất trả nhà cung cấp</option>
+							}
+							else
+							{
+								<option value="2">Xuất trả nhà cung cấp</option>
+							}
+							@if (selectedType == ExportType.Damage)
+							{
+								<option value="3" selected>Xuất hỏng hóc</option>
+							}
+							else
+							{
+								<option value="3">Xuất hỏng hóc</option>
+							}
+							@if (selectedType == ExportType.Adjustment)
+							{
+								<option value="4" selected>Xuất điều chỉnh</option>
+							}
+							else
+							{
+								<option value="4">Xuất điều chỉnh</option>
+							}
+							@if (selectedType == ExportType.Transfer)
+							{
+								<option value="5" selected>Xuất chuyển kho</option>
+							}
+							else
+							{
+								<option value="5">Xuất chuyển kho</option>
+							}
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group row">
+					<label class="col-md-4 col-form-label fw-bold">Đơn hàng</label>
+					<div class="col-md-8">
+						<select class="form-control" name="OrderId" id="EditOrderId">
+							<option value="">-- Chọn đơn hàng --</option>
+							@if (Model.ExportSlip.OrderId.HasValue)
+							{
+								<option value="@Model.ExportSlip.OrderId" selected>@Model.ExportSlip.OrderCode</option>
+							}
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group row">
+					<label class="col-md-4 col-form-label fw-bold">Nhà cung cấp</label>
+					<div class="col-md-8">
+						<select class="form-control" name="SupplierId" id="EditSupplierId">
+							<option value="">-- Chọn nhà cung cấp --</option>
+							@if (Model.ExportSlip.SupplierId.HasValue)
+							{
+								<option value="@Model.ExportSlip.SupplierId" selected>@Model.ExportSlip.SupplierName</option>
+							}
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group row">
+					<label class="col-md-4 col-form-label fw-bold">Lý do xuất</label>
+					<div class="col-md-8">
+						<textarea class="form-control" name="Reason" rows="2" maxlength="500">@Model.ExportSlip.Reason</textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					<label class="col-md-2 col-form-label fw-bold">Ghi chú</label>
+					<div class="col-md-10">
+						<textarea class="form-control" name="Notes" rows="2" maxlength="1000">@Model.ExportSlip.Notes</textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Chi tiết sản phẩm -->
+		<div class="row mb-3 mt-4">
+			<div class="col-md-12">
+				<div class="d-flex justify-content-between align-items-center">
+					<h5 class="border-bottom pb-2 mb-0">Chi tiết sản phẩm</h5>
+					@if (Model.ExportSlip.Status == ExportStatus.Draft)
+					{
+						<button type="button" class="btn btn-sm btn-success" id="EditAddProductBtn">
+							<i class="fa fa-plus"></i> Thêm sản phẩm
+						</button>
+					}
+				</div>
+			</div>
+		</div>
+
+		<div class="table-responsive">
+			<table class="table table-bordered" id="EditProductDetailsTable">
+				<thead>
+					<tr>
+						<th style="width: 40%">Sản phẩm</th>
+						<th style="width: 20%">Số lượng</th>
+						<th style="width: 30%">Ghi chú</th>
+						@if (Model.ExportSlip.Status == ExportStatus.Draft)
+						{
+							<th style="width: 10%">Thao tác</th>
+						}
+					</tr>
+				</thead>
+				<tbody id="EditProductDetailsBody">
+					@foreach (var detail in Model.ExportSlip.Details)
+					{
+						<tr data-detail-id="@detail.Id">
+							<td>
+								<input type="hidden" name="Details[].Id" value="@detail.Id" />
+								<input type="hidden" name="Details[].ProductId" value="@detail.ProductId" class="product-id" />
+								<span class="product-name">@detail.ProductName</span>
+							</td>
+							<td>
+								<input type="number" name="Details[].Quantity" class="form-control quantity-input" value="@detail.Quantity" min="1" required @(Model.ExportSlip.Status != ExportStatus.Draft ? "readonly" : "") />
+							</td>
+							<td>
+								<input type="text" name="Details[].Notes" class="form-control" value="@detail.Notes" maxlength="500" @(Model.ExportSlip.Status != ExportStatus.Draft ? "readonly" : "") />
+							</td>
+							@if (Model.ExportSlip.Status == ExportStatus.Draft)
+							{
+								<td>
+									<button type="button" class="btn btn-sm btn-danger remove-product-btn">
+										<i class="fa fa-trash"></i>
+									</button>
+								</td>
+							}
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+	<div class="modal-footer">
+		@if (Model.ExportSlip.Status == ExportStatus.Draft)
+		{
+			<button type="button" class="btn btn-primary save-button">
+				<i class="fa fa-save"></i> <span>Lưu</span>
+			</button>
+		}
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">
+			<i class="fa fa-times"></i> Đóng
+		</button>
+	</div>
+</form>
+

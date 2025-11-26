@@ -4,15 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
+using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Azure.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using MyProject.Authorization;
 using MyProject.Sliders.Dto;
 
 namespace MyProject.Sliders
 {
+	//[AbpAuthorize(PermissionNames.Pages_Sliders)]
 	public class SliderAppService :MyProjectAppServiceBase, ISliderAppService
 	{
 		private readonly IRepository<Slider> _sliderRepository;
@@ -59,6 +62,7 @@ namespace MyProject.Sliders
 			return new PagedResultDto<SliderListDto>(sliderCount, sliderDtos);
 		}
 
+		[AbpAuthorize(PermissionNames.Pages_Sliders_Create)]
 		public async Task CreateSlider(CreateSliderDto input)
 		{
 			var slider = new Slider
@@ -75,6 +79,7 @@ namespace MyProject.Sliders
 
 		}
 
+		[AbpAuthorize(PermissionNames.Pages_Sliders_Edit)]
 		public async Task UpdateSlider(UpdateSliderDto input)
 		{
 			var slider = await _sliderRepository.GetAsync(input.Id);
@@ -93,6 +98,7 @@ namespace MyProject.Sliders
 			await _sliderRepository.UpdateAsync(slider);
 		}
 
+		[AbpAuthorize(PermissionNames.Pages_Sliders_Delete)]
 		public async Task DeleteSlider(EntityDto<int> input)
 		{
 			var slider = await _sliderRepository.GetAsync(input.Id);

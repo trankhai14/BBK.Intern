@@ -1,0 +1,129 @@
+@using System.Linq
+@model MyProject.Web.Models.Checkout.CheckoutConfirmViewModel
+
+@section styles
+{
+	<style>
+		.order-summary-item {
+			border-bottom: 1px dashed #e9ecef;
+			padding-bottom: 12px;
+		}
+
+		.order-summary-item:last-child {
+			border-bottom: none;
+			padding-bottom: 0;
+		}
+
+		.order-summary-thumb {
+			width: 64px;
+			height: 64px;
+			border-radius: 8px;
+			background: #f8f9fa;
+			overflow: hidden;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.order-summary-thumb-img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+		}
+
+		.order-summary-thumb-placeholder {
+			color: #adb5bd;
+			font-size: 24px;
+		}
+	</style>
+}
+
+@section scripts
+{
+	<environment names="Development">
+		<script src="~/view-resources/Views/Checkout/Confirm.js" asp-append-version="true"></script>
+	</environment>
+}
+
+<div class="container mt-3" style="max-width: 960px;">
+	<h3 class="mb-3"><i class="fas fa-receipt"></i> Xác nhận đơn hàng</h3>
+
+	@if (ViewBag.CheckoutError != null)
+	{
+		<div class="alert alert-danger">
+			<i class="fas fa-exclamation-circle"></i> @ViewBag.CheckoutError
+		</div>
+	}
+
+	<form method="post" action="/Checkout/Payment">
+		@Html.AntiForgeryToken()
+
+		<div class="row">
+			<div class="col-md-6">
+				<h5>Thông tin khách hàng</h5>
+				@if (Model.Profiles != null && Model.Profiles.Any())
+				{
+					<div class="form-group">
+						<label>Chọn thông tin có sẵn</label>
+						<select name="SelectedProfileId" id="CustomerProfileSelect" class="form-control">
+							<option value="">-- Tự nhập thông tin --</option>
+							@foreach (var profile in Model.Profiles)
+							{
+								var isSelected = Model.SelectedProfileId.HasValue && profile.Id == Model.SelectedProfileId.Value;
+								<option value="@profile.Id"
+										data-fullname="@profile.FullName"
+										data-phone="@profile.PhoneNumber"
+										data-address="@profile.Address"
+										selected="@(isSelected ? "selected" : null)">
+									@profile.DisplayName
+								</option>
+							}
+						</select>
+					</div>
+				}
+				<div class="form-group">
+					<label>Họ và tên</label>
+					<input name="FullName" id="FullNameInput" class="form-control" value="@Model.FullName" required />
+				</div>
+				<div class="form-group">
+					<label>Số điện thoại</label>
+					<input name="PhoneNumber" id="PhoneInput" class="form-control" value="@Model.PhoneNumber" required />
+				</div>
+				<div class="form-group">
+					<label>Địa chỉ</label>
+					<textarea name="Address" id="AddressInput" class="form-control" rows="2" required>@Model.Address</textarea>
+				</div>
+				<div class="form-group">
+					<label>Ghi chú</label>
+					<textarea name="Note" class="form-control">@Model.Note</textarea>
+				</div>
+				<div class="form-group">
+					<label>Phương thức thanh toán</label>
+					<select name="PaymentMethod" class="form-control">
+						<option value="QR" selected>Chuyển khoản qua QR</option>
+						<option value="VNPay">Thanh toán VNPay (Thẻ ATM, Visa, Mastercard, Ví điện tử)</option>
+						<option value="COD" disabled>Thanh toán khi nhận hàng (sắp có)</option>
+					</select>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<h5>Tóm tắt đơn hàng</h5>
+				<div id="OrderSummary" class="border rounded p-3 mb-3 bg-white">
+					<div class="text-muted d-flex align-items-center">
+						<span class="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
+						<span>Đang tải giỏ hàng...</span>
+					</div>
+				</div>
+				<div class="d-flex justify-content-between align-items-center">
+					<strong>Tổng tiền</strong>
+					<strong id="OrderTotalText">0 ₫</strong>
+				</div>
+				<input type="hidden" name="OrderAmount" id="OrderAmountInput" value="@Model.OrderAmount" />
+				<button type="submit" class="btn btn-danger btn-block mt-3">
+					<i class="fas fa-credit-card"></i> Thanh toán
+				</button>
+			</div>
+		</div>
+	</form>
+</div>
+

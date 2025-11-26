@@ -7,6 +7,7 @@ using Abp.Application.Services.Dto;
 using Abp.Domain.Entities.Auditing;
 using Microsoft.AspNetCore.Http;
 using static MyProject.Products.Product;
+using MyProject.Products.Dtos;
 
 namespace MyProject.Products.Dtos
 {
@@ -23,6 +24,7 @@ namespace MyProject.Products.Dtos
 
 		public DateTime CreationTime { get; set; }
 		public int CategoryId { get; set; }
+		public int? SupplierId { get; set; }
 		public string Image { get; set; }
 		public string Brand { get; set; }
 		public int? WeightInGrams { get; set; }
@@ -30,6 +32,9 @@ namespace MyProject.Products.Dtos
 		public decimal? HeightCm { get; set; }
 		public decimal? LengthCm { get; set; }
 		public IFormFile ImageFile { get; set; }
+
+		// Thông tin kỹ thuật (tách riêng)
+		public CreateProductSpecificationDto Specification { get; set; }
 
 	}
 }

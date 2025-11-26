@@ -18,12 +18,14 @@
             {
                 name: 'refresh',
                 text: '<i class="fas fa-redo-alt"></i>',
+                titleAttr: 'Làm mới danh sách',
                 action: () => _$rolesTable.draw(false)
             }
         ],
         responsive: {
             details: {
-                type: 'column'
+                type: 'column',
+                target: 'tr'
             }
         },
         columnDefs: [
@@ -35,27 +37,34 @@
             {
                 targets: 1,
                 data: 'name',
-                sortable: false
+                sortable: false,
+                width: '30%',
+                responsivePriority: 1
             },
             {
                 targets: 2,
                 data: 'displayName',
-                sortable: false
+                sortable: false,
+                width: '40%',
+                responsivePriority: 2
             },
             {
                 targets: 3,
                 data: null,
                 sortable: false,
-                autoWidth: false,
+                width: '15%',
+                responsivePriority: 1,
                 defaultContent: '',
                 render: (data, type, row, meta) => {
                     return [
-                        `   <button type="button" class="btn btn-sm bg-secondary edit-role" data-role-id="${row.id}" data-toggle="modal" data-target="#RoleEditModal">`,
-                        `       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
+                        `<div class="btn-group" role="group">`,
+                        `   <button type="button" class="btn btn-sm bg-secondary edit-role" data-role-id="${row.id}" data-toggle="modal" data-target="#RoleEditModal" title="Chỉnh sửa vai trò">`,
+                        `       <i class="fas fa-pencil-alt"></i>`,
                         '   </button>',
-                        `   <button type="button" class="btn btn-sm bg-danger delete-role" data-role-id="${row.id}" data-role-name="${row.name}">`,
-                        `       <i class="fas fa-trash"></i> ${l('Delete')}`,
+                        `   <button type="button" class="btn btn-sm bg-danger delete-role" data-role-id="${row.id}" data-role-name="${row.name}" title="Xóa vai trò">`,
+                        `       <i class="fas fa-trash"></i>`,
                         '   </button>',
+                        '</div>'
                     ].join('');
                 }
             }

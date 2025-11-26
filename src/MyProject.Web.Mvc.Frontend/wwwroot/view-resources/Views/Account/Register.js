@@ -100,21 +100,13 @@
         }
     });
 
-    // Handle form submit
-    _$form.submit(function (e) {
-        e.preventDefault();
-
+    // Handle form submit (normal POST to receive HTML View)
+    _$form.on('submit', function (e) {
         if (!validateForm()) {
-            return;
+            e.preventDefault();
+            return false;
         }
-
-        abp.ui.setBusy(
-            $('body'),
-            abp.ajax({
-                contentType: 'application/x-www-form-urlencoded',
-                url: _$form.attr('action'),
-                data: _$form.serialize()
-            })
-        );
+        // Allow default form POST so server can return View/Redirect without ABP Ajax wrapper
+        return true;
     });
 })();

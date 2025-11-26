@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Abp.Domain.Entities.Auditing;
 using MyProject.Authorization.Users;
@@ -46,6 +47,17 @@ namespace MyProject.InventoryTransactions
 		// Ngày thực hiện giao dịch
 		public DateTime TransactionDate { get; set; }
 
+		/// <summary>
+		/// ID của bảng tham chiếu (ImportSlip, ExportSlip, Stocktaking)
+		/// </summary>
+		public int? ReferenceId { get; set; }
+
+		/// <summary>
+		/// Loại bảng tham chiếu: 'ImportSlip', 'ExportSlip', 'Stocktaking'
+		/// </summary>
+		[StringLength(50)]
+		public string ReferenceType { get; set; }
+
 		public InventoryTransaction()
 		{
 			TransactionDate = DateTime.Now;
@@ -57,7 +69,8 @@ namespace MyProject.InventoryTransactions
 	/// </summary>
 	public enum TransactionType : byte
 	{
-		Import = 1,  // Nhập kho
-		Export = 2   // Xuất kho
+		Import = 1,      // Nhập kho
+		Export = 2,      // Xuất kho
+		Adjustment = 3   // Điều chỉnh (từ kiểm kê)
 	}
 }

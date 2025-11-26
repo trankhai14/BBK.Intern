@@ -79,7 +79,7 @@
 			{
 				targets: 7,
 				data: 'tourPrice',
-				sortable: false, 
+				sortable: false,
 				render: data => Number(data).toLocaleString('vi-VN') + ' ₫'
 			},
 			{

@@ -107,13 +107,13 @@ namespace MyProject.Web.Controllers
 
 			var loginResult = await GetLoginResultAsync(loginModel.UsernameOrEmailAddress, loginModel.Password, GetTenancyNameOrNull());
 
-			var user = await _userManager.GetUserByIdAsync(loginResult.User.Id);
-			var roles = await _userManager.GetRolesAsync(user);
+			//var user = await _userManager.GetUserByIdAsync(loginResult.User.Id);
+			//var roles = await _userManager.GetRolesAsync(user);
 
-			if (!roles.Contains("Admin"))
-			{
-				return Json(new AjaxResponse { Success = false, Error = new ErrorInfo("Bạn không có quyền truy cập vào trang Admin.") });
-			}
+			//if (!roles.Contains("Admin"))
+			//{
+			//	return Json(new AjaxResponse { Success = false, Error = new ErrorInfo("Bạn không có quyền truy cập vào trang Admin.") });
+			//}
 
 
 			await _signInManager.SignInAsync(loginResult.Identity, loginModel.RememberMe);

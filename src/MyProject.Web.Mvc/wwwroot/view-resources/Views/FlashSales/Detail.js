@@ -24,10 +24,17 @@
                 paging: true,           // Bật phân trang
                 serverSide: true,       // Xử lý phía server
                 listAction: {
-                    ajaxFunction: _productService.search,  // Sử dụng API search để load dữ liệu
+                    // Chỉ lấy các sản phẩm đã có trong kho (Inventory)
+                    ajaxFunction: _inventoryService.getAllInventories,
                     inputFilter: function () {
-                        // Lấy dữ liệu từ form search để gửi lên server
-                        return $('#ProductSelectSearchForm').serializeFormToObject(true);
+                        // Lấy dữ liệu từ form search để gửi lên server (sử dụng Keyword cho Inventory)
+                        var input = $('#ProductSelectSearchForm').serializeFormToObject(true);
+                        return {
+                            keyword: input.keyword || input.Keyword || $('#ProductSelectKeyword').val(),
+                            maxResultCount: input.maxResultCount,
+                            skipCount: input.skipCount,
+                            sorting: input.sorting
+                        };
                     }
                 },
                 buttons: [
@@ -40,19 +47,20 @@
                     }
                 ],
                 columnDefs: [
-                    // Cột 0: Tên sản phẩm
+                    // Cột 0: Tên sản phẩm (từ Inventory -> productName)
                     {
                         targets: 0,
-                        data: 'name',
+                        data: 'productName',
                         sortable: false
                     },
-                    // Cột 1: Giá sản phẩm (format tiền Việt Nam)
+                    // Cột 1: Số lượng khả dụng trong kho
                     {
                         targets: 1,
-                        data: 'price',
+                        data: 'availableQuantity',
                         sortable: false,
                         render: function (data) {
-                            return Number(data).toLocaleString('vi-VN') + ' ₫';
+                            var val = Number(data || 0);
+                            return 'Khả dụng: ' + val.toLocaleString('vi-VN');
                         }
                     },
                     // Cột 2: Nút chọn sản phẩm
@@ -62,11 +70,10 @@
                         sortable: false,
                         defaultContent: '',
                         render: function (data, type, row) {
-                            // Tạo nút chọn với các data attributes: id, name, price
+                            // Tạo nút chọn với các data attributes: productId, productName
                             return '<button class="btn btn-sm btn-primary select-product-btn" ' +
-                                'data-product-id="' + row.id + '" ' +
-                                'data-product-name="' + (row.name || '') + '" ' +
-                                'data-product-price="' + (row.price || 0) + '">' +
+                                'data-product-id="' + row.productId + '" ' +
+                                'data-product-name="' + (row.productName || '') + '">' +
                                 '<i class="fas fa-check"></i> Chọn' +
                                 '</button>';
                         }
@@ -82,20 +89,34 @@
                 // Lấy thông tin sản phẩm từ data attributes
                 var productId = $(this).data('product-id');
                 var productName = $(this).data('product-name');
-                var productPrice = $(this).data('product-price');
-
-                // Format giá để hiển thị
-                var formattedPrice = Number(productPrice).toLocaleString('vi-VN') + ' ₫';
 
                 // Điền thông tin vào form: ID (hidden) và tên + giá (readonly input)
                 $('#ProductId').val(productId);
-                $('#ProductName').val(productName + ' - ' + formattedPrice);
+                $('#ProductName').val(productName);
 
                 // Đóng modal chọn sản phẩm
                 $('#ProductSelectModal').modal('hide');
 
                 // Load thông tin inventory để hiển thị số lượng khả dụng
                 loadInventoryInfo(productId);
+
+                // Thử lấy giá sản phẩm để hiển thị kèm tên (không bắt buộc)
+                // Tìm nhanh theo tên, sau đó ưu tiên khớp đúng productId nếu có trong kết quả
+                try {
+                    _productService.search({
+                        keyword: productName,
+                        maxResultCount: 1,
+                        skipCount: 0
+                    }).done(function (res) {
+                        if (res && res.items && res.items.length > 0) {
+                            var found = res.items.find(function (x) { return x.id === productId; }) || res.items[0];
+                            if (found && typeof found.price !== 'undefined') {
+                                var formattedPrice = Number(found.price).toLocaleString('vi-VN') + ' ₫';
+                                $('#ProductName').val(productName + ' - ' + formattedPrice);
+                            }
+                        }
+                    });
+                } catch (e) { /* ignore */ }
 
                 // Hiển thị thông báo thành công
                 abp.notify.success('Đã chọn sản phẩm: ' + productName);

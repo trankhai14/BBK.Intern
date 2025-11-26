@@ -57,6 +57,7 @@ namespace MyProject.Categories
 			return null;
 		}
 
+		[AbpAuthorize(PermissionNames.Pages_Categories_Create)]
 		public async Task<CategoryListDto> CreateCategory(CreateCategoryDto input)
 		{
 			var category = new Category
@@ -101,6 +102,7 @@ namespace MyProject.Categories
 		}
 
 		//Lấy dữ liệu từ input để update
+		[AbpAuthorize(PermissionNames.Pages_Categories_Edit)]
 		public async Task<CategoryListDto> UpdateCategory(UpdateCategoryDto input)
 		{
 			var category = await _categoryRepository.GetAsync(input.Id);
@@ -126,6 +128,7 @@ namespace MyProject.Categories
 		/// <returns>
 		/// Task bất đồng bộ thực hiện việc xóa danh mục khỏi cơ sở dữ liệu.
 		/// </returns>
+		[AbpAuthorize(PermissionNames.Pages_Categories_Delete)]
 		public async Task DeleteCategory(EntityDto<int> input)
 		{
 			// Tìm danh mục trong cơ sở dữ liệu theo ID, nếu không tìm thấy thì trả về null

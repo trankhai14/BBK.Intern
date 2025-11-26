@@ -1,0 +1,126 @@
+@using MyProject.Web.Models.Common.Modals
+@using MyProject.Web.Models.ImportSlips
+@using MyProject.ImportSlips
+@model ImportSlipViewModel
+
+@{
+	Layout = null;
+}
+
+<div class="modal fade" id="ImportSlipCreateModal" tabindex="-1" role="dialog" aria-labelledby="ImportSlipCreateModalLabel" data-backdrop="static" data-keyboard="false">
+	<div class="modal-dialog modal-xl" role="document">
+		<div class="modal-content">
+			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel("Tạo phiếu nhập kho mới"))
+
+			<form name="importSlipCreateForm" role="form" class="form-horizontal">
+				<div class="modal-body">
+					<!-- Thông tin chung -->
+					<div class="row mb-3">
+						<div class="col-md-12">
+							<h5 class="border-bottom pb-2">Thông tin chung</h5>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group row required">
+								<label class="col-md-4 col-form-label fw-bold">Ngày nhập kho</label>
+								<div class="col-md-8">
+									<input type="datetime-local" class="form-control" name="ImportDate" id="ImportDate" required>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group row required">
+								<label class="col-md-4 col-form-label fw-bold">Loại nhập kho</label>
+								<div class="col-md-8">
+									<select class="form-control" name="Type" id="ImportType" required>
+										<option value="1">Nhập từ nhà cung cấp</option>
+										<option value="2">Nhập hàng trả lại</option>
+										<option value="3">Nhập điều chỉnh</option>
+										<option value="4">Nhập chuyển kho</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group row">
+								<label class="col-md-4 col-form-label fw-bold">Nhà cung cấp</label>
+								<div class="col-md-8">
+									<select class="form-control" name="SupplierId" id="SupplierId">
+										<option value="">-- Chọn nhà cung cấp --</option>
+										<!-- Options will be loaded via AJAX -->
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group row">
+								<label class="col-md-4 col-form-label fw-bold">Ghi chú</label>
+								<div class="col-md-8">
+									<textarea class="form-control" name="Notes" rows="2" maxlength="1000" placeholder="Nhập ghi chú (nếu có)"></textarea>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Chi tiết sản phẩm -->
+					<div class="row mb-3 mt-4">
+						<div class="col-md-12">
+							<div class="d-flex justify-content-between align-items-center">
+								<h5 class="border-bottom pb-2 mb-0">Chi tiết sản phẩm</h5>
+								<button type="button" class="btn btn-sm btn-success" id="AddProductBtn">
+									<i class="fa fa-plus"></i> Thêm sản phẩm
+								</button>
+							</div>
+						</div>
+					</div>
+
+					<div class="table-responsive">
+						<table class="table table-bordered" id="ProductDetailsTable">
+							<thead>
+								<tr>
+									<th style="width: 30%">Sản phẩm</th>
+									<th style="width: 15%">Số lượng</th>
+									<th style="width: 20%">Giá nhập</th>
+									<th style="width: 20%">Thành tiền</th>
+									<th style="width: 10%">Ghi chú</th>
+									<th style="width: 5%">Thao tác</th>
+								</tr>
+							</thead>
+							<tbody id="ProductDetailsBody">
+								<!-- Rows will be added dynamically -->
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="3" class="text-right fw-bold">Tổng tiền:</td>
+									<td class="fw-bold" id="TotalAmount">0</td>
+									<td colspan="2"></td>
+								</tr>
+							</tfoot>
+						</table>
+					</div>
+
+					<div class="alert alert-info mt-3">
+						<i class="fa fa-info-circle"></i> <strong>Lưu ý:</strong> Phiếu nhập sẽ được tạo ở trạng thái <strong>Nháp</strong>. Sau khi tạo, bạn có thể sửa hoặc hoàn thành phiếu nhập.
+					</div>
+				</div>
+
+				@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- Modal chọn sản phẩm -->
+<div class="modal fade" id="ProductSelectModal" tabindex="-1" role="dialog" aria-labelledby="ProductSelectModalLabel" data-backdrop="true" data-keyboard="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			@await Html.PartialAsync("~/Views/ImportSlips/_ProductSelectModal.cshtml")
+		</div>
+	</div>
+</div>
+

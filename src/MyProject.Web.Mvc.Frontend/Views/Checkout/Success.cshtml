@@ -1,0 +1,39 @@
+@{
+	var code = ViewBag.OrderCode as string ?? "";
+	ViewBag.Title = "Thanh toán thành công";
+}
+<div class="container mt-5" style="max-width: 720px;">
+	<div class="card border-success shadow-sm">
+		<div class="card-body text-center py-5">
+			<div class="mb-4">
+				<i class="fas fa-check-circle text-success" style="font-size: 80px;"></i>
+			</div>
+			<h2 class="text-success mb-3">Thanh toán thành công!</h2>
+			<p class="text-muted mb-4" style="font-size: 18px;">Cảm ơn bạn đã mua hàng tại cửa hàng của chúng tôi</p>
+			
+			@if (!string.IsNullOrEmpty(code))
+			{
+				<div class="alert alert-info d-inline-block mb-4">
+					<p class="mb-0"><strong>Mã đơn hàng:</strong> <span class="text-primary" style="font-size: 20px; font-weight: bold;">@code</span></p>
+					<small class="text-muted">Vui lòng lưu lại mã đơn hàng để tra cứu sau này</small>
+				</div>
+			}
+			else
+			{
+				<div class="alert alert-warning d-inline-block mb-4">
+					<p class="mb-0">Không tìm thấy mã đơn hàng. Vui lòng kiểm tra email hoặc liên hệ hỗ trợ.</p>
+				</div>
+			}
+			
+			<div class="mt-4">
+				<a href="/" class="btn btn-primary btn-lg me-2">
+					<i class="fas fa-home"></i> Về trang chủ
+				</a>
+				<a href="/Carts/Index" class="btn btn-outline-secondary btn-lg">
+					<i class="fas fa-shopping-cart"></i> Xem giỏ hàng
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+

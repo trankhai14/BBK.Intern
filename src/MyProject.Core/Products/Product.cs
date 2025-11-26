@@ -5,6 +5,7 @@ using Abp.Domain.Entities;
 using Abp.Domain.Entities.Auditing;
 using Abp.Timing;
 using MyProject.Categories;
+using MyProject.Suppliers;
 
 namespace MyProject.Products
 {
@@ -13,7 +14,7 @@ namespace MyProject.Products
 	{
 		public const int MaxNameLength = 256;
 		public const int MaxDescriptionLength = 64 * 1024; // 64KB
-        public const int MaxBrandLength = 128;
+		public const int MaxBrandLength = 128;
 
 		[Required]
 		[StringLength(MaxNameLength)]
@@ -40,11 +41,25 @@ namespace MyProject.Products
 		public decimal? HeightCm { get; set; }
 		public decimal? LengthCm { get; set; }
 
+		/// <summary>
+		/// ID danh mục sản phẩm (bắt buộc)
+		/// </summary>
 		public int CategoryId { get; set; }
 		[ForeignKey("CategoryId")]
 		public Category Category { get; set; }
 
+		/// <summary>
+		/// ID nhà cung cấp (tùy chọn, nullable)
+		/// Liên kết sản phẩm với nhà cung cấp để quản lý nguồn gốc hàng hóa
+		/// </summary>
+		public int? SupplierId { get; set; }
+		[ForeignKey("SupplierId")]
+		public Supplier Supplier { get; set; }
 
+		/// <summary>
+		/// Quan hệ 1:1 với ProductSpecification - Thông tin kỹ thuật chi tiết
+		/// </summary>
+		public ProductSpecification Specification { get; set; }
 
 		public Product()
 		{

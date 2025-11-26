@@ -110,8 +110,10 @@ h6:hover {
 	overflow: hidden;
 	background: #ffffff !important;
 	transition: all 0.3s ease;
-	height: auto;
-	min-height: 380px;
+	height: 420px;
+	/* Chiều cao cố định */
+	min-height: 420px;
+	max-height: 420px;
 	display: flex;
 	flex-direction: column;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
@@ -271,6 +273,11 @@ h6:hover {
 	align-items: baseline;
 	gap: 6px;
 	margin: 4px 0;
+	flex-wrap: nowrap;
+	/* Không cho xuống dòng */
+	overflow: hidden;
+	/* Ẩn phần tràn */
+	width: 100%;
 }
 
 .product-price-current {
@@ -278,6 +285,18 @@ h6:hover {
 	font-weight: 700;
 	color: #d70018;
 	line-height: 1.2;
+	white-space: nowrap;
+	/* Không xuống dòng */
+	overflow: hidden;
+	/* Ẩn phần tràn */
+	text-overflow: ellipsis;
+	/* Hiển thị ... nếu quá dài */
+	flex-shrink: 1;
+	/* Có thể co lại một chút nếu cần */
+	max-width: calc(100% - 60px);
+	/* Để chỗ cho giá cũ */
+	min-width: 0;
+	/* Cho phép co lại */
 }
 
 .product-price-old {
@@ -285,6 +304,14 @@ h6:hover {
 	color: #707070;
 	text-decoration: line-through;
 	font-weight: 400;
+	white-space: nowrap;
+	/* Không xuống dòng */
+	overflow: hidden;
+	/* Ẩn phần tràn */
+	text-overflow: ellipsis;
+	/* Hiển thị ... nếu quá dài */
+	flex-shrink: 1;
+	/* Có thể co lại nếu cần */
 }
 
 /* Thông tin khuyến mãi */

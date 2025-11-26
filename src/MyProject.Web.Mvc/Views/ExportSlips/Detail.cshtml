@@ -1,0 +1,228 @@
+@using MyProject.Web.Models.ExportSlips
+@using MyProject.ExportSlips
+@model EditExportSlipViewModel
+
+@{
+	ViewBag.Title = "Chi tiết phiếu xuất kho";
+}
+
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-6">
+				<h1>Chi tiết phiếu xuất kho</h1>
+			</div>
+			<div class="col-sm-6">
+				<a href="/ExportSlips" class="btn bg-secondary float-sm-right">
+					<i class="fa fa-arrow-left"></i> Quay lại
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Thông tin phiếu xuất: <strong>@Model.ExportSlip.ExportCode</strong></h3>
+						<div class="card-tools">
+							<span class="badge badge-@(Model.ExportSlip.Status == ExportStatus.Completed ? "success" : Model.ExportSlip.Status == ExportStatus.Cancelled ? "danger" : "warning")">
+								@Model.ExportSlip.StatusName
+							</span>
+						</div>
+					</div>
+					<div class="card-body">
+						<!-- Thông tin chung -->
+						<div class="row mb-4">
+							<div class="col-md-12">
+								<h5 class="border-bottom pb-2">Thông tin chung</h5>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="font-weight-bold">Mã phiếu xuất:</label>
+									<p class="form-control-plaintext">@Model.ExportSlip.ExportCode</p>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="font-weight-bold">Ngày xuất kho:</label>
+									<p class="form-control-plaintext">@Model.ExportSlip.ExportDate.ToString("dd/MM/yyyy HH:mm")</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="font-weight-bold">Loại xuất kho:</label>
+									<p class="form-control-plaintext">@Model.ExportSlip.TypeName</p>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="font-weight-bold">Đơn hàng:</label>
+									<p class="form-control-plaintext">@(Model.ExportSlip.OrderCode ?? "Không có")</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="font-weight-bold">Nhà cung cấp:</label>
+									<p class="form-control-plaintext">@(Model.ExportSlip.SupplierName ?? "Không có")</p>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="font-weight-bold">Người tạo:</label>
+									<p class="form-control-plaintext">@Model.ExportSlip.CreatorUserName</p>
+								</div>
+							</div>
+						</div>
+
+						@if (!string.IsNullOrWhiteSpace(Model.ExportSlip.Reason))
+						{
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label class="font-weight-bold">Lý do xuất:</label>
+										<p class="form-control-plaintext">@Model.ExportSlip.Reason</p>
+									</div>
+								</div>
+							</div>
+						}
+
+						@if (!string.IsNullOrWhiteSpace(Model.ExportSlip.Notes))
+						{
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label class="font-weight-bold">Ghi chú:</label>
+										<p class="form-control-plaintext">@Model.ExportSlip.Notes</p>
+									</div>
+								</div>
+							</div>
+						}
+
+						<hr />
+
+						<!-- Chi tiết sản phẩm -->
+						<div class="row mb-3">
+							<div class="col-md-12">
+								<h5 class="border-bottom pb-2">Chi tiết sản phẩm (@Model.ExportSlip.Details.Count sản phẩm)</h5>
+							</div>
+						</div>
+
+						<div class="table-responsive">
+							<table class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<th>STT</th>
+										<th>Sản phẩm</th>
+										<th>Số lượng</th>
+										<th>Ghi chú</th>
+									</tr>
+								</thead>
+								<tbody>
+									@{
+										int index = 1;
+									}
+									@foreach (var detail in Model.ExportSlip.Details)
+									{
+										<tr>
+											<td>@index</td>
+											<td>@detail.ProductName</td>
+											<td class="text-right">@detail.Quantity.ToString("N0")</td>
+											<td>@(detail.Notes ?? "-")</td>
+										</tr>
+										index++;
+									}
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="card-footer">
+						@if (Model.ExportSlip.Status == ExportStatus.Draft)
+						{
+							<button type="button" class="btn btn-success" id="CompleteExportSlipBtn" data-id="@Model.ExportSlip.Id">
+								<i class="fa fa-check"></i> Hoàn thành phiếu xuất
+							</button>
+							<a href="javascript:;" class="btn btn-warning" onclick="editExportSlip(@Model.ExportSlip.Id)">
+								<i class="fa fa-edit"></i> Sửa phiếu xuất
+							</a>
+							<button type="button" class="btn btn-danger" id="CancelExportSlipBtn" data-id="@Model.ExportSlip.Id">
+								<i class="fa fa-times"></i> Hủy phiếu xuất
+							</button>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+@section scripts
+{
+	<script>
+		function editExportSlip(id) {
+			abp.ajax({
+				url: abp.appPath + 'ExportSlips/EditModal',
+				type: 'GET',
+				data: { exportSlipId: id },
+				success: function (content) {
+					$('#ExportSlipEditModal').html(content).modal('show');
+				}
+			});
+		}
+
+		$(document).ready(function () {
+			$('#CompleteExportSlipBtn').click(function () {
+				var id = $(this).data('id');
+				abp.message.confirm('Bạn có chắc chắn muốn hoàn thành phiếu xuất này? Hệ thống sẽ kiểm tra số lượng tồn kho và giảm số lượng tương ứng.', 'Xác nhận', function (isConfirmed) {
+					if (isConfirmed) {
+						var _exportSlipService = abp.services.app.exportSlip;
+						abp.ui.setBusy();
+						_exportSlipService.completeExportSlip(id)
+							.done(function () {
+								abp.notify.success('Hoàn thành phiếu xuất thành công!');
+								setTimeout(function () {
+									window.location.reload();
+								}, 1000);
+							})
+							.always(function () {
+								abp.ui.clearBusy();
+							});
+					}
+				});
+			});
+
+			$('#CancelExportSlipBtn').click(function () {
+				var id = $(this).data('id');
+				abp.message.confirm('Bạn có chắc chắn muốn hủy phiếu xuất này?', 'Xác nhận', function (isConfirmed) {
+					if (isConfirmed) {
+						var _exportSlipService = abp.services.app.exportSlip;
+						abp.ui.setBusy();
+						_exportSlipService.cancelExportSlip(id)
+							.done(function () {
+								abp.notify.success('Hủy phiếu xuất thành công!');
+								setTimeout(function () {
+									window.location.reload();
+								}, 1000);
+							})
+							.always(function () {
+								abp.ui.clearBusy();
+							});
+					}
+				});
+			});
+		});
+	</script>
+}
+

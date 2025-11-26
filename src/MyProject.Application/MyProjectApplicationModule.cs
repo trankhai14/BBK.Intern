@@ -13,6 +13,9 @@ namespace MyProject
         public override void PreInitialize()
         {
             Configuration.Authorization.Providers.Add<MyProjectAuthorizationProvider>();
+            
+            // Enable Background Jobs
+            Configuration.BackgroundJobs.IsJobExecutionEnabled = true;
         }
 
         public override void Initialize()

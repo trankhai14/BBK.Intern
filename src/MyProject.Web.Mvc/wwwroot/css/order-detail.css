@@ -1,0 +1,24 @@
+/* CSS đơn giản cho chi tiết đơn hàng - Admin */
+/* Sử dụng Bootstrap mặc định, chỉ thêm một số style tối thiểu */
+
+.order-detail-container {
+    background: #fff;
+    border-radius: 4px;
+    padding: 0;
+}
+
+/* Đảm bảo table responsive */
+.table-responsive {
+    border-radius: 0.25rem;
+}
+
+/* Style cho hình ảnh sản phẩm */
+.img-thumbnail {
+    border: 1px solid #dee2e6;
+}
+
+/* Tùy chỉnh nhỏ cho badge trạng thái */
+.badge {
+    font-size: 0.875rem;
+    padding: 0.35em 0.65em;
+}

@@ -86,6 +86,12 @@ namespace MyProject.Web.Controllers
 				returnUrl = GetAppHomeUrl();
 			}
 
+			// Hiển thị thông báo (nếu có) sau khi đăng ký thành công
+			if (!successMessage.IsNullOrEmpty())
+			{
+				ViewBag.SuccessMessage = successMessage;
+			}
+
 			return View(new LoginFormViewModel
 			{
 				ReturnUrl = returnUrl,
@@ -164,6 +170,12 @@ namespace MyProject.Web.Controllers
 		{
 			try
 			{
+				// Chặn đăng ký khi chưa có Tenant (tránh lỗi null Tenant và sai phạm quy định)
+				if (!AbpSession.TenantId.HasValue)
+				{
+					throw new UserFriendlyException("Vui lòng chọn chi nhánh (Tenant) trước khi đăng ký.");
+				}
+
 				ExternalLoginInfo externalLoginInfo = null;
 				if (model.IsExternalLogin)
 				{
@@ -229,37 +241,12 @@ namespace MyProject.Web.Controllers
 
 				var tenant = await _tenantManager.GetByIdAsync(user.TenantId.Value);
 
-				// Directly login if possible
-				if (user.IsActive && (user.IsEmailConfirmed || !isEmailConfirmationRequiredForLogin))
+				// Thay vì auto-login hoặc trả về RegisterResult, chuyển về trang Login + thông báo thành công
+				var successMessage = L("SuccessfullyRegistered") + ". " + L("PleaseLogin"); // Sử dụng localization nếu đã cấu hình
+				return RedirectToAction(nameof(Login), new
 				{
-					AbpLoginResult<Tenant, User> loginResult;
-					if (externalLoginInfo != null)
-					{
-						loginResult = await _logInManager.LoginAsync(externalLoginInfo, tenant.TenancyName);
-					}
-					else
-					{
-						loginResult = await GetLoginResultAsync(user.UserName, model.Password, tenant.TenancyName);
-					}
-
-					if (loginResult.Result == AbpLoginResultType.Success)
-					{
-						await _signInManager.SignInAsync(loginResult.Identity, false);
-						return Redirect(GetAppHomeUrl());
-					}
-
-					Logger.Warn("New registered user could not be login. This should not be normally. login result: " + loginResult.Result);
-				}
-
-				return View("RegisterResult", new RegisterResultViewModel
-				{
-					TenancyName = tenant.TenancyName,
-					NameAndSurname = user.Name + " " + user.Surname,
-					UserName = user.UserName,
-					EmailAddress = user.EmailAddress,
-					IsEmailConfirmed = user.IsEmailConfirmed,
-					IsActive = user.IsActive,
-					IsEmailConfirmationRequiredForLogin = isEmailConfirmationRequiredForLogin
+					userNameOrEmailAddress = user.UserName,
+					successMessage
 				});
 			}
 			catch (UserFriendlyException ex)

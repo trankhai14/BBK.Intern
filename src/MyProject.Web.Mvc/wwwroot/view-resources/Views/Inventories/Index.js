@@ -57,22 +57,30 @@
       {
         name: 'refresh',
         text: '<i class="fas fa-redo-alt"></i>',
+        titleAttr: 'Làm mới danh sách',
         action: () => _$inventoryTable.draw(false)
       }
     ],
     responsive: {
-      details: { type: 'column' }
+      details: {
+        type: 'column',
+        target: 'tr'
+      }
     },
     columnDefs: [
       {
         targets: 0,
         data: 'productName',
-        sortable: false
+        sortable: false,
+        width: '20%',
+        responsivePriority: 1
       },
       {
         targets: 1,
         data: 'quantity',
         sortable: false,
+        width: '10%',
+        responsivePriority: 2,
         render: function (data) {
           return '<span class="font-weight-bold">' + Number(data).toLocaleString('vi-VN') + '</span>';
         }
@@ -81,6 +89,8 @@
         targets: 2,
         data: 'reservedQuantity',
         sortable: false,
+        width: '10%',
+        responsivePriority: 5,
         render: function (data) {
           return Number(data).toLocaleString('vi-VN');
         }
@@ -89,6 +99,8 @@
         targets: 3,
         data: 'availableQuantity',
         sortable: false,
+        width: '10%',
+        responsivePriority: 2,
         render: function (data) {
           return '<span class="text-success font-weight-bold">' + Number(data).toLocaleString('vi-VN') + '</span>';
         }
@@ -96,12 +108,16 @@
       {
         targets: 4,
         data: 'unit',
-        sortable: false
+        sortable: false,
+        width: '8%',
+        responsivePriority: 5
       },
       {
         targets: 5,
         data: 'statusName',
         sortable: false,
+        width: '10%',
+        responsivePriority: 3,
         render: function (data, type, row) {
           var badgeClass = 'bg-secondary';
           if (row.status === 1) badgeClass = 'bg-success';
@@ -114,6 +130,8 @@
         targets: 6,
         data: 'minQuantity',
         sortable: false,
+        width: '8%',
+        responsivePriority: 5,
         render: function (data) {
           return Number(data).toLocaleString('vi-VN');
         }
@@ -122,6 +140,8 @@
         targets: 7,
         data: 'reorderLevel',
         sortable: false,
+        width: '8%',
+        responsivePriority: 5,
         render: function (data) {
           return Number(data).toLocaleString('vi-VN');
         }
@@ -130,6 +150,8 @@
         targets: 8,
         data: null,
         sortable: false,
+        width: '12%',
+        responsivePriority: 4,
         render: function (data, type, row) {
           var badges = [];
           if (row.isLowStock) {
@@ -145,25 +167,30 @@
         targets: 9,
         data: 'lastUpdateTime',
         sortable: false,
+        width: '10%',
+        responsivePriority: 4,
         render: data => data ? new Date(data).toLocaleString('vi-VN') : '-'
       },
       {
         targets: 10,
         data: null,
         sortable: false,
-        autoWidth: true,
+        width: '12%',
+        responsivePriority: 1,
         defaultContent: '',
         render: (data, type, row, meta) => {
           return [
-            `<button type="button" class="btn btn-sm bg-secondary edit-inventory" data-inventory-id="${row.id}" data-toggle="modal" data-target="#InventoryEditModal">`,
-            `   <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
+            `<div class="btn-group" role="group">`,
+            `<button type="button" class="btn btn-sm bg-secondary edit-inventory" data-inventory-id="${row.id}" data-toggle="modal" data-target="#InventoryEditModal" title="Chỉnh sửa tồn kho">`,
+            `   <i class="fas fa-pencil-alt"></i>`,
             '</button>',
-            `<button type="button" class="btn btn-sm bg-danger delete-inventory" data-inventory-id="${row.id}" data-product-name="${row.productName}">`,
-            `   <i class="fas fa-trash"></i> ${l('Delete')}`,
+            `<button type="button" class="btn btn-sm bg-info detail-inventory" data-inventory-id="${row.id}" title="Xem chi tiết tồn kho">`,
+            `   <i class="fas fa-eye"></i>`,
             '</button>',
-            `<button type="button" class="btn btn-sm bg-info detail-inventory" data-inventory-id="${row.id}">`,
-            `   <i class="fas fa-eye"></i> ${l('Details')}`,
-            '</button>'
+            `<button type="button" class="btn btn-sm bg-danger delete-inventory" data-inventory-id="${row.id}" data-product-name="${row.productName}" title="Xóa tồn kho">`,
+            `   <i class="fas fa-trash"></i>`,
+            '</button>',
+            '</div>'
           ].join(' ');
         }
       }

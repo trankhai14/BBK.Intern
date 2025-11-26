@@ -1,5 +1,6 @@
 ﻿using MyProject.Categories.Dto;
 using MyProject.Product.Dtos;
+using MyProject.Suppliers.Dto;
 using System.Collections.Generic;
 using static MyProject.Products.Product;
 
@@ -9,6 +10,7 @@ namespace MyProject.Web.Models.Products
 	{
 		public IReadOnlyList<ProductListDto> Products;
 		public List<CategoryListDto> CategoryLists { get; set; }
+		public List<SupplierDto> SupplierLists { get; set; }
 
 		//public List<ProductListDto> Products { get; set; } = new List<ProductListDto>();
 		public ProductViewModel(IReadOnlyList<ProductListDto> products)

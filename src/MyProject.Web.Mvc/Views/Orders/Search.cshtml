@@ -1,29 +1,24 @@
-﻿<div class="abp-advanced-search p-3" style="width: 100%;">
-  <form id="OrderSearchForm" class="form-horizontal" style="max-width: 100%;">
-    <div style="display: flex; flex-wrap: wrap; gap: 15px; width: 100%;" class="align-items-center">
-      <!-- Ô tìm kiếm từ khóa -->
-      <div style="min-width: 250px;">
-        <label for="Keyword" class="font-weight-bold">@L("NameUser")</label>
-        <div class="input-group">
-          <input type="text" id="NameUser" name="NameUser" class="form-control txt-search w-100" placeholder="Nhập tên người dùng...">
-        </div>
+﻿<div class="abp-advanced-search p-3 bg-light border rounded">
+  <form id="OrderSearchForm" class="form-horizontal">
+    <div class="row align-items-end">
+      <!-- Tên người dùng -->
+      <div class="col-md-3 col-lg-2 mb-2 mb-md-0">
+        <label for="NameUser" class="font-weight-bold mb-1">
+          <i class="fas fa-user text-primary"></i> @L("NameUser")
+        </label>
+        <input type="text" 
+               id="NameUser" 
+               name="NameUser" 
+               class="form-control txt-search" 
+               placeholder="Nhập tên người dùng...">
       </div>
 
-      <!-- Dropdown phương tiện di chuyển -->
-      <div style="min-width: 200px;">
-        <label for="PaymentMethod" class="font-weight-bold">@L("PaymentMethod")</label>
-        <select class="form-control w-100" id="PaymentMethod" name="PaymentMethod">
-          <option value="">Tất cả</option>
-          <option value="0">@L("BankTranfer")</option>
-          <option value="1">@L("test")</option>
-          @* <option value="2">Xe đạp</option> *@
-        </select>
-      </div>
-
-      <!-- Dropdown loại tour -->
-      <div style="min-width: 100px;">
-        <label for="OrderStatus" class="font-weight-bold">@L("OrderStatus")</label>
-        <select class="form-control w-100" id="OrderStatus" name="OrderStatus">
+      <!-- Trạng thái đơn hàng -->
+      <div class="col-md-2 col-lg-2 mb-2 mb-md-0">
+        <label for="OrderStatus" class="font-weight-bold mb-1">
+          <i class="fas fa-info-circle text-info"></i> @L("OrderStatus")
+        </label>
+        <select class="form-control" id="OrderStatus" name="OrderStatus">
           <option value="">Tất cả</option>
           <option value="0">@L("Pending")</option>
           <option value="1">@L("Confirmed")</option>
@@ -33,12 +28,52 @@
         </select>
       </div>
 
-      <!-- Nút tìm kiếm -->
-      <div style="min-width: 100px; text-align: right;">
-        <label class="d-block invisible">Tìm kiếm</label>
-        <button type="button" class="btn bg-blue btn-search px-4 w-100">
-          <i class="fas fa-search"></i>
-        </button>
+      <!-- Phương thức thanh toán -->
+      <!-- <div class="col-md-2 col-lg-2 mb-2 mb-md-0">
+        <label for="PaymentMethod" class="font-weight-bold mb-1">
+          <i class="fas fa-credit-card text-success"></i> @L("PaymentMethod")
+        </label>
+        <select class="form-control" id="PaymentMethod" name="PaymentMethod">
+          <option value="">Tất cả</option>
+          <option value="0">@L("BankTranfer")</option>
+          <option value="1">@L("test")</option>
+        </select>
+      </div> -->
+
+      <!-- Khoảng ngày - Từ ngày -->
+      <div class="col-md-2 col-lg-2 mb-2 mb-md-0">
+        <label for="FromDate" class="font-weight-bold mb-1">
+          <i class="fas fa-calendar-alt text-warning"></i> Từ ngày
+        </label>
+        <input type="date" 
+               id="FromDate" 
+               name="FromDate" 
+               class="form-control">
+      </div>
+
+      <!-- Khoảng ngày - Đến ngày -->
+      <div class="col-md-2 col-lg-2 mb-2 mb-md-0">
+        <label for="ToDate" class="font-weight-bold mb-1">
+          <i class="fas fa-calendar-check text-danger"></i> Đến ngày
+        </label>
+        <input type="date" 
+               id="ToDate" 
+               name="ToDate" 
+               class="form-control">
+      </div>
+
+      <!-- Nút tìm kiếm và reset -->
+      <div class="col-md-1 col-lg-3 mb-2 mb-md-0">
+        <div class="d-flex" style="gap: 8px;">
+          <button type="button" class="btn bg-blue btn-search flex-fill" title="Tìm kiếm">
+            <i class="fas fa-search"></i>
+            <span class="d-none d-lg-inline ml-1">Tìm kiếm</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-reset flex-fill" title="Làm mới">
+            <i class="fas fa-redo"></i>
+            <span class="d-none d-lg-inline ml-1">Reset</span>
+          </button>
+        </div>
       </div>
     </div>
   </form>

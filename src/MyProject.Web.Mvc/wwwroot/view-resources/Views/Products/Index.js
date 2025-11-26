@@ -19,52 +19,73 @@
 			{
 				name: 'refresh',
 				text: '<i class="fas fa-redo-alt"></i>',
+				titleAttr: 'Làm mới danh sách',
 				action: () => _$productTable.draw(false)
 			}
 		],
 		responsive: {
 			details: {
-				type: 'column'
+				type: 'column',
+				target: 'tr'
 			}
 		},
 		columnDefs: [
 			{
 				targets: 0,
 				data: 'name',
-				sortable: false
+				sortable: false,
+				width: '15%',
+				responsivePriority: 1
 			},
 			{
 				targets: 1,
 				data: 'description',
-				sortable: false
+				sortable: false,
+				width: '25%',
+				responsivePriority: 3,
+				render: function (data) {
+					if (!data) return '<span class="text-muted">-</span>';
+					return data.length > 100 ? data.substring(0, 100) + '...' : data;
+				}
 			},
 			{
 				targets: 2,
 				data: 'price',
 				sortable: false,
+				width: '10%',
+				// responsivePriority là thuộc tính của DataTables (plugin hiển thị bảng cho jQuery) được sử dụng khi dùng module Responsive.
+				// Nó dùng để xác định mức độ ưu tiên hiển thị cột khi ở các độ rộng màn hình nhỏ, bảng sẽ ẩn đi các cột ít quan trọng trước.
+				// Giá trị càng nhỏ thì độ ưu tiên hiển thị càng cao (cột quan trọng hiện trước trên màn hình hẹp).
+				responsivePriority: 2,
 				render: data => Number(data).toLocaleString('vi-VN') + ' ₫'
 			},
 			{
 				targets: 3,
 				data: 'creationTime',
 				sortable: false,
+				width: '10%',
+				responsivePriority: 4,
 				render: data => new Date(data).toLocaleDateString('vi-VN')
 			},
 			{
 				targets: 4,
 				data: 'image',
 				sortable: false,
+				width: '10%',
+				responsivePriority: 5,
 				render: function (data, type, row) {
 					if (data) {
-						return `<img src="${data}" alt="Ảnh sản phẩm" class="img-thumbnail d-block mx-auto" width="80" height="80" style="object-fit: cover;">`;
+						return `<img src="${data}" alt="Ảnh sản phẩm" class="img-thumbnail d-block mx-auto" width="60" height="60" style="object-fit: cover;">`;
 					}
-					return '<span class="text-muted">Không có ảnh</span>';
+					return '<span class="text-muted d-flex justify-content-center align-items-center" style="height:60px;"><i class="fas fa-image"></i></span>';
 				}
 			},
 			{
 				targets: 5,
 				data: 'state',
 				sortable: false,
+				width: '10%',
+				responsivePriority: 3,
 				render: function (data, type, row) {
 					switch (data) {
 						case 0: return '<span class="badge bg-success">Còn hàng</span>';
@@ -73,24 +94,35 @@
 					}
 				}
 			},
-
 			{
 				targets: 6,
 				data: null,
 				sortable: false,
-				autoWidth: true,
+				width: '20%',
+				responsivePriority: 1,
 				defaultContent: '',
 				render: (data, type, row, meta) => {
+					// Kiểm tra xem sản phẩm đã có thông tin kỹ thuật chưa
+					const hasSpecification = row.specification && row.specification.id;
+					const specButtonTitle = hasSpecification ? 'Chỉnh sửa thông tin kỹ thuật' : 'Thêm thông tin kỹ thuật';
+					const specButtonClass = hasSpecification ? 'btn-warning' : 'btn-success';
+					const specButtonIcon = hasSpecification ? 'fa-edit' : 'fa-cog';
+
 					return [
-						`   <button type="button" class="btn btn-sm bg-secondary edit-product" data-product-id="${row.id}" data-toggle="modal" data-target="#ProductEditModal">`,
-						`       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
+						`<div class="btn-group" role="group">`,
+						`   <button type="button" class="btn btn-sm bg-secondary edit-product" data-product-id="${row.id}" data-toggle="modal" data-target="#ProductEditModal" title="Chỉnh sửa sản phẩm">`,
+						`       <i class="fas fa-pencil-alt"></i>`,
 						'   </button>',
-						`   <button type="button" class="btn btn-sm bg-danger delete-product" data-product-id="${row.id}" data-product-name="${row.name}">`,
-						`       <i class="fas fa-trash"></i> ${l('Delete')}`,
+						`   <button type="button" class="btn btn-sm ${specButtonClass} specification-product" data-product-id="${row.id}" data-toggle="modal" data-target="#ProductSpecificationModal" title="${specButtonTitle}">`,
+						`       <i class="fas ${specButtonIcon}"></i>`,
 						'   </button>',
-						`   <button type="button" class="btn btn-sm bg-info detail-product" data-product-id="${row.id}" data-toggle="modal" >`,
-						`       <i class="fas fa-eye"></i> ${l('Details')}`,
-						'   </button>'
+						`   <button type="button" class="btn btn-sm bg-info detail-product" data-product-id="${row.id}" title="Xem chi tiết sản phẩm">`,
+						`       <i class="fas fa-eye"></i>`,
+						'   </button>',
+						`   <button type="button" class="btn btn-sm bg-danger delete-product" data-product-id="${row.id}" data-product-name="${row.name}" title="Xóa sản phẩm">`,
+						`       <i class="fas fa-trash"></i>`,
+						'   </button>',
+						'</div>'
 					].join('');
 				}
 			}
@@ -309,7 +341,30 @@
 		window.location.href = "/Products/Detail?productId=" + productId;
 	});
 
+	// Xử lý khi click nút thông tin kỹ thuật
+	$(document).on('click', '.specification-product', function (e) {
+		var productId = $(this).attr("data-product-id");
+		e.preventDefault();
 
+		abp.ajax({
+			url: abp.appPath + 'Products/SpecificationModal?productId=' + productId,
+			type: 'POST',
+			dataType: 'html',
+			success: function (content) {
+				$('#ProductSpecificationModal').remove(); // Xóa modal cũ nếu có
+				$('body').append(content); // Thêm modal mới vào body
+				$('#ProductSpecificationModal').modal('show');
+			},
+			error: function (e) {
+				abp.notify.error('Có lỗi xảy ra khi tải thông tin kỹ thuật');
+			}
+		});
+	});
+
+	// Xử lý khi modal đóng
+	$(document).on('hidden.bs.modal', '#ProductSpecificationModal', function () {
+		$(this).remove(); // Xóa modal khi đóng
+	});
 
 
 

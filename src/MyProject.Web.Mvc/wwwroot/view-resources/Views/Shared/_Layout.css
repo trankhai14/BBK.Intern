@@ -25,3 +25,20 @@
     padding: 8px;
     vertical-align: middle;
 }
+
+/* Fix: Giữ background của nav-link active khi click (focus) */
+/* Vấn đề: Rule :focus của AdminLTE ghi đè background của .active */
+/* Giải pháp: Thêm rule với specificity cao hơn để đảm bảo .active:focus giữ background */
+
+/* Cho nav-link chính (có hoặc không có submenu) */
+.sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active:focus,
+.sidebar-dark-primary .nav-sidebar>.nav-item.menu-open>.nav-link.active:focus {
+    background-color: #007bff !important;
+    color: #fff !important;
+}
+
+/* Cho nav-link trong submenu (treeview) */
+.sidebar-dark-primary .nav-treeview>.nav-item>.nav-link.active:focus {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    color: #343a40 !important;
+}

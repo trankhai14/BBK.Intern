@@ -14,6 +14,11 @@
 		public const string Orders = "Orders";
 		public const string CustomerProfiles = "CustomerProfiles";
 		public const string FlashSales = "FlashSales";
+		public const string Suppliers = "Suppliers";
+		public const string ImportSlips = "ImportSlips";
+		public const string ExportSlips = "ExportSlips";
+		public const string Stocktakings = "Stocktakings";
+		public const string InventoryTransactions = "InventoryTransactions";
 
 	}
 }

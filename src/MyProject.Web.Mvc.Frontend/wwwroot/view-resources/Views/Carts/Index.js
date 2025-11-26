@@ -11,6 +11,36 @@
 	var _cartService = abp.services.app.cart;
 	var processingButtons = {}; // Track các button đang được xử lý
 
+	// Hàm helper để cập nhật giá khi thay đổi số lượng (xử lý cả FlashSale và giá bình thường)
+	function updatePriceDisplay(cartItem, quantity, unitPrice) {
+		var priceSection = cartItem.find('.cart-item-price-section');
+		var priceElement = cartItem.find('.product-price.flashsale-price'); // Tìm giá FlashSale nếu có
+		var originalPriceElement = cartItem.find('.product-price-old'); // Tìm giá gốc gạch ngang
+
+		// Kiểm tra xem có FlashSale không (dựa vào data-original-price)
+		var originalPriceAttr = priceElement.length > 0 ? priceElement.attr('data-original-price') : null;
+
+		if (originalPriceAttr) {
+			// Có FlashSale: cập nhật cả giá FlashSale và giá gốc
+			var originalPrice = parseFloat(originalPriceAttr.toString().replace(/[^\d.]/g, "")) || 0;
+			var flashSaleTotal = unitPrice * quantity;
+			var originalTotal = originalPrice * quantity;
+
+			// Cập nhật giá FlashSale
+			priceElement.text(flashSaleTotal.toLocaleString('vi-VN') + " đ");
+
+			// Cập nhật giá gốc (gạch ngang)
+			if (originalPriceElement.length > 0) {
+				originalPriceElement.text(originalTotal.toLocaleString('vi-VN') + " đ");
+			}
+		} else {
+			// Không có FlashSale: chỉ cập nhật giá bình thường
+			priceElement = cartItem.find('.product-price.cart-item-price'); // Tìm giá bình thường
+			var normalTotal = unitPrice * quantity;
+			priceElement.text(normalTotal.toLocaleString('vi-VN') + " đ");
+		}
+	}
+
 	// Hàm helper để mở modal bằng jQuery (Bootstrap 4)
 	function showDeleteModal(productId, isFromReduce, quantityInput, priceElement, unitPrice) {
 		var $modal = $('#confirmDeleteModal');
@@ -73,7 +103,12 @@
 
 		var cartItem = $btn.closest('.cart-item');
 		var quantityInput = cartItem.find('.quantity-input');
-		var priceElement = cartItem.find('.product-price');
+		var priceElement = cartItem.find('.product-price.flashsale-price'); // Tìm giá FlashSale trước
+
+		// Nếu không có FlashSale, tìm giá bình thường
+		if (priceElement.length === 0) {
+			priceElement = cartItem.find('.product-price.cart-item-price');
+		}
 
 		// Lấy giá gốc từ thuộc tính data-unit-price
 		var unitPriceText = priceElement.attr('data-unit-price');
@@ -104,8 +139,8 @@
 				abp.notify.success("Giảm số lượng sản phẩm thành công");
 				var newQuantity = currentQuantity - 1;
 				quantityInput.val(newQuantity);
-				var newPrice = unitPrice * newQuantity;
-				priceElement.text(newPrice.toLocaleString('vi-VN') + " đ");
+				// Cập nhật giá (xử lý cả FlashSale và giá bình thường)
+				updatePriceDisplay(cartItem, newQuantity, unitPrice);
 				updateTotalPrice();
 				$btn.prop('disabled', false);
 				delete processingButtons[buttonKey];
@@ -140,7 +175,12 @@
 
 		var cartItem = $btn.closest('.cart-item');
 		var quantityInput = cartItem.find('.quantity-input');
-		var priceElement = cartItem.find('.product-price');
+		var priceElement = cartItem.find('.product-price.flashsale-price'); // Tìm giá FlashSale trước
+
+		// Nếu không có FlashSale, tìm giá bình thường
+		if (priceElement.length === 0) {
+			priceElement = cartItem.find('.product-price.cart-item-price');
+		}
 
 		// Lấy giá gốc từ thuộc tính data-unit-price
 		var unitPriceText = priceElement.attr('data-unit-price');
@@ -176,8 +216,8 @@
 			abp.notify.success("Thêm vào giỏ hàng thành công");
 			var newQuantity = currentQuantity + 1;
 			quantityInput.val(newQuantity);
-			var newPrice = unitPrice * newQuantity;
-			priceElement.text(newPrice.toLocaleString('vi-VN') + " đ");
+			// Cập nhật giá (xử lý cả FlashSale và giá bình thường)
+			updatePriceDisplay(cartItem, newQuantity, unitPrice);
 			updateTotalPrice();
 			$btn.prop('disabled', false);
 			delete processingButtons[buttonKey];
@@ -194,7 +234,13 @@
 
 		$(".cart-item").each(function () {
 			var $cartItem = $(this);
-			var priceElement = $cartItem.find(".product-price");
+			var priceElement = $cartItem.find(".product-price.flashsale-price"); // Tìm giá FlashSale trước
+
+			// Nếu không có FlashSale, tìm giá bình thường
+			if (priceElement.length === 0) {
+				priceElement = $cartItem.find(".product-price.cart-item-price");
+			}
+
 			var quantityInput = $cartItem.find('.quantity-input');
 
 			// Lấy giá từ data-unit-price và số lượng từ input
@@ -219,6 +265,7 @@
 			}
 
 			// Tính tổng cho item này: giá đơn vị × số lượng
+			// Với FlashSale, data-unit-price đã là giá FlashSale (đã giảm), nên dùng trực tiếp
 			if (unitPrice > 0 && quantity > 0) {
 				var itemTotal = unitPrice * quantity;
 				total += itemTotal;
@@ -348,56 +395,10 @@
 			$input.prop('disabled', false);
 		});
 	});
-	//đặt hàng
+	// Đặt hàng: chuyển sang quy trình Checkout mới
 	$("#btnCheckout").on("click", function (e) {
 		e.preventDefault();
-
-		const userId = $(this).data("userid");
-		const nameUser = $(this).data("nameuser");
-
-		let orderItems = [];
-
-		$(".cart-item").each(function () {
-			const item = {
-				ProductId: $(this).find(".btn-delete").data("id"),
-				Quantity: $(this).find(".quantity-input").val(),
-				UnitPrice: parseFloat($(this).find(".product-price").data("unit-price")),
-				DiscountPrice: 0 // Nếu có giảm giá thì thay đổi giá trị này
-			};
-			orderItems.push(item);
-		});
-
-		const orderData = {
-			UserId: userId,
-			NameUser: nameUser,
-			TotalAmount: orderItems.reduce((sum, item) => sum + item.UnitPrice * item.Quantity, 0),
-			DiscountAmount: 0, // Nếu có giảm giá tổng thể thì tính toán
-			PaymentMethod: 0,
-			Items: orderItems
-		};
-
-		console.log(orderData);
-
-		$.ajax({
-			url: "/Orders/CreateOrder",
-			type: "POST",
-			contentType: "application/json",
-			data: JSON.stringify(orderData),
-			success: function (response) {
-				console.log("Response từ server:", response);
-				if (response.success && response.result && response.result.orderId) {
-					const orderId = response.result.orderId;
-					console.log("Order ID:", orderId);
-					window.location.href = "/Orders/Success?orderId=" + orderId;
-				} else {
-					alert("Đặt hàng thành công nhưng không lấy được mã đơn hàng.");
-				}
-			},
-			error: function (error) {
-				console.error("Lỗi khi đặt hàng:", error);
-				alert("Đặt hàng thất bại, vui lòng thử lại.");
-			}
-		});
+		window.location.href = "/Checkout/Confirm";
 	});
 
 })(jQuery);

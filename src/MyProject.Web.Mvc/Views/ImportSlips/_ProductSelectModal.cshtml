@@ -1,0 +1,57 @@
+<div class="modal-header">
+	<h5 class="modal-title">Chọn sản phẩm</h5>
+	<button type="button" class="close" id="CloseProductSelectModalX" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+<div class="modal-body">
+	<!-- Form tìm kiếm sản phẩm -->
+	<form id="ProductSelectSearchForm" class="form-horizontal mb-3">
+		<div class="row align-items-center">
+			<div class="col-md-10">
+				<label for="ProductSelectKeyword" class="font-weight-bold">@L("Search")</label>
+				<div class="input-group">
+					<input 
+						type="text" 
+						id="ProductSelectKeyword" 
+						name="Keyword" 
+						class="form-control txt-search" 
+						placeholder="Nhập tên sản phẩm để tìm kiếm..."
+					/>
+					<div class="input-group-append">
+						<button type="button" class="btn bg-blue btn-search" id="ProductSelectSearchBtn">
+							<i class="fas fa-search"></i> Tìm kiếm
+						</button>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-2 text-right">
+				<label class="d-block invisible">Reset</label>
+				<button type="button" class="btn btn-secondary btn-reset w-100" id="ProductSelectResetBtn">
+					<i class="fas fa-redo"></i> Reset
+				</button>
+			</div>
+		</div>
+	</form>
+
+	<!-- Bảng danh sách sản phẩm -->
+	<div class="table-responsive">
+		<table id="ProductSelectTable" class="table table-striped table-bordered">
+			<thead>
+				<tr>
+					<th>@L("Name")</th>
+					<th>@L("Price")</th>
+					<th>Danh mục</th>
+					<th>@L("Actions")</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- Dữ liệu sẽ được load bằng DataTable -->
+			</tbody>
+		</table>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-secondary" id="CloseProductSelectModal">Đóng</button>
+</div>
+

@@ -1,0 +1,68 @@
+@using MyProject.Web.Models.Common.Modals
+@using MyProject.Web.Models.Suppliers
+@{
+	Layout = null;
+}
+<div class="modal fade" id="SupplierCreateModal" tabindex="-1" role="dialog" aria-labelledby="SupplierCreateModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel("Thêm nhà cung cấp"))
+			<form name="supplierCreateForm" role="form" class="form-horizontal">
+				<div class="modal-body">
+					<div class="form-group row required">
+						<label class="col-md-3 col-form-label">Tên nhà cung cấp</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="Name" required maxlength="256">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 col-form-label">Mã nhà cung cấp</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="Code" maxlength="50">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 col-form-label">Điện thoại</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="Phone" maxlength="20">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 col-form-label">Email</label>
+						<div class="col-md-9">
+							<input type="email" class="form-control" name="Email" maxlength="256">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 col-form-label">Địa chỉ</label>
+						<div class="col-md-9">
+							<textarea class="form-control" name="Address" rows="2" maxlength="500"></textarea>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 col-form-label">Người liên hệ</label>
+						<div class="col-md-9">
+							<input type="text" class="form-control" name="ContactPerson" maxlength="256">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 col-form-label">Ghi chú</label>
+						<div class="col-md-9">
+							<textarea class="form-control" name="Notes" rows="3" maxlength="1000"></textarea>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-md-3 col-form-label">Trạng thái</label>
+						<div class="col-md-9">
+							<label class="checkbox-inline">
+								<input type="checkbox" id="Active-supplier" name="IsActive" checked> Kích hoạt
+							</label>
+						</div>
+					</div>
+				</div>
+				@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+			</form>
+		</div>
+	</div>
+</div>
+

@@ -19,42 +19,61 @@
 			{
 				name: 'refresh',
 				text: '<i class="fas fa-redo-alt"></i>',
+				titleAttr: 'Làm mới danh sách',
 				action: () => _$categoryTable.draw(false)
 			}
 		],
+		// Thuộc tính "responsive" được sử dụng trong DataTables để bảng có thể tự động điều chỉnh và hiển thị tốt trên các thiết bị hoặc màn hình nhỏ.
+		// Khi thiết lập "details: { type: 'column', target: 'tr' }", nghĩa là:
+		// - Mỗi hàng (tr) trong bảng sẽ có biểu tượng "mở rộng/thu gọn" (icon plus tròn xanh).
+		// - Khi màn hình nhỏ không đủ chỗ hiển thị hết tất cả các cột, DataTable sẽ tự động ẩn bớt các cột ít quan trọng (dựa vào "responsivePriority" của từng cột) và cho phép người dùng bấm vào biểu tượng để xem chi tiết những cột bị ẩn.
+		// - "type: 'column'" giúp icon luôn nằm bên trái hàng, dễ quản lý.
+		// => Rất hữu ích cho trải nghiệm trên mobile/tablet.
 		responsive: {
 			details: {
-				type: 'column'
+				type: 'column',
+				target: 'tr'
 			}
 		},
 		columnDefs: [
 			{
 				targets: 0,
 				data: 'categoryName',
-				sortable: false
+				sortable: false,
+				width: '25%',
+				responsivePriority: 1
 			},
 			{
 				targets: 1,
 				data: 'categoryDescription',
-				sortable: false
+				sortable: false,
+				width: '50%',
+				responsivePriority: 2,
+				render: function (data) {
+					if (!data) return '<span class="text-muted">-</span>';
+					return data.length > 100 ? data.substring(0, 100) + '...' : data;
+				}
 			},
 			{
 				targets: 2,
 				data: null,
 				sortable: false,
-				autoWidth: false,
+				width: '25%',
+				responsivePriority: 1,
 				defaultContent: '',
 				render: (data, type, row, meta) => {
 					return [
-						`   <button type="button" class="btn btn-sm bg-secondary edit-category" data-category-id="${row.id}" data-toggle="modal" data-target="#CategoryEditModal">`,
-						`       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
+						`<div class="btn-group" role="group">`,
+						`   <button type="button" class="btn btn-sm bg-secondary edit-category" data-category-id="${row.id}" data-toggle="modal" data-target="#CategoryEditModal" title="Chỉnh sửa danh mục">`,
+						`       <i class="fas fa-pencil-alt"></i>`,
 						'   </button>',
-						`   <button type="button" class="btn btn-sm bg-danger delete-category" data-category-id="${row.id}" data-category-name="${row.categoryName}">`,
-						`       <i class="fas fa-trash"></i> ${l('Delete')}`,
+						//`   <button type="button" class="btn btn-sm bg-info detail-category" data-category-id="${row.id}" title="Xem chi tiết danh mục">`,
+						//`       <i class="fas fa-eye"></i>`,
+						//'   </button>',
+						`   <button type="button" class="btn btn-sm bg-danger delete-category" data-category-id="${row.id}" data-category-name="${row.categoryName}" title="Xóa danh mục">`,
+						`       <i class="fas fa-trash"></i>`,
 						'   </button>',
-						`   <button type="button" class="btn btn-sm bg-info detail-category" data-category-id="${row.id}" data-toggle="modal" >`,
-						`       <i class="fas fa-eye"></i> ${l('Details')}`,
-						'   </button>'
+						'</div>'
 					].join('');
 				}
 			}
@@ -92,7 +111,7 @@
 		e.preventDefault();
 
 		if (!_$form.valid()) {
-			return;	
+			return;
 		}
 
 		var category = _$form.serializeFormToObject(); // Chuyển dữ liệu form thành object
@@ -204,7 +223,7 @@
 		//});
 	});
 
-	
+
 
 
 

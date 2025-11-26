@@ -18,12 +18,14 @@
 			{
 				name: 'refresh',
 				text: '<i class="fas fa-redo-alt"></i>',
+				titleAttr: 'Làm mới danh sách',
 				action: () => _$usersTable.draw(false)
 			}
 		],
 		responsive: {
 			details: {
-				type: 'column'
+				type: 'column',
+				target: 'tr'
 			}
 		},
 		columnDefs: [
@@ -35,38 +37,49 @@
 			{
 				targets: 1,
 				data: 'userName',
-				sortable: false
+				sortable: false,
+				width: '20%',
+				responsivePriority: 1
 			},
 			{
 				targets: 2,
 				data: 'fullName',
-				sortable: false
+				sortable: false,
+				width: '25%',
+				responsivePriority: 2
 			},
 			{
 				targets: 3,
 				data: 'emailAddress',
-				sortable: false
+				sortable: false,
+				width: '25%',
+				responsivePriority: 2
 			},
 			{
 				targets: 4,
 				data: 'isActive',
 				sortable: false,
+				width: '10%',
+				responsivePriority: 3,
 				render: data => `<input type="checkbox" disabled ${data ? 'checked' : ''}>`
 			},
 			{
 				targets: 5,
 				data: null,
 				sortable: false,
-				autoWidth: false,
+				width: '10%',
+				responsivePriority: 1,
 				defaultContent: '',
 				render: (data, type, row, meta) => {
 					return [
-						`   <button type="button" class="btn btn-sm bg-secondary edit-user" data-user-id="${row.id}" data-toggle="modal" data-target="#UserEditModal">`,
-						`       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
+						`<div class="btn-group" role="group">`,
+						`   <button type="button" class="btn btn-sm bg-secondary edit-user" data-user-id="${row.id}" data-toggle="modal" data-target="#UserEditModal" title="Chỉnh sửa người dùng">`,
+						`       <i class="fas fa-pencil-alt"></i>`,
 						'   </button>',
-						`   <button type="button" class="btn btn-sm bg-danger delete-user" data-user-id="${row.id}" data-user-name="${row.name}">`,
-						`       <i class="fas fa-trash"></i> ${l('Delete')}`,
-						'   </button>'
+						`   <button type="button" class="btn btn-sm bg-danger delete-user" data-user-id="${row.id}" data-user-name="${row.name}" title="Xóa người dùng">`,
+						`       <i class="fas fa-trash"></i>`,
+						'   </button>',
+						'</div>'
 					].join('');
 				}
 			}

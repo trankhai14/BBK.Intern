@@ -96,6 +96,95 @@
 			</a>
 		</div>
 	}
+
+	@* Phân trang - Hiển thị nếu có đơn hàng và có nhiều hơn 1 trang *@
+	@if (orders.Any() && Model != null && Model.TotalPages > 1)
+	{
+		<div class="order-pagination-container">
+			<div class="order-pagination-info">
+				Hiển thị <strong>@((Model.CurrentPage - 1) * Model.PageSize + 1)</strong> - 
+				<strong>@(Math.Min(Model.CurrentPage * Model.PageSize, Model.TotalCount))</strong> 
+				trong tổng số <strong>@Model.TotalCount</strong> đơn hàng
+			</div>
+			<nav class="order-pagination">
+				<ul class="pagination">
+					@* Nút Previous *@
+					<li class="page-item @(Model.HasPreviousPage ? "" : "disabled")">
+						@if (Model.HasPreviousPage)
+						{
+							<a class="page-link order-page-link" href="#" data-page="@(Model.CurrentPage - 1)" data-status="@Model.OrderStatus">
+								<i class="fas fa-chevron-left"></i> Trước
+							</a>
+						}
+						else
+						{
+							<span class="page-link"><i class="fas fa-chevron-left"></i> Trước</span>
+						}
+					</li>
+
+					@* Hiển thị các số trang *@
+					@{
+						int startPage = Math.Max(1, Model.CurrentPage - 2);
+						int endPage = Math.Min(Model.TotalPages, Model.CurrentPage + 2);
+					}
+
+					@if (startPage > 1)
+					{
+						<li class="page-item">
+							<a class="page-link order-page-link" href="#" data-page="1" data-status="@Model.OrderStatus">1</a>
+						</li>
+						@if (startPage > 2)
+						{
+							<li class="page-item disabled">
+								<span class="page-link">...</span>
+							</li>
+						}
+					}
+
+					@for (int i = startPage; i <= endPage; i++)
+					{
+						<li class="page-item @(i == Model.CurrentPage ? "active" : "")">
+							@if (i == Model.CurrentPage)
+							{
+								<span class="page-link">@i</span>
+							}
+							else
+							{
+								<a class="page-link order-page-link" href="#" data-page="@i" data-status="@Model.OrderStatus">@i</a>
+							}
+						</li>
+					}
+
+					@if (endPage < Model.TotalPages)
+					{
+						@if (endPage < Model.TotalPages - 1)
+						{
+							<li class="page-item disabled">
+								<span class="page-link">...</span>
+							</li>
+						}
+						<li class="page-item">
+							<a class="page-link order-page-link" href="#" data-page="@Model.TotalPages" data-status="@Model.OrderStatus">@Model.TotalPages</a>
+						</li>
+					}
+
+					@* Nút Next *@
+					<li class="page-item @(Model.HasNextPage ? "" : "disabled")">
+						@if (Model.HasNextPage)
+						{
+							<a class="page-link order-page-link" href="#" data-page="@(Model.CurrentPage + 1)" data-status="@Model.OrderStatus">
+								Sau <i class="fas fa-chevron-right"></i>
+							</a>
+						}
+						else
+						{
+							<span class="page-link">Sau <i class="fas fa-chevron-right"></i></span>
+						}
+					</li>
+				</ul>
+			</nav>
+		</div>
+	}
 </div>
 
 

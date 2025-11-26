@@ -1,0 +1,215 @@
+@using MyProject.Web.Models.Common.Modals
+@using MyProject.Web.Models.ImportSlips
+@using MyProject.ImportSlips
+@model EditImportSlipViewModel
+
+@{
+	Layout = null;
+}
+
+<div class="modal-header">
+	<h4 class="modal-title">Sửa phiếu nhập kho: @Model.ImportSlip.ImportCode</h4>
+	<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	</button>
+</div>
+
+<form name="importSlipEditForm" role="form" class="form-horizontal">
+	<input type="hidden" name="Id" value="@Model.ImportSlip.Id" />
+	
+	<div class="modal-body">
+		@if (Model.ImportSlip.Status != ImportStatus.Draft)
+		{
+			<div class="alert alert-warning">
+				<i class="fa fa-exclamation-triangle"></i> <strong>Lưu ý:</strong> Chỉ có thể sửa phiếu nhập ở trạng thái <strong>Nháp</strong>. 
+				Trạng thái hiện tại: <strong>@Model.ImportSlip.StatusName</strong>
+			</div>
+		}
+
+		<!-- Thông tin chung -->
+		<div class="row mb-3">
+			<div class="col-md-12">
+				<h5 class="border-bottom pb-2">Thông tin chung</h5>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group row">
+					<label class="col-md-4 col-form-label fw-bold">Mã phiếu nhập</label>
+					<div class="col-md-8">
+						<input type="text" class="form-control" value="@Model.ImportSlip.ImportCode" readonly>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group row required">
+					<label class="col-md-4 col-form-label fw-bold">Ngày nhập kho</label>
+					<div class="col-md-8">
+						<input type="datetime-local" class="form-control" name="ImportDate" value="@Model.ImportSlip.ImportDate.ToString("yyyy-MM-ddTHH:mm")" required>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group row required">
+					<label class="col-md-4 col-form-label fw-bold">Loại nhập kho</label>
+					<div class="col-md-8">
+						<select class="form-control" name="Type" required>
+							@{
+								var selectedType = Model.ImportSlip.Type;
+							}
+							@if (selectedType == ImportType.Supplier)
+							{
+								<option value="1" selected>Nhập từ nhà cung cấp</option>
+							}
+							else
+							{
+								<option value="1">Nhập từ nhà cung cấp</option>
+							}
+							@if (selectedType == ImportType.Return)
+							{
+								<option value="2" selected>Nhập hàng trả lại</option>
+							}
+							else
+							{
+								<option value="2">Nhập hàng trả lại</option>
+							}
+							@if (selectedType == ImportType.Adjustment)
+							{
+								<option value="3" selected>Nhập điều chỉnh</option>
+							}
+							else
+							{
+								<option value="3">Nhập điều chỉnh</option>
+							}
+							@if (selectedType == ImportType.Transfer)
+							{
+								<option value="4" selected>Nhập chuyển kho</option>
+							}
+							else
+							{
+								<option value="4">Nhập chuyển kho</option>
+							}
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group row">
+					<label class="col-md-4 col-form-label fw-bold">Nhà cung cấp</label>
+					<div class="col-md-8">
+						<select class="form-control" name="SupplierId" id="EditSupplierId">
+							<option value="">-- Chọn nhà cung cấp --</option>
+							@if (Model.ImportSlip.SupplierId.HasValue)
+							{
+								<option value="@Model.ImportSlip.SupplierId" selected>@Model.ImportSlip.SupplierName</option>
+							}
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<div class="form-group row">
+					<label class="col-md-2 col-form-label fw-bold">Ghi chú</label>
+					<div class="col-md-10">
+						<textarea class="form-control" name="Notes" rows="2" maxlength="1000">@Model.ImportSlip.Notes</textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Chi tiết sản phẩm -->
+		<div class="row mb-3 mt-4">
+			<div class="col-md-12">
+				<div class="d-flex justify-content-between align-items-center">
+					<h5 class="border-bottom pb-2 mb-0">Chi tiết sản phẩm</h5>
+					@if (Model.ImportSlip.Status == ImportStatus.Draft)
+					{
+						<button type="button" class="btn btn-sm btn-success" id="EditAddProductBtn">
+							<i class="fa fa-plus"></i> Thêm sản phẩm
+						</button>
+					}
+				</div>
+			</div>
+		</div>
+
+		<div class="table-responsive">
+			<table class="table table-bordered" id="EditProductDetailsTable">
+				<thead>
+					<tr>
+						<th style="width: 30%">Sản phẩm</th>
+						<th style="width: 15%">Số lượng</th>
+						<th style="width: 20%">Giá nhập</th>
+						<th style="width: 20%">Thành tiền</th>
+						<th style="width: 10%">Ghi chú</th>
+						@if (Model.ImportSlip.Status == ImportStatus.Draft)
+						{
+							<th style="width: 5%">Thao tác</th>
+						}
+					</tr>
+				</thead>
+				<tbody id="EditProductDetailsBody">
+					@foreach (var detail in Model.ImportSlip.Details)
+					{
+						<tr data-detail-id="@detail.Id">
+							<td>
+								<input type="hidden" name="Details[].Id" value="@detail.Id" />
+								<input type="hidden" name="Details[].ProductId" value="@detail.ProductId" class="product-id" />
+								<span class="product-name">@detail.ProductName</span>
+							</td>
+							<td>
+								<input type="number" name="Details[].Quantity" class="form-control quantity-input" value="@detail.Quantity" min="1" required @(Model.ImportSlip.Status != ImportStatus.Draft ? "readonly" : "") />
+							</td>
+							<td>
+								<input type="number" name="Details[].UnitPrice" class="form-control unit-price-input" value="@detail.UnitPrice" min="0.01" step="0.01" required @(Model.ImportSlip.Status != ImportStatus.Draft ? "readonly" : "") />
+							</td>
+							<td>
+								<span class="total-amount">@detail.TotalAmount.ToString("N0")</span>
+							</td>
+							<td>
+								<input type="text" name="Details[].Notes" class="form-control" value="@detail.Notes" maxlength="500" @(Model.ImportSlip.Status != ImportStatus.Draft ? "readonly" : "") />
+							</td>
+							@if (Model.ImportSlip.Status == ImportStatus.Draft)
+							{
+								<td>
+									<button type="button" class="btn btn-sm btn-danger remove-product-btn">
+										<i class="fa fa-trash"></i>
+									</button>
+								</td>
+							}
+						</tr>
+					}
+				</tbody>
+				<tfoot>
+					<tr>
+						<td colspan="@(Model.ImportSlip.Status == ImportStatus.Draft ? "4" : "3")" class="text-right fw-bold">Tổng tiền:</td>
+						<td class="fw-bold" id="EditTotalAmount">@Model.ImportSlip.TotalAmount.ToString("N0")</td>
+						@if (Model.ImportSlip.Status == ImportStatus.Draft)
+						{
+							<td></td>
+						}
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+	</div>
+
+	<div class="modal-footer">
+		@if (Model.ImportSlip.Status == ImportStatus.Draft)
+		{
+			<button type="button" class="btn btn-primary save-button">
+				<i class="fa fa-save"></i> <span>Lưu</span>
+			</button>
+		}
+		<button type="button" class="btn btn-secondary" data-dismiss="modal">
+			<i class="fa fa-times"></i> Đóng
+		</button>
+	</div>
+</form>
+

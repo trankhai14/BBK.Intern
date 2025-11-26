@@ -3,10 +3,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Abp.Application.Services;
 using Abp.Application.Services.Dto;
+using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.Linq.Extensions;
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
+using MyProject.Authorization;
 using MyProject.Inventories.Dto;
 using MyProject.InventoryTransactions;
 
@@ -16,6 +18,7 @@ namespace MyProject.Inventories
 	/// <summary>
 	/// Service quản lý kho hàng
 	/// </summary>
+	//[AbpAuthorize(PermissionNames.Pages_Inventories)]
 	public class InventoryAppService : ApplicationService, IInventoryAppService
 	{
 		private readonly IRepository<Inventory> _inventoryRepository;
@@ -403,6 +406,67 @@ namespace MyProject.Inventories
 				return false;
 
 			return inventory.AvailableQuantity >= requiredQuantity;
+		}
+
+		public async Task ReserveInventory(int productId, int quantity)
+		{
+			if (quantity <= 0)
+				throw new UserFriendlyException("Số lượng giữ phải lớn hơn 0");
+
+			var inventory = await _inventoryRepository.FirstOrDefaultAsync(x => x.ProductId == productId);
+			if (inventory == null)
+				throw new UserFriendlyException("Không tìm thấy kho hàng cho sản phẩm này");
+
+			if (inventory.AvailableQuantity < quantity)
+				throw new UserFriendlyException($"Không đủ hàng trong kho. Hiện tại còn {inventory.AvailableQuantity} sản phẩm có thể giữ");
+
+			inventory.ReservedQuantity += quantity;
+			inventory.LastUpdated = DateTime.Now;
+
+			await _inventoryRepository.UpdateAsync(inventory);
+			await CurrentUnitOfWork.SaveChangesAsync();
+		}
+
+		public async Task CommitReservedInventory(int productId, int quantity)
+		{
+			if (quantity <= 0)
+				throw new UserFriendlyException("Số lượng phải lớn hơn 0");
+
+			var inventory = await _inventoryRepository.FirstOrDefaultAsync(x => x.ProductId == productId);
+			if (inventory == null)
+				throw new UserFriendlyException("Không tìm thấy kho hàng cho sản phẩm này");
+
+			if (inventory.ReservedQuantity < quantity)
+				throw new UserFriendlyException("Số lượng giữ không hợp lệ");
+
+			if (inventory.Quantity < quantity)
+				throw new UserFriendlyException("Kho hàng không đủ số lượng để trừ");
+
+			inventory.ReservedQuantity -= quantity;
+			inventory.Quantity -= quantity;
+			inventory.LastUpdated = DateTime.Now;
+
+			await _inventoryRepository.UpdateAsync(inventory);
+			await CurrentUnitOfWork.SaveChangesAsync();
+		}
+
+		public async Task ReleaseReservedInventory(int productId, int quantity)
+		{
+			if (quantity <= 0)
+				throw new UserFriendlyException("Số lượng phải lớn hơn 0");
+
+			var inventory = await _inventoryRepository.FirstOrDefaultAsync(x => x.ProductId == productId);
+			if (inventory == null)
+				throw new UserFriendlyException("Không tìm thấy kho hàng cho sản phẩm này");
+
+			if (inventory.ReservedQuantity < quantity)
+				throw new UserFriendlyException("Số lượng giữ không hợp lệ");
+
+			inventory.ReservedQuantity -= quantity;
+			inventory.LastUpdated = DateTime.Now;
+
+			await _inventoryRepository.UpdateAsync(inventory);
+			await CurrentUnitOfWork.SaveChangesAsync();
 		}
 
 		#endregion

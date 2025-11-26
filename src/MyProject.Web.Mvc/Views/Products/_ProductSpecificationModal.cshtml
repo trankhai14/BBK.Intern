@@ -1,0 +1,167 @@
+@using MyProject.Web.Models.Common.Modals
+@using MyProject.Web.Models.Products;
+@using MyProject.Products.Dtos;
+@model EditProductViewModel;
+
+@{
+	Layout = null;
+}
+
+<div class="modal fade" id="ProductSpecificationModal" tabindex="-1" role="dialog" aria-labelledby="ProductSpecificationModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-xl" role="document">
+		<div class="modal-content">
+			@await Html.PartialAsync("~/Views/Shared/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel("Thông tin kỹ thuật sản phẩm: " + Model.Product.Name))
+
+			<form name="ProductSpecificationForm" role="form" class="form-horizontal">
+				<input type="hidden" name="ProductId" value="@Model.Product.Id" />
+				@if (Model.Product.Specification != null)
+				{
+					<input type="hidden" name="Id" value="@Model.Product.Specification.Id" />
+				}
+
+				<div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+					<div class="alert alert-info">
+						<i class="fas fa-info-circle"></i> <strong>Sản phẩm:</strong> @Model.Product.Name
+					</div>
+
+					<div class="border-top pt-3 mt-3">
+						<h5 class="mb-3"><i class="fas fa-mobile-alt"></i> Thông tin kỹ thuật điện thoại</h5>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Mã SKU</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="Sku" value="@(Model.Product.Specification?.Sku ?? "")" maxlength="100" placeholder="Nhập mã SKU...">
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Số model</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="ModelNumber" value="@(Model.Product.Specification?.ModelNumber ?? "")" maxlength="100" placeholder="Ví dụ: iPhone 15 Pro Max, Galaxy S24 Ultra...">
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Chip xử lý</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="Chipset" value="@(Model.Product.Specification?.Chipset ?? "")" maxlength="256" placeholder="Ví dụ: Apple A17 Pro, Snapdragon 8 Gen 3...">
+							</div>
+						</div>
+
+						<div class="row mb-3">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">RAM</label>
+									<input type="text" class="form-control" name="Ram" value="@(Model.Product.Specification?.Ram ?? "")" maxlength="100" placeholder="Ví dụ: 8GB, 12GB, 16GB">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Bộ nhớ trong</label>
+									<input type="text" class="form-control" name="Storage" value="@(Model.Product.Specification?.Storage ?? "")" maxlength="200" placeholder="Ví dụ: 128GB, 256GB, 512GB">
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Màn hình</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="Screen" value="@(Model.Product.Specification?.Screen ?? "")" maxlength="300" placeholder="Ví dụ: 6.7 inch Super Retina XDR OLED, 6.8 inch Dynamic AMOLED 2X 120Hz">
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Hệ điều hành</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="OperatingSystem" value="@(Model.Product.Specification?.OperatingSystem ?? "")" maxlength="200" placeholder="Ví dụ: iOS 17, Android 14, HarmonyOS">
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Dung lượng pin (mAh)</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="Battery" value="@(Model.Product.Specification?.Battery ?? "")" maxlength="100" placeholder="Ví dụ: 4422 mAh, 5000 mAh">
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Camera sau</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="Camera" value="@(Model.Product.Specification?.Camera ?? "")" maxlength="500" placeholder="Ví dụ: 48MP + 12MP + 12MP, Triple camera 50MP + 12MP + 12MP">
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Camera trước</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="FrontCamera" value="@(Model.Product.Specification?.FrontCamera ?? "")" maxlength="300" placeholder="Ví dụ: 12MP, 32MP, Dual camera 12MP + ToF">
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Thông tin SIM</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="Sim" value="@(Model.Product.Specification?.Sim ?? "")" maxlength="100" placeholder="Ví dụ: Dual SIM (nano-SIM), 1 eSIM + 1 nano-SIM">
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Kết nối</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="Connectivity" value="@(Model.Product.Specification?.Connectivity ?? "")" maxlength="300" placeholder="Ví dụ: 5G, 4G LTE, Wi-Fi 6E, Bluetooth 5.3, NFC, GPS">
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Bảo mật</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="Security" value="@(Model.Product.Specification?.Security ?? "")" maxlength="200" placeholder="Ví dụ: Face ID, Vân tay dưới màn hình, Vân tay cạnh viền">
+							</div>
+						</div>
+
+						<div class="row mb-3">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Sạc nhanh</label>
+									<input type="text" class="form-control" name="Charging" value="@(Model.Product.Specification?.Charging ?? "")" maxlength="200" placeholder="Ví dụ: Sạc nhanh 25W, Sạc không dây 15W">
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="col-form-label">Cổng sạc</label>
+									<input type="text" class="form-control" name="ChargingPort" value="@(Model.Product.Specification?.ChargingPort ?? "")" maxlength="100" placeholder="Ví dụ: USB-C, Lightning, USB-C 3.1">
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Màu sắc</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="Color" value="@(Model.Product.Specification?.Color ?? "")" maxlength="100" placeholder="Ví dụ: Đen Titanium, Bạc, Xanh, Tím, Trắng">
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Bảo hành</label>
+							<div class="col-md-9">
+								<input type="text" class="form-control" name="Warranty" value="@(Model.Product.Specification?.Warranty ?? "")" maxlength="200" placeholder="Ví dụ: 12 tháng, 24 tháng, Bảo hành chính hãng">
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-md-3 col-form-label">Thông tin kỹ thuật khác</label>
+							<div class="col-md-9">
+								<textarea class="form-control" name="TechnicalSpecifications" rows="3" placeholder="Cảm biến, Loa, Chuẩn chống nước, Trọng lượng, Kích thước chi tiết...">@(Model.Product.Specification?.TechnicalSpecifications ?? "")</textarea>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				@await Html.PartialAsync("~/Views/Shared/Modals/_ModalFooterWithSaveAndCancel.cshtml")
+			</form>
+		</div>
+	</div>
+</div>
+
+<script src="~/view-resources/Views/Products/_ProductSpecificationModal.js" asp-append-version="true"></script>
+

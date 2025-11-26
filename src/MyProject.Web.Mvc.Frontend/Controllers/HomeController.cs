@@ -73,12 +73,13 @@ namespace MyProject.Web.Controllers
 
 		public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
 		{
-			// Lấy danh sách sản phẩm theo phân trang
+			// Lấy danh sách sản phẩm theo phân trang (chỉ lấy sản phẩm có tồn kho)
 			var productsResult = await _productAppService.GetAll(new GetAllProductsInput
 			{
 				MaxResultCount = 20,
 				SkipCount = 0,
 				Sorting = "CreationTime DESC",
+				OnlyWithInventory = true // Chỉ lấy sản phẩm có tồn kho (cho frontend)
 			});
 
 			// Lấy slider
@@ -106,7 +107,8 @@ namespace MyProject.Web.Controllers
 				{
 					var productsOfCategory = await _productAppService.Search(new GetAllProductsInput
 					{
-						CategoryId = item.Id
+						CategoryId = item.Id,
+						OnlyWithInventory = true // Chỉ lấy sản phẩm có tồn kho (cho frontend)
 					});
 
 					categoryProductViewModels.Add(new CategoryProductViewModel
@@ -138,7 +140,8 @@ namespace MyProject.Web.Controllers
 			//ProductViewModel webViewModel = new ProductViewModel();
 			var result = await _productAppService.Search(new GetAllProductsInput
 			{
-				Keyword = input.Keyword
+				Keyword = input.Keyword,
+				OnlyWithInventory = true // Chỉ hiển thị sản phẩm có trong kho khi tìm kiếm
 			});
 
 			var count = result.Items.Count();
@@ -166,7 +169,8 @@ namespace MyProject.Web.Controllers
 			{
 				CategoryId = product.CategoryId,
 				MaxResultCount = 8,
-				SkipCount = 0
+				SkipCount = 0,
+				OnlyWithInventory = true // Chỉ lấy sản phẩm có tồn kho (cho frontend)
 			});
 
 			var relatedProducts = relatedProductsResult.Items
@@ -201,6 +205,25 @@ namespace MyProject.Web.Controllers
 				WidthCm = product.WidthCm,
 				HeightCm = product.HeightCm,
 				LengthCm = product.LengthCm,
+				// Thông tin kỹ thuật điện thoại
+				//Sku = product.Sku,
+				//ModelNumber = product.ModelNumber,
+				//Chipset = product.Chipset,
+				//Ram = product.Ram,
+				//Storage = product.Storage,
+				//Screen = product.Screen,
+				//OperatingSystem = product.OperatingSystem,
+				//Battery = product.Battery,
+				//Camera = product.Camera,
+				//FrontCamera = product.FrontCamera,
+				//Sim = product.Sim,
+				//Connectivity = product.Connectivity,
+				//Security = product.Security,
+				//Charging = product.Charging,
+				//ChargingPort = product.ChargingPort,
+				//Color = product.Color,
+				//Warranty = product.Warranty,
+				//TechnicalSpecifications = product.TechnicalSpecifications,
 				RelatedProducts = relatedProducts,
 				FlashSaleProduct = flashSaleProduct
 			};
@@ -276,13 +299,34 @@ namespace MyProject.Web.Controllers
 			return View("ProfileUser");
 		}
 
-		public async Task<IActionResult> FilterStatus(int? orderStatus = 5)
+		public async Task<IActionResult> FilterStatus(int? orderStatus = 5, int page = 1, int pageSize = 10)
 		{
-
-			var orderOutputs = await _orderAppService.GetStatusOrder(orderStatus);
+			// Lấy danh sách đơn hàng với phân trang
+			var orderPagedResult = await _orderAppService.GetStatusOrderPaged(orderStatus, page, pageSize);
+			var orderOutputs = orderPagedResult.Items;
 			var orderIds = orderOutputs.Select(o => o.OrderId).ToList(); // Lấy danh sách ID
+			
+			// Nếu không có đơn hàng, trả về view rỗng
+			if (!orderIds.Any())
+			{
+				var emptyModel = new FilterStatusOrderViewModel
+				{
+					ListOrder = new List<OrderDetails.Dto.OrderDetailDto>(),
+					OrderStatus = orderStatus,
+					Products = new List<Product.Dtos.ProductListDto>(),
+					CurrentPage = page,
+					PageSize = pageSize,
+					TotalCount = 0
+				};
+				return PartialView("FilterOrder", emptyModel);
+			}
+
 			var orderList = await _orderDetailAppService.GetOrderByIdAndStatus(orderIds);
 			var orderStatusDict = orderOutputs.ToDictionary(o => o.OrderId, o => o.OrderStatus);
+			// Duy trì thứ tự đơn hàng theo kết quả phân trang (mới -> cũ)
+			var orderIndexMap = orderOutputs
+				.Select((o, index) => new { o.OrderId, index })
+				.ToDictionary(x => x.OrderId, x => x.index);
 
 			// Gán OrderStatus cho từng đơn hàng trong orderList
 			foreach (var order in orderList)
@@ -292,6 +336,10 @@ namespace MyProject.Web.Controllers
 					order.OrderStatus = status;
 				}
 			}
+			// Sắp xếp lại danh sách chi tiết theo thứ tự đơn hàng mới nhất đến cũ nhất
+			orderList = orderList
+				.OrderBy(od => orderIndexMap.TryGetValue(od.OrderId, out var idx) ? idx : int.MaxValue)
+				.ToList();
 
 			// Lấy danh sách ID sản phẩm cần lấy thông tin
 			var productIds = orderList.Select(o => o.ProductId).Distinct().ToList();
@@ -300,9 +348,12 @@ namespace MyProject.Web.Controllers
 			{
 				ListOrder = orderList,
 				OrderStatus = orderStatus,
-				Products = productList
+				Products = productList,
+				CurrentPage = page,
+				PageSize = pageSize,
+				TotalCount = orderPagedResult.TotalCount
 			};
-			return PartialView("FilterStatus", model);
+			return PartialView("FilterOrder", model);
 		}
 
 		public async Task<IActionResult> LoadPartialView(string nameView)

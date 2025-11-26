@@ -18,12 +18,14 @@
             {
                 name: 'refresh',
                 text: '<i class="fas fa-redo-alt"></i>',
+                titleAttr: 'Làm mới danh sách',
                 action: () => _$tenantsTable.draw(false)
             }
         ],
         responsive: {
             details: {
-                type: 'column'
+                type: 'column',
+                target: 'tr'
             }
         },
         columnDefs: [
@@ -35,33 +37,42 @@
             {
                 targets: 1,
                 data: 'tenancyName',
-                sortable: false
+                sortable: false,
+                width: '25%',
+                responsivePriority: 1
             },
             {
                 targets: 2,
                 data: 'name',
-                sortable: false
+                sortable: false,
+                width: '30%',
+                responsivePriority: 2
             },
             {
                 targets: 3,
                 data: 'isActive',
                 sortable: false,
+                width: '15%',
+                responsivePriority: 3,
                 render: data => `<input type="checkbox" disabled ${data ? 'checked' : ''}>`
             },
             {
                 targets: 4,
                 data: null,
                 sortable: false,
-                autoWidth: false,
+                width: '15%',
+                responsivePriority: 1,
                 defaultContent: '',
                 render: (data, type, row, meta) => {
                     return [
-                        `   <button type="button" class="btn btn-sm bg-secondary edit-tenant" data-tenant-id="${row.id}" data-toggle="modal" data-target="#TenantEditModal">`,
-                        `       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
+                        `<div class="btn-group" role="group">`,
+                        `   <button type="button" class="btn btn-sm bg-secondary edit-tenant" data-tenant-id="${row.id}" data-toggle="modal" data-target="#TenantEditModal" title="Chỉnh sửa tenant">`,
+                        `       <i class="fas fa-pencil-alt"></i>`,
                         '   </button>',
-                        `   <button type="button" class="btn btn-sm bg-danger delete-tenant" data-tenant-id="${row.id}" data-tenancy-name="${row.name}">`,
-                        `       <i class="fas fa-trash"></i> ${l('Delete')}`,
-                        '   </button>'
+                        `   <button type="button" class="btn btn-sm bg-danger delete-tenant" data-tenant-id="${row.id}" data-tenancy-name="${row.name}" title="Xóa tenant">`,
+                        `       <i class="fas fa-trash"></i>`,
+                        '   </button>',
+                        '</div>'
                     ].join('');
                 }
             }

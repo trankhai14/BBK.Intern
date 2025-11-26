@@ -16,6 +16,11 @@ using MyProject.Inventories;
 using MyProject.InventoryTransactions;
 using MyProject.CustomerProfiles;
 using MyProject.FlashSales;
+using MyProject.Suppliers;
+using MyProject.Payments;
+using MyProject.ImportSlips;
+using MyProject.ExportSlips;
+using MyProject.Stocktakings;
 
 
 namespace MyProject.EntityFrameworkCore
@@ -28,6 +33,7 @@ namespace MyProject.EntityFrameworkCore
 		public DbSet<Person> People { get; set; }
 
 		public DbSet<Product> Products { get; set; }
+		public DbSet<ProductSpecification> ProductSpecifications { get; set; }
 
 		public DbSet<Category> Categories { get; set; }
 		public DbSet<Slider> Sliders { get; set; }
@@ -42,6 +48,16 @@ namespace MyProject.EntityFrameworkCore
 		public DbSet<CustomerProfile> CustomerProfiles { get; set; }
 		public DbSet<FlashSale> FlashSales { get; set; }
 		public DbSet<FlashSaleProduct> FlashSaleProducts { get; set; }
+		public DbSet<Supplier> Suppliers { get; set; }
+		public DbSet<PaymentTransaction> PaymentTransactions { get; set; }
+
+		// Warehouse Management Entities
+		public DbSet<ImportSlip> ImportSlips { get; set; }
+		public DbSet<ImportDetail> ImportDetails { get; set; }
+		public DbSet<ExportSlip> ExportSlips { get; set; }
+		public DbSet<ExportDetail> ExportDetails { get; set; }
+		public DbSet<Stocktaking> Stocktakings { get; set; }
+		public DbSet<StocktakingDetail> StocktakingDetails { get; set; }
 
 		public MyProjectDbContext(DbContextOptions<MyProjectDbContext> options)
 						: base(options)

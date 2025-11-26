@@ -1,0 +1,27 @@
+@{
+	var errorMessage = ViewBag.ErrorMessage as string ?? "Có lỗi xảy ra khi xử lý thanh toán";
+	ViewBag.Title = "Lỗi thanh toán";
+}
+<div class="container mt-5" style="max-width: 720px;">
+	<div class="card border-danger shadow-sm">
+		<div class="card-body text-center py-5">
+			<div class="mb-4">
+				<i class="fas fa-exclamation-circle text-danger" style="font-size: 80px;"></i>
+			</div>
+			<h2 class="text-danger mb-3">Thanh toán không thành công</h2>
+			<div class="alert alert-danger d-inline-block mb-4" style="max-width: 500px;">
+				<p class="mb-0">@errorMessage</p>
+			</div>
+			
+			<div class="mt-4">
+				<a href="/Checkout/Confirm" class="btn btn-primary btn-lg me-2">
+					<i class="fas fa-redo"></i> Thử lại
+				</a>
+				<a href="/" class="btn btn-outline-secondary btn-lg">
+					<i class="fas fa-home"></i> Về trang chủ
+				</a>
+			</div>
+		</div>
+	</div>
+</div>
+

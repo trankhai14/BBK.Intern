@@ -1,0 +1,119 @@
+@using MyProject.Web.Models.ImportSlips
+@model ImportSlipViewModel
+@using MyProject.Web.Startup
+@{
+	ViewBag.Title = "Quản lý phiếu nhập kho";
+	ViewBag.CurrentPageName = PageNames.ImportSlips;
+}
+
+@section scripts
+{
+	<environment names="Development">
+		<script src="~/view-resources/Views/ImportSlips/Index.js" asp-append-version="true"></script>
+	</environment>
+
+	<environment names="Staging,Production">
+		<script src="~/view-resources/Views/ImportSlips/Index.min.js" asp-append-version="true"></script>
+	</environment>
+}
+
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-6">
+				<h1>Quản lý phiếu nhập kho</h1>
+			</div>
+			<div class="col-sm-6">
+				<a href="javascript:;" data-toggle="modal" data-target="#ImportSlipCreateModal" class="btn bg-blue float-sm-right">
+					<i class="fa fa-plus-square"></i>
+					Tạo phiếu nhập mới
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<div class="row">
+							<div class="col-md-12">
+								<!-- Search form -->
+								<div class="row">
+									<div class="col-md-3">
+										<input type="text" id="SearchImportCode" class="form-control" placeholder="Mã phiếu nhập...">
+									</div>
+									<div class="col-md-2">
+										<select id="SearchStatus" class="form-control">
+											<option value="">Tất cả trạng thái</option>
+											<option value="0">Nháp</option>
+											<option value="1">Đã hoàn thành</option>
+											<option value="2">Đã hủy</option>
+										</select>
+									</div>
+									<div class="col-md-2">
+										<select id="SearchType" class="form-control">
+											<option value="">Tất cả loại</option>
+											<option value="1">Nhập từ nhà cung cấp</option>
+											<option value="2">Nhập hàng trả lại</option>
+											<option value="3">Nhập điều chỉnh</option>
+											<option value="4">Nhập chuyển kho</option>
+										</select>
+									</div>
+									<div class="col-md-2">
+										<input type="date" id="SearchFromDate" class="form-control" placeholder="Từ ngày">
+									</div>
+									<div class="col-md-2">
+										<input type="date" id="SearchToDate" class="form-control" placeholder="Đến ngày">
+									</div>
+									<div class="col-md-1">
+										<button type="button" id="SearchButton" class="btn btn-primary">
+											<i class="fa fa-search"></i> Tìm
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card-body">
+						<div class="table-responsive">
+							<table id="ImportSlipsTable" class="table table-striped table-bordered">
+								<thead>
+									<tr>
+										<th>Mã phiếu</th>
+										<th>Ngày nhập</th>
+										<th>Nhà cung cấp</th>
+										<th>Loại nhập</th>
+										<th>Trạng thái</th>
+										<th>Tổng tiền</th>
+										<th>Số sản phẩm</th>
+										<th>Người tạo</th>
+										<th style="width: 250px">Thao tác</th>
+									</tr>
+								</thead>
+								<tbody>
+									<!-- Dữ liệu sẽ render bằng DataTable / Ajax -->
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+@await Html.PartialAsync("~/Views/ImportSlips/_CreateModal.cshtml", Model)
+
+<!-- Edit Modal -->
+<div class="modal fade" id="ImportSlipEditModal" tabindex="-1" role="dialog" aria-labelledby="ImportSlipEditModalLabel" data-backdrop="static">
+	<div class="modal-dialog modal-xl" role="document">
+		<div class="modal-content">
+			<!-- Content will be loaded dynamically -->
+		</div>
+	</div>
+</div>
+

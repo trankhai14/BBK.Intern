@@ -24,6 +24,21 @@
 		});
 	});
 
+	// Khi điều hướng tới trang UserProfile, tự động vào tab Đơn hàng đã mua và load "Tất cả"
+	$(function () {
+		// Phát hiện đang ở trang UserProfile thông qua URL hoặc container
+		if (window.location.pathname.toLowerCase().indexOf('/home/userprofile') !== -1 || $('#mainContent').length) {
+			// Đánh dấu menu Đơn hàng đã mua là active nếu chưa có
+			var $orderMenu = $('.profile-menu .load-content[data-view="_OrderList"]');
+			if ($orderMenu.length && !$orderMenu.hasClass('active')) {
+				$('.profile-menu .load-content').removeClass('active');
+				$orderMenu.addClass('active');
+			}
+			// Kích hoạt load danh sách Tất cả ngay lần đầu
+			loadAllOrders();
+		}
+	});
+
 
 	// Kiểm tra nếu đã load thì không trigger lại
 	//if (!$("#mainContent").data("loaded")) {
@@ -49,20 +64,52 @@
 
 		$this.data("loading", true); // Đánh dấu đang load
 
+		// Reset về trang 1 khi chọn trạng thái mới
+		loadOrdersByStatus(status, 1);
+		$this.data("loading", false);
+	});
+
+	// Xử lý click phân trang
+	$(document).off("click", ".order-page-link").on("click", ".order-page-link", function (e) {
+		e.preventDefault();
+
+		var $this = $(this);
+		var page = parseInt($this.data("page"));
+		var status = $this.data("status") || 5;
+
+		if (isNaN(page) || page < 1) return;
+
+		loadOrdersByStatus(status, page);
+	});
+
+	// Hàm load đơn hàng theo trạng thái và trang
+	function loadOrdersByStatus(status, page) {
+		var $orderList = $("#orderList");
+
+		// Hiển thị loading indicator nếu có
+		if ($orderList.length) {
+			$orderList.html('<div class="text-center p-4"><i class="fas fa-spinner fa-spin fa-2x"></i><p class="mt-2">Đang tải...</p></div>');
+		}
+
 		$.ajax({
 			url: "/Home/FilterStatus",
 			type: "GET",
-			data: { orderStatus: status },
+			data: {
+				orderStatus: status,
+				page: page,
+				pageSize: 10
+			},
 			success: function (response) {
-				$("#orderList").html(response);
-				$this.data("loading", false); // Reset trạng thái loading
+				$orderList.html(response);
+				// Scroll to top của danh sách đơn hàng
+				$orderList[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
 			},
 			error: function () {
 				abp.notify.error("Lỗi tải dữ liệu!");
-				$this.data("loading", false);
+				$orderList.html('<div class="alert alert-danger">Không thể tải danh sách đơn hàng. Vui lòng thử lại sau.</div>');
 			}
 		});
-	});
+	}
 
 	$(document).on("click", ".load-content", function (e) {
 		e.preventDefault(); // Ngăn chặn tải lại trang
@@ -88,10 +135,10 @@
 			cache: false, // Đảm bảo không dùng cache
 			success: function (response) {
 				$("#mainContent").html(response); // Cập nhật nội dung mới
-		
+
 				$this.prop("disabled", false); // Cho phép click lại sau khi hoàn thành
-				// Nếu view là _OrderList => Gọi tiếp FilterStatus để lấy danh sách đơn hàng
-				if (viewName === "_OrderList") {
+				// Nếu view là OrderList (dù truyền 'orderlist' hay '_OrderList') => tự load tab Tất cả
+				if (viewName === "_OrderList" || viewName === "orderlist") {
 					loadAllOrders();
 				}
 			},
@@ -100,7 +147,7 @@
 				$this.prop("disabled", false); // Cho phép click lại nếu có lỗi
 			}
 		});
-		
+
 	});
 
 	$(document).on("click", ".btn-detail-order", function (e) {
@@ -136,19 +183,25 @@
 		});
 	});
 	function loadAllOrders() {
-		$.ajax({
-			url: "/Home/FilterStatus",
-			type: "GET",
-			data: { orderStatus: 5 }, // 5 nghĩa là lấy tất cả trạng thái
-			cache: false,
-			success: function (response) {
-				$("#orderListContainer").html(response);
-			},
-			error: function () {
-				alert("Lỗi tải danh sách đơn hàng!");
-			}
-		});
+		// Sử dụng hàm loadOrdersByStatus với status = 5 (Tất cả) và page = 1
+		loadOrdersByStatus(5, 1);
 	}
+
+	// Khi mở modal Bootstrap chứa khu vực profile, tự động load tab Đơn hàng đã mua (Tất cả)
+	$(document).on('shown.bs.modal', '.modal', function () {
+		var $modal = $(this);
+		// Chỉ áp dụng nếu modal có vùng nội dung profile
+		if ($modal.find('#mainContent').length) {
+			// Ưu tiên trigger click vào menu Đơn hàng đã mua nếu có
+			var $orderMenu = $modal.find('.profile-menu .load-content[data-view="_OrderList"]');
+			if ($orderMenu.length) {
+				$orderMenu.trigger('click');
+			} else {
+				// Nếu không có menu (chỉ có vùng nội dung), gọi loadAllOrders trực tiếp
+				loadAllOrders();
+			}
+		}
+	});
 })(jQuery);
 
 

@@ -53,6 +53,25 @@
 			</div>
 		</div>
 
+		<div class="form-group row">
+			<label class="col-md-3 col-form-label" for="supplierId">Nhà cung cấp</label>
+			<div class="col-md-9">
+				<select id="supplierId" class="form-control" name="SupplierId">
+					<option value="">-- Không chọn --</option>
+					@if (Model.Suppliers != null)
+					{
+						@foreach (var supplier in Model.Suppliers)
+						{
+							var isSelected = Model.Product.SupplierId.HasValue && supplier.Id == Model.Product.SupplierId.Value;
+							<option value="@supplier.Id" selected="@(isSelected ? "selected" : null)">
+								@supplier.Name
+							</option>
+						}
+					}
+				</select>
+			</div>
+		</div>
+
 
 		<div class="form-group row required">
 			<label class="col-md-3 col-form-label" for="state">@L("State")</label>
@@ -119,6 +138,7 @@
 				<input type="file" id="newImage" class="form-control" name="ImageFile" accept="image/*">
 			</div>
 		</div>
+
 
 	</div>
 

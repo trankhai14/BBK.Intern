@@ -1,0 +1,227 @@
+@using MyProject.Web.Models.ImportSlips
+@using MyProject.ImportSlips
+@model EditImportSlipViewModel
+
+@{
+	ViewBag.Title = "Chi tiết phiếu nhập kho";
+}
+
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-6">
+				<h1>Chi tiết phiếu nhập kho</h1>
+			</div>
+			<div class="col-sm-6">
+				<a href="/ImportSlips" class="btn bg-secondary float-sm-right">
+					<i class="fa fa-arrow-left"></i> Quay lại
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Thông tin phiếu nhập: <strong>@Model.ImportSlip.ImportCode</strong></h3>
+						<div class="card-tools">
+							<span class="badge badge-@(Model.ImportSlip.Status == ImportStatus.Completed ? "success" : Model.ImportSlip.Status == ImportStatus.Cancelled ? "danger" : "warning")">
+								@Model.ImportSlip.StatusName
+							</span>
+						</div>
+					</div>
+					<div class="card-body">
+						<!-- Thông tin chung -->
+						<div class="row mb-4">
+							<div class="col-md-12">
+								<h5 class="border-bottom pb-2">Thông tin chung</h5>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="font-weight-bold">Mã phiếu nhập:</label>
+									<p class="form-control-plaintext">@Model.ImportSlip.ImportCode</p>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="font-weight-bold">Ngày nhập kho:</label>
+									<p class="form-control-plaintext">@Model.ImportSlip.ImportDate.ToString("dd/MM/yyyy HH:mm")</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="font-weight-bold">Loại nhập kho:</label>
+									<p class="form-control-plaintext">@Model.ImportSlip.TypeName</p>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="font-weight-bold">Nhà cung cấp:</label>
+									<p class="form-control-plaintext">@(Model.ImportSlip.SupplierName ?? "Không có")</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="font-weight-bold">Tổng tiền:</label>
+									<p class="form-control-plaintext text-danger font-weight-bold">@Model.ImportSlip.TotalAmount.ToString("N0") đ</p>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="font-weight-bold">Người tạo:</label>
+									<p class="form-control-plaintext">@Model.ImportSlip.CreatorUserName</p>
+								</div>
+							</div>
+						</div>
+
+						@if (!string.IsNullOrWhiteSpace(Model.ImportSlip.Notes))
+						{
+							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group">
+										<label class="font-weight-bold">Ghi chú:</label>
+										<p class="form-control-plaintext">@Model.ImportSlip.Notes</p>
+									</div>
+								</div>
+							</div>
+						}
+
+						<hr />
+
+						<!-- Chi tiết sản phẩm -->
+						<div class="row mb-3">
+							<div class="col-md-12">
+								<h5 class="border-bottom pb-2">Chi tiết sản phẩm (@Model.ImportSlip.Details.Count sản phẩm)</h5>
+							</div>
+						</div>
+
+						<div class="table-responsive">
+							<table class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<th>STT</th>
+										<th>Sản phẩm</th>
+										<th>Số lượng</th>
+										<th>Giá nhập</th>
+										<th>Thành tiền</th>
+										<th>Ghi chú</th>
+									</tr>
+								</thead>
+								<tbody>
+									@{
+										int index = 1;
+									}
+									@foreach (var detail in Model.ImportSlip.Details)
+									{
+										<tr>
+											<td>@index</td>
+											<td>@detail.ProductName</td>
+											<td class="text-right">@detail.Quantity.ToString("N0")</td>
+											<td class="text-right">@detail.UnitPrice.ToString("N0") đ</td>
+											<td class="text-right font-weight-bold">@detail.TotalAmount.ToString("N0") đ</td>
+											<td>@(detail.Notes ?? "-")</td>
+										</tr>
+										index++;
+									}
+								</tbody>
+								<tfoot>
+									<tr class="font-weight-bold">
+										<td colspan="4" class="text-right">Tổng tiền:</td>
+										<td class="text-right text-danger">@Model.ImportSlip.TotalAmount.ToString("N0") đ</td>
+										<td></td>
+									</tr>
+								</tfoot>
+							</table>
+						</div>
+					</div>
+					<div class="card-footer">
+						@if (Model.ImportSlip.Status == ImportStatus.Draft)
+						{
+							<button type="button" class="btn btn-success" id="CompleteImportSlipBtn" data-id="@Model.ImportSlip.Id">
+								<i class="fa fa-check"></i> Hoàn thành phiếu nhập
+							</button>
+							<a href="javascript:;" class="btn btn-warning" onclick="editImportSlip(@Model.ImportSlip.Id)">
+								<i class="fa fa-edit"></i> Sửa phiếu nhập
+							</a>
+							<button type="button" class="btn btn-danger" id="CancelImportSlipBtn" data-id="@Model.ImportSlip.Id">
+								<i class="fa fa-times"></i> Hủy phiếu nhập
+							</button>
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+@section scripts
+{
+	<script>
+		function editImportSlip(id) {
+			abp.ajax({
+				url: abp.appPath + 'ImportSlips/EditModal',
+				type: 'GET',
+				data: { importSlipId: id },
+				success: function (content) {
+					$('#ImportSlipEditModal').html(content).modal('show');
+				}
+			});
+		}
+
+		$(document).ready(function () {
+			$('#CompleteImportSlipBtn').click(function () {
+				var id = $(this).data('id');
+				abp.message.confirm('Bạn có chắc chắn muốn hoàn thành phiếu nhập này? Hệ thống sẽ cập nhật tồn kho và tạo lịch sử giao dịch.', 'Xác nhận', function (isConfirmed) {
+					if (isConfirmed) {
+				var _importSlipService = abp.services.app.importSlip;
+				abp.ui.setBusy();
+				_importSlipService.completeImportSlip(id)
+					.done(function () {
+						abp.notify.success('Hoàn thành phiếu nhập thành công!');
+						setTimeout(function () {
+							window.location.reload();
+						}, 1000);
+					})
+					.always(function () {
+						abp.ui.clearBusy();
+					});
+					}
+				});
+			});
+
+			$('#CancelImportSlipBtn').click(function () {
+				var id = $(this).data('id');
+				abp.message.confirm('Bạn có chắc chắn muốn hủy phiếu nhập này?', 'Xác nhận', function (isConfirmed) {
+					if (isConfirmed) {
+				var _importSlipService = abp.services.app.importSlip;
+				abp.ui.setBusy();
+				_importSlipService.cancelImportSlip(id)
+					.done(function () {
+						abp.notify.success('Hủy phiếu nhập thành công!');
+						setTimeout(function () {
+							window.location.reload();
+						}, 1000);
+					})
+					.always(function () {
+						abp.ui.clearBusy();
+					});
+					}
+				});
+			});
+		});
+	</script>
+}
+

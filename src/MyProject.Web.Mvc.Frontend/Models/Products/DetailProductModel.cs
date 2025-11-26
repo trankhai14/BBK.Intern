@@ -25,6 +25,26 @@ namespace MyProject.Web.Models.Products
 		public decimal? HeightCm { get; set; }
 		public decimal? LengthCm { get; set; }
 		
+		// Thông tin kỹ thuật điện thoại
+		public string Sku { get; set; }
+		public string ModelNumber { get; set; }
+		public string Chipset { get; set; }
+		public string Ram { get; set; }
+		public string Storage { get; set; }
+		public string Screen { get; set; }
+		public string OperatingSystem { get; set; }
+		public string Battery { get; set; }
+		public string Camera { get; set; }
+		public string FrontCamera { get; set; }
+		public string Sim { get; set; }
+		public string Connectivity { get; set; }
+		public string Security { get; set; }
+		public string Charging { get; set; }
+		public string ChargingPort { get; set; }
+		public string Color { get; set; }
+		public string Warranty { get; set; }
+		public string TechnicalSpecifications { get; set; }
+		
 		// Sản phẩm tương tự
 		public List<ProductListDto> RelatedProducts { get; set; }
 

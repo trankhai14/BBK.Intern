@@ -26,6 +26,24 @@ namespace MyProject.Orders
 		[StringLength(50)]
 		public int OrderStatus { get; set; }// trang thái đơn hàng mặc định
 
+		[StringLength(50)]
+		public string PhoneNumber { get; set; }
+
+		[StringLength(500)]
+		public string ShippingAddress { get; set; }
+
+		[StringLength(100)]
+		public string PaymentReference { get; set; }
+
+		public bool IsPaid { get; set; }
+
+		public DateTime? PaidTime { get; set; }
+
+		public DateTime? PaymentExpiredAt { get; set; }
+
+		[StringLength(500)]
+		public string CustomerNote { get; set; }
+
 		//quan hệ với bảng user
 		[ForeignKey("UserId")]
 		public User User { get; set; }
@@ -55,14 +73,13 @@ namespace MyProject.Orders
 		public Product Product { get; set; }
 	}
 
-	//public enum OrderStatus : byte
-	//{
-	//	All = 0,          // Tất cả đơn hàng
-	//	Pending = 1,      // Chờ xử lý
-	//	Confirmed = 2,    // Đã xác nhận
-	//	Shipping = 3,     // Đang giao hàng
-	//	Canceled = 4,     // Đã hủy
-	//	Success = 5       // Thành công
-	//}
+	public enum OrderStatus : int
+	{
+		Pending = 0,      // Chờ xử lý - Đơn hàng mới tạo, chưa thanh toán
+		Confirmed = 1,    // Đã xác nhận - Đã thanh toán, đang chờ xử lý
+		Shipping = 2,     // Đang giao hàng - Đã xác nhận và đang vận chuyển
+		Canceled = 3,     // Đã hủy - Đơn hàng bị hủy
+		Success = 4       // Thành công - Đã giao hàng thành công
+	}
 
 }

@@ -218,3 +218,88 @@
     color: #764ba2;
     text-decoration: none;
 }
+
+/* ============================================
+   PAGINATION - Phân trang đơn hàng
+   ============================================ */
+
+.order-pagination-container {
+    margin-top: 30px;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e2e8f0;
+}
+
+.order-pagination-info {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.order-pagination-info strong {
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.order-pagination {
+    display: flex;
+    justify-content: center;
+}
+
+.order-pagination .pagination {
+    margin: 0;
+    display: flex;
+    list-style: none;
+    padding: 0;
+    gap: 5px;
+}
+
+.order-pagination .page-item {
+    margin: 0;
+}
+
+.order-pagination .page-link {
+    padding: 10px 16px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.order-pagination .page-link:hover {
+    background: #667eea;
+    color: #fff;
+    border-color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.order-pagination .page-item.active .page-link {
+    background: #667eea;
+    color: #fff;
+    border-color: #667eea;
+    font-weight: 600;
+}
+
+.order-pagination .page-item.disabled .page-link {
+    color: #cbd5e0;
+    cursor: not-allowed;
+    background: #f8f9fa;
+    border-color: #e2e8f0;
+}
+
+.order-pagination .page-item.disabled .page-link:hover {
+    background: #f8f9fa;
+    color: #cbd5e0;
+    transform: none;
+    box-shadow: none;
+}

@@ -14,5 +14,7 @@ namespace MyProject.Orders.Dto
 		public string? NameUser { get; set; }
 		public int? OrderStatus { get; set; }
 		public int? PaymentMethod { get; set; }
+		public DateTime? FromDate { get; set; }
+		public DateTime? ToDate { get; set; }
 	}
 }

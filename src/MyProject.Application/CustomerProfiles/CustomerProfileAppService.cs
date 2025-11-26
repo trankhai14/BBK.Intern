@@ -13,7 +13,7 @@ using MyProject.CustomerProfiles.Dto;
 
 namespace MyProject.CustomerProfiles
 {
-	[AbpAuthorize]
+	//[AbpAuthorize(PermissionNames.Pages_CustomerProfiles)]
 	public class CustomerProfileAppService : MyProjectAppServiceBase, ICustomerProfileAppService
 	{
 		private readonly IRepository<CustomerProfile> _customerProfileRepository;
@@ -357,6 +357,7 @@ namespace MyProject.CustomerProfiles
 			};
 		}
 
+		//[AbpAuthorize(PermissionNames.Pages_CustomerProfiles_Edit)]
 		public async Task<CustomerProfileDto> UpdateForAdmin(UpdateCustomerProfileDto input)
 		{
 			var profile = await _customerProfileRepository.FirstOrDefaultAsync(p => p.Id == input.Id);
@@ -407,6 +408,7 @@ namespace MyProject.CustomerProfiles
 			};
 		}
 
+		//[AbpAuthorize(PermissionNames.Pages_CustomerProfiles_Edit)]
 		public async Task DeleteForAdmin(int id)
 		{
 			var profile = await _customerProfileRepository.FirstOrDefaultAsync(p => p.Id == id);

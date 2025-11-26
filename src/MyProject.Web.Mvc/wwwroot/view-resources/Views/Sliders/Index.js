@@ -19,45 +19,62 @@
 			{
 				name: 'refresh',
 				text: '<i class="fas fa-redo-alt"></i>',
+				titleAttr: 'Làm mới danh sách',
 				action: () => _$sliderTable.draw(false)
 			}
 		],
 		responsive: {
 			details: {
-				type: 'column'
+				type: 'column',
+				target: 'tr'
 			}
 		},
 		columnDefs: [
 			{
 				targets: 0,
 				data: 'title',
-				sortable: false
+				sortable: false,
+				width: '20%',
+				responsivePriority: 1
 			},
 			{
 				targets: 1,
 				data: 'description',
-				sortable: false
+				sortable: false,
+				width: '30%',
+				responsivePriority: 3,
+				render: function (data) {
+					if (!data) return '<span class="text-muted">-</span>';
+					return data.length > 100 ? data.substring(0, 100) + '...' : data;
+				}
 			},
 			{
 				targets: 2,
 				data: 'creationTime',
-				sortable: false
+				sortable: false,
+				width: '12%',
+				responsivePriority: 4,
+				render: data => new Date(data).toLocaleDateString('vi-VN')
 			},
 			{
 				targets: 3,
 				data: 'image',
 				sortable: false,
+				width: '12%',
+				responsivePriority: 5,
 				render: function (data, type, row) {
 					if (data) {
-						return `<img src="${data}" alt="Ảnh sản phẩm" class="img-thumbnail d-block mx-auto" width="120" height="120" style="object-fit: cover;">`;
+						return `<img src="${data}" alt="Ảnh slider" class="img-thumbnail d-block mx-auto" width="80" height="80" style="object-fit: cover;">`;
 					}
-					return '<span class="text-muted">Không có ảnh</span>';
+					return '<span class="text-muted"><i class="fas fa-image"></i></span>';
 				}
 			},
 			{
 				targets: 4,
 				data: 'isActive',
 				sortable: false,
+				width: '8%',
+				responsivePriority: 4,
 				className: "text-center align-middle active-checkbox",
 				render: data => `<input type="checkbox" ${data ? 'checked' : ''}>`
 			},
@@ -65,19 +82,22 @@
 				targets: 5,
 				data: null,
 				sortable: false,
-				autoWidth: true,
+				width: '18%',
+				responsivePriority: 1,
 				defaultContent: '',
 				render: (data, type, row, meta) => {
 					return [
-						`   <button type="button" class="btn btn-sm bg-secondary edit-slider" data-slider-id="${row.id}" data-toggle="modal" data-target="#SliderEditModal">`,
-						`       <i class="fas fa-pencil-alt"></i> ${l('Edit')}`,
+						`<div class="btn-group" role="group">`,
+						`   <button type="button" class="btn btn-sm bg-secondary edit-slider" data-slider-id="${row.id}" data-toggle="modal" data-target="#SliderEditModal" title="Chỉnh sửa slider">`,
+						`       <i class="fas fa-pencil-alt"></i>`,
 						'   </button>',
-						`   <button type="button" class="btn btn-sm bg-danger delete-slider" data-slider-id="${row.id}" data-slider-title="${row.title}">`,
-						`       <i class="fas fa-trash"></i> ${l('Delete')}`,
+						`   <button type="button" class="btn btn-sm bg-info detail-slider" data-slider-id="${row.id}" title="Xem chi tiết slider">`,
+						`       <i class="fas fa-eye"></i>`,
 						'   </button>',
-						`   <button type="button" class="btn btn-sm bg-info detail-slider" data-slider-id="${row.id}" data-toggle="modal" >`,
-						`       <i class="fas fa-eye"></i> ${l('Details')}`,
-						'   </button>'
+						`   <button type="button" class="btn btn-sm bg-danger delete-slider" data-slider-id="${row.id}" data-slider-title="${row.title}" title="Xóa slider">`,
+						`       <i class="fas fa-trash"></i>`,
+						'   </button>',
+						'</div>'
 					].join('');
 				}
 			}

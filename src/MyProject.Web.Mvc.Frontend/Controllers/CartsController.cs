@@ -7,6 +7,8 @@ using MyProject.Carts;
 using MyProject.Carts.Dto;
 using MyProject.Categories;
 using MyProject.Controllers;
+using MyProject.FlashSales;
+using MyProject.FlashSales.Dto;
 using MyProject.Product.Dtos;
 using MyProject.Products;
 using MyProject.Users;
@@ -20,12 +22,14 @@ namespace MyProject.Web.Controllers
 		private readonly ICartAppService _cartAppService;
 		private readonly IProductAppService _productAppService;
 		private readonly IUserAppService _userAppService;
+		private readonly IFlashSaleAppService _flashSaleAppService;
 
-		public CartsController(ICartAppService cartAppService, IProductAppService productAppService, IUserAppService userAppService)
+		public CartsController(ICartAppService cartAppService, IProductAppService productAppService, IUserAppService userAppService, IFlashSaleAppService flashSaleAppService)
 		{
 			_cartAppService = cartAppService;
 			_productAppService = productAppService;
 			_userAppService = userAppService;
+			_flashSaleAppService = flashSaleAppService;
 		}
 
 		public async Task<ActionResult> Index()
@@ -53,15 +57,44 @@ namespace MyProject.Web.Controllers
 					Id = item.ProductId
 				});
 
+				// Kiểm tra sản phẩm có trong FlashSale đang diễn ra không
+				FlashSaleProductDto flashSaleProduct = null;
+				bool isFlashSale = false;
+				decimal flashSalePrice = product.Price;
+				decimal originalPrice = product.Price;
+
+				try
+				{
+					flashSaleProduct = await _flashSaleAppService.GetFlashSaleProductByProductId(product.Id);
+					if (flashSaleProduct != null)
+					{
+						isFlashSale = true;
+						flashSalePrice = flashSaleProduct.FlashSalePrice;
+						originalPrice = flashSaleProduct.OriginalPrice;
+					}
+				}
+				catch
+				{
+					// Nếu không có FlashSale, bỏ qua và dùng giá bình thường
+				}
+
+				// Tính tổng tiền: nếu có FlashSale thì dùng giá FlashSale, không thì dùng giá bình thường
+				decimal finalPrice = isFlashSale ? flashSalePrice : product.Price;
+				decimal totalPrice = item.Quantity * finalPrice;
+
 				// Thêm sản phẩm vào danh sách giỏ hàng
 				cartItems.Carts.Add(new CartViewModel
 				{
 					Id = product.Id,
 					Name = product.Name,
-					Price = product.Price,
-					TotalPrice = item.Quantity * product.Price,
+					Price = finalPrice, // Giá hiển thị (có thể là giá FlashSale hoặc giá bình thường)
+					TotalPrice = totalPrice,
 					Quantity = item.Quantity,
-					Image = product.Image
+					Image = product.Image,
+					// Thông tin FlashSale
+					IsFlashSale = isFlashSale,
+					FlashSalePrice = flashSalePrice,
+					OriginalPrice = originalPrice
 				});
 			}
 

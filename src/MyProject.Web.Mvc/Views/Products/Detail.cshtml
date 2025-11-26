@@ -1,4 +1,7 @@
 ﻿@using static MyProject.Products.Product
+@using MyProject.Web.Models.Products
+@using MyProject.Products.Dtos
+@model ProductDetailViewModel
 
 @{
 	var stateClass = Model.Product.State switch
@@ -66,6 +69,219 @@
 		<div class="col-md-9 d-flex align-items-center">
 			<img src="@Model.Product.Image" alt="Ảnh sản phẩm" class="img-thumbnail"
 					 style="max-width: 200px; height: auto; object-fit: cover; margin-right: 15px;">
+		</div>
+	</div>
+
+	@if (!string.IsNullOrEmpty(Model.Product.Brand))
+	{
+		<div class="row mb-3">
+			<label class="col-md-3 fw-bold">Thương hiệu:</label>
+			<div class="col-md-9">
+				<p class="form-control-plaintext">@Model.Product.Brand</p>
+			</div>
+		</div>
+	}
+
+	@if (!string.IsNullOrEmpty(Model.Product.CategoryName))
+	{
+		<div class="row mb-3">
+			<label class="col-md-3 fw-bold">Danh mục:</label>
+			<div class="col-md-9">
+				<p class="form-control-plaintext">@Model.Product.CategoryName</p>
+			</div>
+		</div>
+	}
+
+	@if (!string.IsNullOrEmpty(Model.Product.SupplierName))
+	{
+		<div class="row mb-3">
+			<label class="col-md-3 fw-bold">Nhà cung cấp:</label>
+			<div class="col-md-9">
+				<p class="form-control-plaintext">@Model.Product.SupplierName</p>
+			</div>
+		</div>
+	}
+
+	@if (Model.Product.WeightInGrams.HasValue || Model.Product.WidthCm.HasValue || Model.Product.HeightCm.HasValue || Model.Product.LengthCm.HasValue)
+	{
+		<div class="row mb-3">
+			<label class="col-md-3 fw-bold">Kích thước & Trọng lượng:</label>
+			<div class="col-md-9">
+				<p class="form-control-plaintext">
+					@if (Model.Product.WeightInGrams.HasValue)
+					{
+						<span>Trọng lượng: @Model.Product.WeightInGrams.Value g</span>
+					}
+					@if (Model.Product.WidthCm.HasValue || Model.Product.HeightCm.HasValue || Model.Product.LengthCm.HasValue)
+					{
+						<span> | Kích thước: 
+							@(Model.Product.LengthCm?.ToString("0.0") ?? "-") x 
+							@(Model.Product.WidthCm?.ToString("0.0") ?? "-") x 
+							@(Model.Product.HeightCm?.ToString("0.0") ?? "-") cm
+						</span>
+					}
+				</p>
+			</div>
+		</div>
+	}
+
+	<!-- Thông tin kỹ thuật -->
+	<div class="row mb-3">
+		<label class="col-md-3 fw-bold">Thông tin kỹ thuật:</label>
+		<div class="col-md-9">
+			@if (Model.Product.Specification != null)
+			{
+				var spec = Model.Product.Specification;
+				var hasAnyValue = !string.IsNullOrWhiteSpace(spec.Sku) ||
+								  !string.IsNullOrWhiteSpace(spec.ModelNumber) ||
+								  !string.IsNullOrWhiteSpace(spec.Chipset) ||
+								  !string.IsNullOrWhiteSpace(spec.Ram) ||
+								  !string.IsNullOrWhiteSpace(spec.Storage) ||
+								  !string.IsNullOrWhiteSpace(spec.Screen) ||
+								  !string.IsNullOrWhiteSpace(spec.OperatingSystem) ||
+								  !string.IsNullOrWhiteSpace(spec.Battery) ||
+								  !string.IsNullOrWhiteSpace(spec.Camera) ||
+								  !string.IsNullOrWhiteSpace(spec.FrontCamera) ||
+								  !string.IsNullOrWhiteSpace(spec.Sim) ||
+								  !string.IsNullOrWhiteSpace(spec.Connectivity) ||
+								  !string.IsNullOrWhiteSpace(spec.Security) ||
+								  !string.IsNullOrWhiteSpace(spec.Charging) ||
+								  !string.IsNullOrWhiteSpace(spec.ChargingPort) ||
+								  !string.IsNullOrWhiteSpace(spec.Color) ||
+								  !string.IsNullOrWhiteSpace(spec.Warranty) ||
+								  !string.IsNullOrWhiteSpace(spec.TechnicalSpecifications);
+				
+				if (hasAnyValue)
+				{
+					<div class="card border-primary">
+					<div class="card-body">
+						<div class="row">
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Sku))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>SKU:</strong> @Model.Product.Specification.Sku
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.ModelNumber))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Số model:</strong> @Model.Product.Specification.ModelNumber
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Chipset))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Chip xử lý:</strong> @Model.Product.Specification.Chipset
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Ram))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>RAM:</strong> @Model.Product.Specification.Ram
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Storage))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Bộ nhớ:</strong> @Model.Product.Specification.Storage
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Screen))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Màn hình:</strong> @Model.Product.Specification.Screen
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.OperatingSystem))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Hệ điều hành:</strong> @Model.Product.Specification.OperatingSystem
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Battery))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Pin:</strong> @Model.Product.Specification.Battery
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Camera))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Camera sau:</strong> @Model.Product.Specification.Camera
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.FrontCamera))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Camera trước:</strong> @Model.Product.Specification.FrontCamera
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Sim))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>SIM:</strong> @Model.Product.Specification.Sim
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Connectivity))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Kết nối:</strong> @Model.Product.Specification.Connectivity
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Security))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Bảo mật:</strong> @Model.Product.Specification.Security
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Charging))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Sạc:</strong> @Model.Product.Specification.Charging
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.ChargingPort))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Cổng sạc:</strong> @Model.Product.Specification.ChargingPort
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Color))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Màu sắc:</strong> @Model.Product.Specification.Color
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.Warranty))
+							{
+								<div class="col-md-6 mb-2">
+									<strong>Bảo hành:</strong> @Model.Product.Specification.Warranty
+								</div>
+							}
+							@if (!string.IsNullOrWhiteSpace(Model.Product.Specification.TechnicalSpecifications))
+							{
+								<div class="col-12 mb-2">
+									<strong>Thông số kỹ thuật chi tiết:</strong>
+									<p class="mt-1">@Model.Product.Specification.TechnicalSpecifications</p>
+								</div>
+							}
+						</div>
+					</div>
+				</div>
+				}
+				else
+				{
+					<p class="form-control-plaintext text-muted">
+						<i class="fas fa-info-circle"></i> Chưa có thông tin kỹ thuật
+					</p>
+				}
+			}
+			else
+			{
+				<p class="form-control-plaintext text-muted">
+					<i class="fas fa-info-circle"></i> Chưa có thông tin kỹ thuật
+				</p>
+			}
 		</div>
 	</div>
 

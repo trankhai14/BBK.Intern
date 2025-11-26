@@ -39,7 +39,8 @@ namespace MyProject.Web.Controllers
 			var productsResult = await _productAppService.GetAll(new GetAllProductsInput
 			{
 				MaxResultCount = pageSize,
-				SkipCount = (page - 1) * pageSize
+				SkipCount = (page - 1) * pageSize,
+				OnlyWithInventory = true // Chỉ lấy sản phẩm có tồn kho (cho frontend)
 			});
 
 			var model = new ProductViewModel(productsResult.Items)
@@ -57,7 +58,8 @@ namespace MyProject.Web.Controllers
 			WebViewModel webViewModel = new WebViewModel();
 			var result = await _productAppService.Search(new GetAllProductsInput
 			{
-				Keyword = input.Keyword
+				Keyword = input.Keyword,
+				OnlyWithInventory = true // Chỉ hiển thị sản phẩm có trong kho khi tìm kiếm
 			});
 
 			if (result != null)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Abp.Application.Services.Dto;
 using Abp.AspNetCore.Mvc.Authorization;
+using Abp.Authorization;
 using Abp.Domain.Repositories;
 using Abp.UI;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +18,8 @@ using MyProject.Product;
 using MyProject.Product.Dtos;
 using MyProject.Products;
 using MyProject.Products.Dtos;
+using MyProject.Suppliers;
+using MyProject.Suppliers.Dto;
 using MyProject.Tasks;
 using MyProject.Web.Models.Products;
 
@@ -30,22 +33,42 @@ namespace MyProject.Web.Controllers
 		private readonly IProductAppService _productAppService;
 		private readonly IWebHostEnvironment webHostEnvironment;
 		private readonly ICategoryAppService _categoryAppService;
+		private readonly ISupplierAppService _supplierAppService;
+		private readonly IPermissionChecker _permissionChecker;
 
 
-		public ProductsController(IProductAppService productService, IWebHostEnvironment webHostEnvironment, ICategoryAppService categoryAppService)
+		public ProductsController(IProductAppService productService, IWebHostEnvironment webHostEnvironment, ICategoryAppService categoryAppService, ISupplierAppService supplierAppService, IPermissionChecker permissionChecker)
 		{
 			_productAppService = productService;
 			this.webHostEnvironment = webHostEnvironment;
 			_categoryAppService = categoryAppService;
+			_supplierAppService = supplierAppService;
+			_permissionChecker = permissionChecker;
 		}
 
 		public async Task<ActionResult> Index(GetAllProductsInput input)
 		{
-
 			var output = await _productAppService.GetAll(input);
 			var Categories = await _productAppService.GetAllCategory();
+			
+			// Chỉ lấy danh sách suppliers nếu user có permission
+			List<SupplierDto> Suppliers = new List<SupplierDto>();
+			if (_permissionChecker.IsGranted(PermissionNames.Pages_Suppliers))
+			{
+				try
+				{
+					Suppliers = await _supplierAppService.GetAllList();
+				}
+				catch (Abp.Authorization.AbpAuthorizationException)
+				{
+					// Nếu không có permission, để danh sách rỗng
+					Suppliers = new List<SupplierDto>();
+				}
+			}
+			
 			var model = new ProductViewModel(output.Items);
 			model.CategoryLists = Categories;
+			model.SupplierLists = Suppliers;
 			return View(model);
 		}
 
@@ -53,11 +76,27 @@ namespace MyProject.Web.Controllers
 		{
 			var product = await _productAppService.GetAsync(new EntityDto<int>(productId));
 			var categories = await _categoryAppService.GetAllCategory();
+			
+			// Chỉ lấy danh sách suppliers nếu user có permission
+			List<SupplierDto> suppliers = new List<SupplierDto>();
+			if (_permissionChecker.IsGranted(PermissionNames.Pages_Suppliers))
+			{
+				try
+				{
+					suppliers = await _supplierAppService.GetAllList();
+				}
+				catch (Abp.Authorization.AbpAuthorizationException)
+				{
+					// Nếu không có permission, để danh sách rỗng
+					suppliers = new List<SupplierDto>();
+				}
+			}
 
 			var model = new EditProductViewModel
 			{
 				Product = product,
 				Categories = categories,
+				Suppliers = suppliers
 			};
 			return PartialView("_EditModal", model);
 		}
@@ -65,9 +104,14 @@ namespace MyProject.Web.Controllers
 
 		public async Task<ActionResult> Detail(int productId)
 		{
-			var product = await _productAppService.GetAsync(new EntityDto<int>(productId));
+			var product = await _productAppService.Detail(new EntityDto<int>(productId));
 
-			var model = new EditProductViewModel
+			if (product == null)
+			{
+				return NotFound();
+			}
+
+			var model = new ProductDetailViewModel
 			{
 				Product = product
 			};
@@ -245,6 +289,7 @@ namespace MyProject.Web.Controllers
 					Price = existingProduct.Price,
 					State = existingProduct.State,
 					CategoryId = existingProduct.CategoryId,
+					SupplierId = existingProduct.SupplierId,
 					Image = null,
 				};
 				await _productAppService.Update(updateProductDto);
@@ -257,6 +302,74 @@ namespace MyProject.Web.Controllers
 			}
 		}
 
+		/// <summary>
+		/// Hiển thị modal thông tin kỹ thuật sản phẩm
+		/// </summary>
+		public async Task<ActionResult> SpecificationModal(int productId)
+		{
+			var product = await _productAppService.GetAsync(new EntityDto<int>(productId));
+			if (product == null)
+			{
+				return Json(new { success = false, message = "Không tìm thấy sản phẩm" });
+			}
 
+			var model = new EditProductViewModel
+			{
+				Product = product
+			};
+
+			return PartialView("_ProductSpecificationModal", model);
+		}
+
+		/// <summary>
+		/// Lưu hoặc cập nhật thông tin kỹ thuật sản phẩm
+		/// </summary>
+		[HttpPost]
+		public async Task<IActionResult> SaveSpecification([FromQuery] int productId, [FromBody] UpdateProductSpecificationDto specification)
+		{
+			try
+			{
+				// Kiểm tra nếu specification null hoặc không có dữ liệu
+				if (specification == null)
+				{
+					return Json(new { success = false, message = "Dữ liệu thông tin kỹ thuật không hợp lệ" });
+				}
+
+				var product = await _productAppService.GetAsync(new EntityDto<int>(productId));
+				if (product == null)
+				{
+					return Json(new { success = false, message = "Không tìm thấy sản phẩm" });
+				}
+
+				// Đảm bảo ProductId trong specification khớp với productId từ query
+				specification.ProductId = productId;
+
+				var updateProductDto = new UpdateProductDto
+				{
+					Id = productId,
+					Name = product.Name,
+					Description = product.Description,
+					Price = product.Price,
+					State = product.State,
+					CategoryId = product.CategoryId,
+					SupplierId = product.SupplierId,
+					Image = product.Image,
+					Brand = product.Brand,
+					WeightInGrams = product.WeightInGrams,
+					WidthCm = product.WidthCm,
+					HeightCm = product.HeightCm,
+					LengthCm = product.LengthCm,
+					Specification = specification
+				};
+
+				await _productAppService.Update(updateProductDto);
+
+				return Json(new { success = true, message = "Lưu thông tin kỹ thuật thành công" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, message = ex.Message });
+			}
+		}
 	}
 }

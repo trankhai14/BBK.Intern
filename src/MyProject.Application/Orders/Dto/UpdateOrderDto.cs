@@ -11,5 +11,8 @@ namespace MyProject.Orders.Dto
 		public int OrderId { get; set; }
 		public int PaymentMethod { get; set; }
 		public int OrderStatus { get; set; }
+		public bool? IsPaid { get; set; }
+		public string PaymentReference { get; set; }
+		public DateTime? PaidTime { get; set; }
 	}
 }
